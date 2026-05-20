@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dune: Awakening — Server Manager</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <h1 class="logo">DUNE<span class="logo-dim">:</span> AWAKENING</h1>
+      <span class="logo-sub">SERVER MANAGER</span>
+    </div>
+    <div class="topbar-right">
+      <div class="status-chip" id="vm-chip">
+        <span class="dot"></span>
+        <span class="chip-label">VM</span>
+        <span class="chip-value" id="vm-chip-state">—</span>
+      </div>
+      <div class="status-chip" id="bg-chip">
+        <span class="dot"></span>
+        <span class="chip-label">Battlegroup</span>
+        <span class="chip-value" id="bg-chip-state">—</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Tabs -->
+  <nav class="tabs">
+    <button class="tab active" data-tab="dashboard">Dashboard</button>
+    <button class="tab" data-tab="setup">Setup</button>
+    <button class="tab" data-tab="battlegroup">Battlegroup</button>
+    <button class="tab" data-tab="monitoring">Monitoring</button>
+    <button class="tab" data-tab="database">Database</button>
+    <button class="tab" data-tab="gameconfig">Game Config</button>
+    <button class="tab" data-tab="settings">Settings</button>
+  </nav>
+
+  <main class="content">
+
+    <!-- ============ Dashboard ============ -->
+    <section class="panel active" id="tab-dashboard">
+      <div class="card-row">
+        <div class="card status-card" id="card-vm">
+          <div class="card-header">
+            <h2>Virtual Machine</h2>
+            <span class="badge" id="vm-badge">Unknown</span>
+          </div>
+          <div class="card-body">
+            <div class="stat-grid">
+              <div class="stat"><span class="stat-label">State</span><span class="stat-value" id="vm-state">—</span></div>
+              <div class="stat"><span class="stat-label">IP Address</span><span class="stat-value" id="vm-ip">—</span></div>
+              <div class="stat"><span class="stat-label">Memory</span><span class="stat-value" id="vm-memory">—</span></div>
+              <div class="stat"><span class="stat-label">Uptime</span><span class="stat-value" id="vm-uptime">—</span></div>
+            </div>
+          </div>
+          <div class="card-actions">
+            <button class="btn btn-green" id="btn-vm-start" disabled>Start VM</button>
+            <button class="btn btn-red" id="btn-vm-stop" disabled>Stop VM</button>
+          </div>
+        </div>
+
+        <div class="card status-card" id="card-bg">
+          <div class="card-header">
+            <h2>Battlegroup</h2>
+            <span class="badge" id="bg-badge">Unknown</span>
+          </div>
+          <div class="card-body">
+            <pre class="bg-status-output" id="bg-status-text">Waiting for status...</pre>
+          </div>
+          <div class="card-actions">
+            <button class="btn btn-green" id="btn-bg-start" disabled>Start</button>
+            <button class="btn btn-yellow" id="btn-bg-restart" disabled>Restart</button>
+            <button class="btn btn-red" id="btn-bg-stop" disabled>Stop</button>
+            <button class="btn btn-blue" id="btn-bg-update" disabled>Update</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card quick-links-card" id="quick-links">
+        <div class="card-header"><h2>Quick Links</h2></div>
+        <div class="card-body link-row">
+          <a class="link-btn" id="link-filebrowser" href="#" target="_blank">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+            File Browser
+          </a>
+          <a class="link-btn" id="link-director" href="#" target="_blank">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            Director
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Setup Wizard ============ -->
+    <section class="panel" id="tab-setup">
+      <div class="card wizard-card">
+        <div class="card-header">
+          <h2>Initial Server Setup</h2>
+          <span class="badge" id="setup-step-badge">Step 1 of 6</span>
+        </div>
+
+        <!-- Progress bar -->
+        <div class="wizard-progress">
+          <div class="wizard-progress-fill" id="wizard-progress-fill" style="width: 16.6%"></div>
+        </div>
+
+        <div class="card-body">
+
+          <!-- Step 1: Pre-flight -->
+          <div class="wizard-step active" id="wiz-step-1">
+            <h3>Pre-flight Checks</h3>
+            <p class="card-desc">Verifying your system is ready for the Dune: Awakening server.</p>
+            <div class="preflight-results" id="preflight-results">
+              <div class="preflight-item" id="pf-hyperv">
+                <span class="pf-icon">&#9744;</span>
+                <span>Hyper-V enabled and running</span>
+              </div>
+              <div class="preflight-item" id="pf-vmcx">
+                <span class="pf-icon">&#9744;</span>
+                <span>Server files found (vmcx)</span>
+              </div>
+              <div class="preflight-item" id="pf-drives">
+                <span class="pf-icon">&#9744;</span>
+                <span>Drive with 100GB+ free space</span>
+              </div>
+            </div>
+            <div class="btn-group" style="margin-top: 1rem">
+              <button class="btn btn-blue btn-lg" id="btn-preflight">Run Checks</button>
+            </div>
+          </div>
+
+          <!-- Step 2: Configuration -->
+          <div class="wizard-step" id="wiz-step-2">
+            <h3>VM Configuration</h3>
+            <p class="card-desc">Choose where to install and how much resources to allocate.</p>
+            <form id="form-setup-config" class="settings-form" style="max-width:100%">
+              <div class="setup-row">
+                <div class="field" style="grid-column: 1 / -1">
+                  <label for="setup-token">Server Token</label>
+                  <input type="text" id="setup-token" class="select-input" placeholder="Paste your token here" required>
+                  <span class="field-hint">Generate one at <a href="https://account.duneawakening.com/" target="_blank" style="color:var(--gold)">account.duneawakening.com</a></span>
+                </div>
+              </div>
+              <div class="setup-row">
+                <div class="field">
+                  <label for="setup-drive">Install Drive</label>
+                  <select id="setup-drive" class="select-input"></select>
+                </div>
+                <div class="field">
+                  <label for="setup-memory">Memory</label>
+                  <select id="setup-memory" class="select-input">
+                    <option value="10">10 GB (requires swap)</option>
+                    <option value="20" selected>20 GB (Hagga Basin)</option>
+                    <option value="30">30 GB (+ Story/Social)</option>
+                    <option value="40">40 GB (+ Deep Desert)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="setup-row">
+                <div class="field">
+                  <label for="setup-network">Network Mode</label>
+                  <select id="setup-network" class="select-input">
+                    <option value="external">External Switch (recommended — bridge mode)</option>
+                    <option value="default">Default Switch (local only)</option>
+                  </select>
+                </div>
+                <div class="field" id="nic-field" style="display:none">
+                  <label for="setup-nic">Network Adapter</label>
+                  <select id="setup-nic" class="select-input"></select>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <!-- Step 3: Import (progress) -->
+          <div class="wizard-step" id="wiz-step-3">
+            <h3>Installing</h3>
+            <p class="card-desc">Importing VM, configuring network and memory, starting the virtual machine. This can take several minutes.</p>
+            <div class="setup-progress-area">
+              <div class="spinner" id="setup-spinner" hidden></div>
+              <pre class="setup-log" id="setup-log"></pre>
+            </div>
+            <div id="retry-start" class="retry-panel" hidden>
+              <p class="card-desc retry-msg">VM imported but failed to start — most likely not enough RAM. Reduce the memory and retry.</p>
+              <div class="setup-row" style="align-items:end">
+                <div class="field">
+                  <label for="retry-memory">Memory</label>
+                  <select id="retry-memory" class="select-input">
+                    <option value="10">10 GB (requires swap)</option>
+                    <option value="20" selected>20 GB</option>
+                    <option value="30">30 GB</option>
+                    <option value="40">40 GB</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <button class="btn btn-green btn-lg" id="btn-retry-start" style="margin-bottom:1px">Retry Start</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 4: SSH Key + Password (combined) -->
+          <div class="wizard-step" id="wiz-step-4">
+            <h3>Security</h3>
+            <p class="card-desc">This will generate an SSH key, install it on the VM, and change the default password — all in one step.</p>
+            <form id="form-setup-pw" class="settings-form" style="max-width:100%">
+              <div class="setup-row">
+                <div class="field">
+                  <label for="setup-curpw">Current VM Password</label>
+                  <input type="password" id="setup-curpw" value="dune" autocomplete="off">
+                  <span class="field-hint">Default is "dune" — change only if you've set it before</span>
+                </div>
+              </div>
+              <div class="setup-row">
+                <div class="field">
+                  <label for="setup-pw">New Password</label>
+                  <input type="password" id="setup-pw" required autocomplete="new-password">
+                </div>
+                <div class="field">
+                  <label for="setup-pw2">Confirm New Password</label>
+                  <input type="password" id="setup-pw2" required autocomplete="new-password">
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <!-- Step 5: Networking -->
+          <div class="wizard-step" id="wiz-step-5">
+            <h3>Player Connectivity</h3>
+            <p class="card-desc">Choose how the VM gets its IP and which IP players will connect to.</p>
+            <div class="setup-row">
+              <div class="field">
+                <label>VM IP Assignment</label>
+                <select id="setup-ip-mode" class="select-input">
+                  <option value="dhcp">DHCP (automatic — recommended)</option>
+                  <option value="static">Static IP</option>
+                </select>
+              </div>
+            </div>
+            <div id="static-fields" class="setup-row" style="display:none">
+              <div class="field">
+                <label for="setup-static-ip">Static IP</label>
+                <input type="text" id="setup-static-ip" placeholder="192.168.1.100" class="select-input">
+              </div>
+              <div class="field">
+                <label for="setup-static-gw">Gateway</label>
+                <input type="text" id="setup-static-gw" placeholder="192.168.1.1" class="select-input">
+              </div>
+            </div>
+            <div class="field" style="margin-top: .75rem">
+              <label>Player-facing IP</label>
+              <div class="ip-options" id="ip-options">
+                <label class="radio-label"><input type="radio" name="playerIpChoice" value="public" checked> <span id="opt-public">Public IP (detecting...)</span></label>
+                <label class="radio-label"><input type="radio" name="playerIpChoice" value="private"> <span id="opt-private">Private IP</span></label>
+                <label class="radio-label"><input type="radio" name="playerIpChoice" value="manual"> Custom</label>
+              </div>
+              <input type="text" id="setup-player-ip-manual" placeholder="Enter IP" class="select-input" style="display:none; margin-top: .5rem">
+            </div>
+          </div>
+
+          <!-- Step 6: Bootstrap -->
+          <div class="wizard-step" id="wiz-step-6">
+            <h3>Finalize</h3>
+            <p class="card-desc">Configure your world, then upload bootstrap files and run the first-time battlegroup setup. This is the final step.</p>
+            <form id="form-world-config" class="settings-form" style="max-width:100%; margin-bottom: 1rem">
+              <div class="setup-row">
+                <div class="field">
+                  <label for="setup-world-name">World Name <span style="color:var(--text-dim)">(max 50 chars)</span></label>
+                  <input type="text" id="setup-world-name" class="select-input" maxlength="50" placeholder="My Arrakis Server" required>
+                </div>
+                <div class="field">
+                  <label for="setup-region">Region</label>
+                  <select id="setup-region" class="select-input">
+                    <option value="1">Asia</option>
+                    <option value="2">Europe</option>
+                    <option value="3" selected>North America</option>
+                    <option value="4">Oceania</option>
+                    <option value="5">South America</option>
+                  </select>
+                </div>
+              </div>
+            </form>
+            <div class="field" style="margin-bottom: 1rem">
+              <label class="radio-label">
+                <input type="checkbox" id="setup-swap">
+                Enable experimental swap memory (recommended if memory &lt; 20GB)
+              </label>
+            </div>
+            <div class="setup-progress-area">
+              <div class="spinner" id="bootstrap-spinner" hidden></div>
+              <pre class="setup-log" id="bootstrap-log"></pre>
+            </div>
+          </div>
+
+          <!-- Step 7: Done -->
+          <div class="wizard-step" id="wiz-step-7">
+            <div class="done-banner">
+              <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="var(--gold)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l2.5 2.5L16 9"/></svg>
+              <h3>Setup Complete</h3>
+              <p class="card-desc">Your Dune: Awakening server is ready. Head to the Dashboard to start your battlegroup.</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Wizard navigation -->
+        <div class="card-actions wizard-nav">
+          <button class="btn btn-blue" id="wiz-back" hidden>Back</button>
+          <div style="flex:1"></div>
+          <button class="btn btn-green btn-lg" id="wiz-next">Next</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Battlegroup ============ -->
+    <section class="panel" id="tab-battlegroup">
+      <div class="card">
+        <div class="card-header"><h2>Battlegroup Controls</h2></div>
+        <div class="card-body">
+          <p class="card-desc">Manage the lifecycle of your battlegroup. Start, stop, or restart game servers, and check for updates.</p>
+          <div class="btn-group">
+            <button class="btn btn-green btn-lg" data-action="bg/start">Start Battlegroup</button>
+            <button class="btn btn-red btn-lg" data-action="bg/stop">Stop Battlegroup</button>
+            <button class="btn btn-yellow btn-lg" data-action="bg/restart">Restart Battlegroup</button>
+            <button class="btn btn-blue btn-lg" data-action="bg/update">Check for Updates</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h2>Swap Memory</h2></div>
+        <div class="card-body">
+          <p class="card-desc">Enable experimental swap memory to significantly reduce RAM requirements per game server. Recommended if VM has less than 20GB allocated.</p>
+          <div class="btn-group">
+            <button class="btn btn-yellow btn-lg" data-action="bg/enable-experimental-swap">Enable Swap Memory</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Monitoring ============ -->
+    <section class="panel" id="tab-monitoring">
+      <div class="card-row">
+        <div class="card">
+          <div class="card-header"><h2>Web Interfaces</h2></div>
+          <div class="card-body">
+            <p class="card-desc">Access the built-in web tools running inside the VM.</p>
+            <div class="btn-group">
+              <a class="btn btn-blue btn-lg" id="mon-filebrowser" href="#" target="_blank">Open File Browser</a>
+              <a class="btn btn-blue btn-lg" id="mon-director" href="#" target="_blank">Open Director</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><h2>Log Export</h2></div>
+          <div class="card-body">
+            <p class="card-desc">Download logs from all battlegroup components or operator pods.</p>
+            <div class="btn-group">
+              <button class="btn btn-blue btn-lg" data-action="logs/export">Export Battlegroup Logs</button>
+              <button class="btn btn-blue btn-lg" data-action="logs/operators">Export Operator Logs</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Database ============ -->
+    <section class="panel" id="tab-database">
+      <div class="card">
+        <div class="card-header"><h2>Database Management</h2></div>
+        <div class="card-body">
+          <p class="card-desc">Back up or restore the battlegroup database. For best results, stop the battlegroup before performing these operations.</p>
+          <div class="btn-group">
+            <button class="btn btn-green btn-lg" data-action="bg/backup">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Take Backup
+            </button>
+            <button class="btn btn-yellow btn-lg" data-action="bg/import">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Import Backup
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Game Config ============ -->
+    <section class="panel" id="tab-gameconfig">
+      <div class="config-header-row">
+        <h2 class="section-title">Game Configuration</h2>
+        <div class="config-actions">
+          <button class="btn btn-blue" id="btn-config-reload">Reload</button>
+          <button class="btn btn-green" id="btn-config-save">Save &amp; Apply</button>
+        </div>
+      </div>
+      <div class="config-warning" id="config-warning">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <span><strong>Stop the battlegroup before editing.</strong> Changes require the battlegroup to be offline and will apply on next start.</span>
+      </div>
+
+      <div id="config-loading" class="card"><div class="card-body" style="text-align:center;color:var(--text-dim)">Loading configuration...</div></div>
+
+      <div id="config-panels" style="display:none">
+
+        <!-- PvP & Security -->
+        <div class="card">
+          <div class="card-header"><h2>PvP &amp; Security</h2></div>
+          <div class="card-body">
+            <div class="config-grid">
+              <div class="config-item">
+                <label>Force PvP on All Partitions</label>
+                <select class="select-input cfg" data-file="game" data-key="m_bShouldForceEnablePvpOnAllPartitions">
+                  <option value="False">Off</option><option value="True">On</option>
+                </select>
+              </div>
+              <div class="config-item">
+                <label>Security Zones Enabled</label>
+                <select class="select-input cfg" data-file="game" data-key="m_bAreSecurityZonesEnabled">
+                  <option value="True">On</option><option value="False">Off (PvP everywhere)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Environment -->
+        <div class="card">
+          <div class="card-header"><h2>Environment</h2></div>
+          <div class="card-body">
+            <div class="config-grid">
+              <div class="config-item">
+                <label>Coriolis Storm</label>
+                <select class="select-input cfg" data-file="game" data-key="m_bCoriolisAutoSpawnEnabled">
+                  <option value="True">On</option><option value="False">Off</option>
+                </select>
+              </div>
+              <div class="config-item">
+                <label>Sandstorm</label>
+                <select class="select-input cfg" data-file="engine" data-key="Sandstorm.Enabled">
+                  <option value="1">On</option><option value="0">Off</option>
+                </select>
+              </div>
+              <div class="config-item">
+                <label>Sandstorm Treasure Spawns</label>
+                <select class="select-input cfg" data-file="engine" data-key="Sandstorm.Treasure.Enabled">
+                  <option value="1">On</option><option value="0">Off</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sandworm -->
+        <div class="card">
+          <div class="card-header"><h2>Sandworm</h2></div>
+          <div class="card-body">
+            <div class="config-grid">
+              <div class="config-item">
+                <label>Sandworm Enabled</label>
+                <select class="select-input cfg" data-file="engine" data-key="sandworm.dune.Enabled">
+                  <option value="1">On</option><option value="0">Off</option>
+                </select>
+              </div>
+              <div class="config-item">
+                <label>Danger Zones Enabled</label>
+                <select class="select-input cfg" data-file="engine" data-key="Sandworm.SandwormDangerZonesEnabled">
+                  <option value="true">On</option><option value="false">Off</option>
+                </select>
+              </div>
+              <div class="config-item">
+                <label>Sandworm Pushes Vehicles</label>
+                <select class="select-input cfg" data-file="engine" data-key="Vehicle.SandwormCollisionInteraction">
+                  <option value="false">Off</option><option value="true">On</option>
+                </select>
+              </div>
+              <div class="config-item">
+                <label>Invulnerability on Vehicle Exit</label>
+                <div class="input-with-unit">
+                  <input type="number" class="select-input cfg" data-file="engine" data-key="Vehicle.SandwormInvulnerabilitySecondsOnExit" step="1" min="0">
+                  <span class="unit">sec</span>
+                </div>
+              </div>
+              <div class="config-item">
+                <label>Invulnerability on Server Restart</label>
+                <div class="input-with-unit">
+                  <input type="number" class="select-input cfg" data-file="engine" data-key="Vehicle.SandwormInvulnerabilitySecondsOnServerRestart" step="1" min="0">
+                  <span class="unit">sec</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Economy & Resources -->
+        <div class="card">
+          <div class="card-header"><h2>Economy &amp; Resources</h2></div>
+          <div class="card-body">
+            <div class="config-grid">
+              <div class="config-item">
+                <label>Global Mining Multiplier</label>
+                <input type="number" class="select-input cfg" data-file="engine" data-key="Dune.GlobalMiningOutputMultiplier" step="0.1" min="0">
+              </div>
+              <div class="config-item">
+                <label>Vehicle Mining Multiplier</label>
+                <input type="number" class="select-input cfg" data-file="engine" data-key="Dune.GlobalVehicleMiningOutputMultiplier" step="0.1" min="0">
+              </div>
+              <div class="config-item">
+                <label>PvP Resource Multiplier</label>
+                <input type="number" class="select-input cfg" data-file="engine" data-key="SecurityZones.PvpResourceMultiplier" step="0.1" min="0">
+              </div>
+              <div class="config-item">
+                <label>Item Decay Rate <span class="field-hint-inline">0=off, 1-10</span></label>
+                <input type="number" class="select-input cfg" data-file="game" data-key="UpdateRateInSeconds" step="0.1" min="0" max="10">
+              </div>
+              <div class="config-item">
+                <label>Vehicle Durability Damage <span class="field-hint-inline">0=off, 1-10</span></label>
+                <input type="number" class="select-input cfg" data-file="engine" data-key="dw.VehicleDurabilityDamageMultiplier" step="0.1" min="0" max="10">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Building -->
+        <div class="card">
+          <div class="card-header"><h2>Building</h2></div>
+          <div class="card-body">
+            <div class="config-grid">
+              <div class="config-item">
+                <label>Max Landclaim Segments</label>
+                <input type="number" class="select-input cfg" data-file="game" data-key="m_MaxNumLandclaimSegments" step="1" min="1">
+              </div>
+              <div class="config-item">
+                <label>Blueprint Max Extensions</label>
+                <input type="number" class="select-input cfg" data-file="game" data-key="m_BuildingBlueprintMaxExtensions" step="1" min="0">
+              </div>
+              <div class="config-item">
+                <label>Base Backup Max Extensions</label>
+                <input type="number" class="select-input cfg" data-file="game" data-key="m_BaseBackupMaxExtensions" step="1" min="0">
+              </div>
+              <div class="config-item">
+                <label>Building Restriction Limits</label>
+                <select class="select-input cfg" data-file="game" data-key="m_bBuildingRestrictionLimitsEnabled">
+                  <option value="True">On</option><option value="False">Off</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Server -->
+        <div class="card">
+          <div class="card-header"><h2>Server</h2></div>
+          <div class="card-body">
+            <div class="config-grid">
+              <div class="config-item wide">
+                <label>Server Display Name <span class="field-hint-inline">shown to players</span></label>
+                <input type="text" class="select-input cfg" data-file="engine" data-key="Bgd.ServerDisplayName" placeholder="Not set (uses world name)">
+              </div>
+              <div class="config-item wide">
+                <label>Server Login Password <span class="field-hint-inline">blank = no password</span></label>
+                <input type="text" class="select-input cfg" data-file="engine" data-key="Bgd.ServerLoginPassword" placeholder="No password">
+              </div>
+              <div class="config-item">
+                <label>Game Port (starting)</label>
+                <input type="number" class="select-input cfg" data-file="engine" data-key="Port" step="1" min="1024" max="65535">
+              </div>
+              <div class="config-item">
+                <label>IGW Port (starting)</label>
+                <input type="number" class="select-input cfg" data-file="engine" data-key="IGWPort" step="1" min="1024" max="65535">
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============ Settings ============ -->
+    <section class="panel" id="tab-settings">
+      <div class="card-row">
+        <div class="card">
+          <div class="card-header"><h2>Change VM Password</h2></div>
+          <div class="card-body">
+            <p class="card-desc">Change the <code>dune</code> user password on the VM.</p>
+            <form id="form-password" class="settings-form">
+              <div class="field">
+                <label for="pw-new">New Password</label>
+                <input type="password" id="pw-new" required autocomplete="new-password">
+              </div>
+              <div class="field">
+                <label for="pw-confirm">Confirm Password</label>
+                <input type="password" id="pw-confirm" required autocomplete="new-password">
+              </div>
+              <button type="submit" class="btn btn-green">Change Password</button>
+            </form>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><h2>SSH Key</h2></div>
+          <div class="card-body">
+            <p class="card-desc">Generate a new SSH key pair and install it on the VM, replacing the current one.</p>
+            <div class="btn-group">
+              <button class="btn btn-yellow btn-lg" id="btn-rotate-key">Rotate SSH Key</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Console -->
+  <div class="console-wrapper" id="console-wrapper">
+    <button class="console-toggle" id="console-toggle">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+      Console Output
+      <span class="console-badge" id="console-badge" hidden>new</span>
+    </button>
+    <div class="console-body" id="console-body">
+      <pre id="console-output"></pre>
+    </div>
+  </div>
+
+  <!-- Loading overlay -->
+  <div class="overlay" id="overlay" hidden>
+    <div class="spinner"></div>
+    <p class="overlay-text" id="overlay-text">Working...</p>
+  </div>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>

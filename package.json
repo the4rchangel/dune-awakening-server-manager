@@ -1,0 +1,15 @@
+{
+  "name": "dune-server-manager",
+  "version": "1.0.0",
+  "description": "Web-based management UI for Dune: Awakening Self-Hosted Servers",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": ["dune", "awakening", "server", "manager", "battlegroup"],
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.21.0",
+    "ws": "^8.18.0"
+  }
+}
