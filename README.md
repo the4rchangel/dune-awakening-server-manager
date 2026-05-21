@@ -26,6 +26,7 @@ A local web-based UI for managing **Dune: Awakening Self-Hosted Servers**. Repla
   - [Characters](#characters)
   - [Game Config](#game-config)
   - [Settings](#settings)
+  - [Experimental](#experimental)
 - [How It Works](#how-it-works)
 - [Project Structure](#project-structure)
 - [Configuration](#configuration)
@@ -197,6 +198,25 @@ Available settings:
 Change the VM password and rotate SSH keys.
 
 ![Settings](docs/screenshots/settings.png)
+
+### Experimental
+
+> [!WARNING]
+> Features on this tab are untested and may break your battlegroup. Always take a database backup before making changes.
+
+**Multi-Sietch** allows you to add additional Hagga Basin instances (sietches) to your battlegroup. All sietches share the same Overmap, Deep Desert, Arrakeen, Harkonnen Village, and instanced content (dungeons, story missions). Players from different sietches will see each other in shared areas but not in their respective Hagga Basin maps.
+
+| Sietches | Estimated RAM |
+|----------|--------------|
+| 1 (default) | ~18 GB |
+| 2 | ~30 GB |
+| 3 | ~42 GB |
+
+Each sietch requires approximately **12 GB RAM**. The Overmap and infrastructure (database, RabbitMQ, Kubernetes) use an additional ~6 GB on top of that.
+
+**Port forwarding:** Each additional sietch adds a game server pod using host networking. When in doubt, forward **UDP 7777–7900** to your VM to cover any additional game server ports.
+
+After adding or removing a sietch, **restart the battlegroup** for changes to take effect.
 
 ## How It Works
 
