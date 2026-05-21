@@ -81,9 +81,9 @@ let visibilityManuallySet = false;
 async function syncSettingsConfIp(ip) {
   if (!ip || ip === lastKnownVmIp || visibilityManuallySet) return;
   try {
-    const conf = await ssh.run(ip, 'cat /home/dune/.dune/settings.conf 2>/dev/null', null, { timeout: 10000 });
-    const lines = conf.split('\n');
-    const currentIpInConf = (lines[3] || '').trim();
+    const currentIpInConf = (await ssh.run(ip,
+      "sed -n '4p' /home/dune/.dune/settings.conf 2>/dev/null",
+      null, { timeout: 10000 })).trim();
     if (!currentIpInConf) {
       // settings.conf has no IP yet — seed it with the VM's private IP
       log(`Seeding settings.conf with VM IP ${ip}...\n`);
@@ -636,12 +636,18 @@ app.post('/api/setup/detect-ip', async (req, res) => {
   const { ip } = req.body;
   if (!ip) return res.status(400).json({ error: 'ip required' });
 
-  try {
-    const publicIp = await ssh.run(ip, "wget -qO- --timeout=5 'https://api.ipify.org' 2>/dev/null");
-    res.json({ privateIp: ip, publicIp: publicIp.trim() || null });
-  } catch {
-    res.json({ privateIp: ip, publicIp: null });
+  let publicIp = null;
+  for (const method of [
+    () => ssh.run(ip, "wget -qO- --timeout=5 'https://api.ipify.org' 2>/dev/null"),
+    () => ssh.run(ip, 'curl -s --max-time 5 https://api.ipify.org 2>/dev/null'),
+    () => ps.run("(Invoke-WebRequest -Uri 'https://api.ipify.org' -UseBasicParsing -TimeoutSec 5).Content"),
+  ]) {
+    try {
+      const out = await method();
+      if (out && /^\d+\.\d+\.\d+\.\d+$/.test(out.trim())) { publicIp = out.trim(); break; }
+    } catch { /* try next */ }
   }
+  res.json({ privateIp: ip, publicIp });
 });
 
 // Step 6 — Configure networking (DHCP or static) + set player IP + write token
@@ -1365,22 +1371,29 @@ app.get('/api/server-visibility', async (_req, res) => {
   if (!ip) return res.status(400).json({ error: 'VM not running' });
 
   try {
-    const conf = await ssh.run(ip, 'cat /home/dune/.dune/settings.conf 2>/dev/null', null, { timeout: 10000 });
-    const lines = conf.split('\n');
-    const advertisedIp = (lines[3] || '').trim();
+    const advertisedIp = (await ssh.run(ip,
+      "sed -n '4p' /home/dune/.dune/settings.conf 2>/dev/null",
+      null, { timeout: 10000 })).trim();
 
-    // Detect public IP from the VM
+    // Detect public IP — try VM first, fall back to Windows host
     let publicIp = null;
-    try {
-      const out = await ssh.run(ip, 'curl -s --max-time 5 https://api.ipify.org 2>/dev/null', null, { timeout: 10000 });
-      if (out && /^\d+\.\d+\.\d+\.\d+$/.test(out.trim())) publicIp = out.trim();
-    } catch { /* non-critical */ }
+    for (const method of [
+      () => ssh.run(ip, 'curl -s --max-time 5 https://api.ipify.org 2>/dev/null', null, { timeout: 10000 }),
+      () => ssh.run(ip, "wget -qO- --timeout=5 'https://api.ipify.org' 2>/dev/null", null, { timeout: 10000 }),
+      () => ps.run("(Invoke-WebRequest -Uri 'https://api.ipify.org' -UseBasicParsing -TimeoutSec 5).Content"),
+    ]) {
+      try {
+        const out = await method();
+        if (out && /^\d+\.\d+\.\d+\.\d+$/.test(out.trim())) { publicIp = out.trim(); break; }
+      } catch { /* try next */ }
+    }
 
     res.json({ advertisedIp, vmIp: ip, publicIp });
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
 });
+
 
 app.post('/api/server-visibility', async (req, res) => {
   const ip = await getVmIp();
