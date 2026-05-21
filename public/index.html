@@ -40,6 +40,7 @@
     <button class="tab" data-tab="characters">Characters</button>
     <button class="tab" data-tab="gameconfig">Game Config</button>
     <button class="tab" data-tab="settings">Settings</button>
+    <button class="tab" data-tab="experimental">Experimental</button>
   </nav>
 
   <main class="content">
@@ -810,6 +811,51 @@
             <p class="card-desc">Generate a new SSH key pair and install it on the VM, replacing the current one.</p>
             <div class="btn-group">
               <button class="btn btn-yellow btn-lg" id="btn-rotate-key">Rotate SSH Key</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Experimental ============ -->
+    <section class="panel" id="tab-experimental">
+      <div class="card-row">
+        <div class="card" style="border-left:3px solid var(--warn)">
+          <div class="card-header"><h2>Experimental Features</h2></div>
+          <div class="card-body">
+            <p class="card-desc" style="color:var(--warn)"><strong>Warning:</strong> Features on this tab are untested and may break your battlegroup. Always take a database backup before making changes. Use at your own risk.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-row">
+        <div class="card">
+          <div class="card-header"><h2>Multi-Sietch</h2></div>
+          <div class="card-body">
+            <p class="card-desc">Add additional sietches (Hagga Basin instances) to your battlegroup. All sietches share the same Overmap, Deep Desert, Arrakeen, Harkonnen Village, and instanced content (dungeons, story missions). Players from different sietches will see each other in shared areas but not in their respective Hagga Basin maps.</p>
+
+            <div class="info-box" style="background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:1rem;margin:1rem 0;font-size:.85rem;line-height:1.6">
+              <strong>RAM Requirements</strong>
+              <ul style="margin:.5rem 0 0 1.2rem;padding:0">
+                <li>Each sietch requires approximately <strong>12 GB RAM</strong></li>
+                <li>Overmap + infrastructure (DB, RabbitMQ, K8s) uses ~6 GB</li>
+                <li>1 sietch: ~18 GB minimum (current default)</li>
+                <li>2 sietches: ~30 GB minimum</li>
+                <li>3 sietches: ~42 GB minimum</li>
+              </ul>
+              <br>
+              <strong>Port Forwarding</strong>
+              <p style="margin:.25rem 0 0 0">Each additional sietch adds one game server pod using <strong>host networking</strong>. Game ports auto-assign starting at UDP 7777. For N sietches you need ports <strong>7777–7778+N</strong> (UDP) forwarded, plus the corresponding beacon ports. When in doubt, forward the full range <strong>7777–7900 UDP</strong>.</p>
+            </div>
+
+            <div id="sietch-status" style="margin:1rem 0;color:var(--text-dim)">Loading sietch info...</div>
+
+            <div id="sietch-controls" style="display:none">
+              <div class="btn-group">
+                <button class="btn btn-green btn-lg" id="btn-add-sietch">Add Sietch</button>
+                <button class="btn btn-red btn-lg" id="btn-remove-sietch">Remove Sietch</button>
+              </div>
+              <p class="card-desc" style="margin-top:.75rem">After adding or removing a sietch, <strong>restart the battlegroup</strong> for changes to take effect.</p>
             </div>
           </div>
         </div>

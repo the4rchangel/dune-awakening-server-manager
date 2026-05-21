@@ -1432,4 +1432,77 @@
       loadCosmetics();
     }
   };
+
+  // -----------------------------------------------------------------------
+  // Experimental: Multi-Sietch
+  // -----------------------------------------------------------------------
+  let sietchLoaded = false;
+
+  async function loadSietches() {
+    const statusEl = $('#sietch-status');
+    const controlsEl = $('#sietch-controls');
+
+    try {
+      const data = await api('GET', 'sietches');
+      if (data.error) throw new Error(data.error);
+
+      const count = data.sietchCount;
+      const ramEst = (count * 12) + 6;
+
+      statusEl.innerHTML =
+        `<div style="display:flex;gap:2rem;align-items:center;flex-wrap:wrap">` +
+        `<div><strong style="font-size:1.8rem;color:var(--accent)">${count}</strong> <span style="color:var(--text-dim)">sietch${count !== 1 ? 'es' : ''} configured</span></div>` +
+        `<div style="font-size:.85rem;color:var(--text-dim)">Partitions: ${data.sietches.map(s => '#' + s.partitions[0]).join(', ')} &middot; Est. RAM: ~${ramEst} GB</div>` +
+        `</div>`;
+
+      $('#btn-remove-sietch').disabled = count <= 1;
+      controlsEl.style.display = '';
+      sietchLoaded = true;
+    } catch (e) {
+      statusEl.innerHTML = `<span style="color:var(--danger)">Failed to load sietch info: ${e.message}</span>`;
+      controlsEl.style.display = 'none';
+    }
+  }
+
+  $('#btn-add-sietch').addEventListener('click', async () => {
+    const msg = 'Add a new sietch to the battlegroup?\n\n' +
+      'This adds another Hagga Basin instance (~12 GB RAM).\n' +
+      'You must restart the battlegroup after for it to take effect.\n\n' +
+      'This feature is EXPERIMENTAL and has not been fully tested.';
+    if (!confirm(msg)) return;
+
+    showOverlay('Adding sietch...');
+    try {
+      const result = await api('POST', 'sietches/add');
+      if (result.error) throw new Error(result.error);
+      appendConsole(`Sietch ${result.sietchNumber} added (partition ${result.partitionId}). Restart the battlegroup to apply.\n`);
+      await loadSietches();
+    } catch (e) {
+      alert('Failed to add sietch: ' + e.message);
+    }
+    hideOverlay();
+  });
+
+  $('#btn-remove-sietch').addEventListener('click', async () => {
+    const msg = 'Remove the last added sietch?\n\n' +
+      'WARNING: Player bases and progress in this sietch may become inaccessible.\n' +
+      'Take a database backup first!\n\n' +
+      'You must restart the battlegroup after for it to take effect.';
+    if (!confirm(msg)) return;
+
+    showOverlay('Removing sietch...');
+    try {
+      const result = await api('POST', 'sietches/remove');
+      if (result.error) throw new Error(result.error);
+      appendConsole(`Sietch removed (partition ${result.removedPartition}). ${result.remainingSietches} sietch${result.remainingSietches !== 1 ? 'es' : ''} remaining. Restart the battlegroup to apply.\n`);
+      await loadSietches();
+    } catch (e) {
+      alert('Failed to remove sietch: ' + e.message);
+    }
+    hideOverlay();
+  });
+
+  document.querySelector('.tab[data-tab="experimental"]').addEventListener('click', () => {
+    if (!sietchLoaded) loadSietches();
+  });
 })();

@@ -1424,6 +1424,154 @@ app.post('/api/server-visibility', async (req, res) => {
   }
 });
 
+// ---------------------------------------------------------------------------
+// Experimental: Multi-Sietch Management
+// ---------------------------------------------------------------------------
+
+async function getBattlegroupJson(ip) {
+  const ns = await ssh.run(ip,
+    "sudo kubectl get battlegroups -A --no-headers -o custom-columns=':metadata.namespace' 2>/dev/null | head -1",
+    null, { timeout: 15000 });
+  const name = await ssh.run(ip,
+    "sudo kubectl get battlegroups -A --no-headers -o custom-columns=':metadata.name' 2>/dev/null | head -1",
+    null, { timeout: 15000 });
+  if (!ns || !name) throw new Error('Battlegroup not found');
+  const raw = await ssh.run(ip,
+    `sudo kubectl get battlegroups -n ${ns.trim()} ${name.trim()} -o json 2>/dev/null`,
+    null, { timeout: 30000 });
+  return { ns: ns.trim(), name: name.trim(), bg: JSON.parse(raw) };
+}
+
+app.get('/api/sietches', async (_req, res) => {
+  const ip = await getVmIp();
+  if (!ip) return res.status(400).json({ error: 'VM not running' });
+
+  try {
+    const { bg } = await getBattlegroupJson(ip);
+    const sets = bg.spec.serverGroup.template.spec.sets;
+    const worldPartitions = bg.spec.database.template.spec.deployment.spec.worldPartitions;
+
+    const survivalSets = sets
+      .map((s, i) => ({ index: i, map: s.map, partitions: s.partitions, replicas: s.replicas, memory: s.resources?.limits?.memory || '?', dedicatedScaling: s.dedicatedScaling }))
+      .filter(s => s.map === 'Survival_1' && !s.dedicatedScaling);
+
+    const maxPartitionId = Math.max(...worldPartitions.flatMap(w => w.partitions.map(p => p.id)));
+
+    res.json({
+      sietches: survivalSets,
+      sietchCount: survivalSets.length,
+      maxPartitionId,
+      totalSets: sets.length,
+      totalWorldPartitions: worldPartitions.length,
+    });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.post('/api/sietches/add', async (_req, res) => {
+  const ip = await getVmIp();
+  if (!ip) return res.status(400).json({ error: 'VM not running' });
+
+  try {
+    const { ns, name, bg } = await getBattlegroupJson(ip);
+    const sets = bg.spec.serverGroup.template.spec.sets;
+    const worldPartitions = bg.spec.database.template.spec.deployment.spec.worldPartitions;
+    const grid = (bg.metadata.annotations.grid || '').split(',');
+
+    const survivalSets = sets.filter(s => s.map === 'Survival_1' && !s.dedicatedScaling);
+    const currentCount = survivalSets.length;
+    const maxPartitionId = Math.max(...worldPartitions.flatMap(w => w.partitions.map(p => p.id)));
+    const newPartitionId = maxPartitionId + 1;
+    const newSietchNum = currentCount + 1;
+
+    log(`Adding sietch ${newSietchNum} (partition ${newPartitionId})...\n`);
+
+    // Clone the first Survival_1 set as template
+    const template = JSON.parse(JSON.stringify(sets.find(s => s.map === 'Survival_1' && !s.dedicatedScaling)));
+    template.partitions = [newPartitionId];
+
+    // Build patches
+    const patches = [
+      { op: 'add', path: '/spec/serverGroup/template/spec/sets/-', value: template },
+      { op: 'add', path: '/spec/database/template/spec/deployment/spec/worldPartitions/-', value: {
+        map: 'Survival_1',
+        partitions: [{ dimension: 0, disable: false, id: newPartitionId, maxX: 1, maxY: 1, minX: 0, minY: 0 }]
+      }},
+      { op: 'replace', path: '/metadata/annotations/grid', value: [...grid, '1x1'].join(',') },
+    ];
+
+    const patchJson = JSON.stringify(patches);
+    const b64 = Buffer.from(patchJson).toString('base64');
+
+    await ssh.run(ip,
+      `echo '${b64}' | base64 -d | sudo kubectl patch battlegroup ${name} -n ${ns} --type=json -p "$(echo '${b64}' | base64 -d)" 2>&1`,
+      log, { timeout: 30000 });
+
+    log(`\nSietch ${newSietchNum} added (partition ${newPartitionId}). Restart the battlegroup to apply.\n`);
+    res.json({ success: true, sietchNumber: newSietchNum, partitionId: newPartitionId });
+  } catch (e) {
+    log(`Error adding sietch: ${e.message}\n`);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.post('/api/sietches/remove', async (_req, res) => {
+  const ip = await getVmIp();
+  if (!ip) return res.status(400).json({ error: 'VM not running' });
+
+  try {
+    const { ns, name, bg } = await getBattlegroupJson(ip);
+    const sets = bg.spec.serverGroup.template.spec.sets;
+    const worldPartitions = bg.spec.database.template.spec.deployment.spec.worldPartitions;
+    const grid = (bg.metadata.annotations.grid || '').split(',');
+
+    // Find all Survival_1 sets (non-dedicatedScaling)
+    const survivalIndices = sets
+      .map((s, i) => ({ ...s, _idx: i }))
+      .filter(s => s.map === 'Survival_1' && !s.dedicatedScaling);
+
+    if (survivalIndices.length <= 1) {
+      return res.status(400).json({ error: 'Cannot remove the last sietch' });
+    }
+
+    const lastSurvival = survivalIndices[survivalIndices.length - 1];
+    const lastPartitionId = lastSurvival.partitions[0];
+
+    // Find matching worldPartition entry
+    const wpIdx = worldPartitions.findIndex(w =>
+      w.map === 'Survival_1' && w.partitions.some(p => p.id === lastPartitionId));
+
+    log(`Removing sietch ${survivalIndices.length} (partition ${lastPartitionId})...\n`);
+
+    // Build patches (remove in reverse index order to avoid shifting)
+    const patches = [];
+    patches.push({ op: 'remove', path: `/spec/serverGroup/template/spec/sets/${lastSurvival._idx}` });
+    if (wpIdx >= 0) {
+      patches.push({ op: 'remove', path: `/spec/database/template/spec/deployment/spec/worldPartitions/${wpIdx}` });
+    }
+    if (grid.length > 1) {
+      patches.push({ op: 'replace', path: '/metadata/annotations/grid', value: grid.slice(0, -1).join(',') });
+    }
+
+    // Sort patches so higher indices are removed first
+    patches.sort((a, b) => (b.path > a.path ? 1 : -1));
+
+    const patchJson = JSON.stringify(patches);
+    const b64 = Buffer.from(patchJson).toString('base64');
+
+    await ssh.run(ip,
+      `echo '${b64}' | base64 -d | sudo kubectl patch battlegroup ${name} -n ${ns} --type=json -p "$(echo '${b64}' | base64 -d)" 2>&1`,
+      log, { timeout: 30000 });
+
+    log(`\nSietch removed. Restart the battlegroup to apply.\n`);
+    res.json({ success: true, removedPartition: lastPartitionId, remainingSietches: survivalIndices.length - 1 });
+  } catch (e) {
+    log(`Error removing sietch: ${e.message}\n`);
+    res.status(500).json({ error: e.message });
+  }
+});
+
 // --- Fallback ---
 app.get('*', (_req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
