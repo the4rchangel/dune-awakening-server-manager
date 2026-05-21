@@ -73,6 +73,28 @@ async function getVmIp() {
   return st && st.ip ? st.ip : null;
 }
 
+// Keep settings.conf in sync when the VM IP changes
+let lastKnownVmIp = null;
+
+async function syncSettingsConfIp(ip) {
+  if (!ip || ip === lastKnownVmIp) return;
+  try {
+    const conf = await ssh.run(ip, 'cat /home/dune/.dune/settings.conf 2>/dev/null', null, { timeout: 10000 });
+    const lines = conf.split('\n');
+    // settings.conf format: line 1-3 can be token/blank, line 4 is the IP
+    const currentIpInConf = (lines[3] || '').trim();
+    if (currentIpInConf && currentIpInConf !== ip) {
+      log(`VM IP changed (${currentIpInConf} → ${ip}), updating settings.conf...\n`);
+      lines[3] = ip;
+      const updated = lines.join('\n');
+      const b64 = Buffer.from(updated).toString('base64');
+      await ssh.run(ip, `echo '${b64}' | base64 -d > /home/dune/.dune/settings.conf`, null, { timeout: 10000 });
+      log('settings.conf updated with new IP.\n');
+    }
+    lastKnownVmIp = ip;
+  } catch { /* non-critical */ }
+}
+
 async function getDirectorPort(ip) {
   try {
     const raw = await ssh.run(ip,
@@ -89,30 +111,47 @@ async function getDirectorPort(ip) {
 // REST API
 // ---------------------------------------------------------------------------
 
-// --- Status ---
+// --- Status (with in-flight guard to prevent stacking from fast polls) ---
+let statusInFlight = false;
+let lastStatusResult = null;
+
 app.get('/api/status', async (_req, res) => {
-  const vm = await getVmStatus();
-  let bg = null;
-  let directorPort = null;
+  if (statusInFlight && lastStatusResult) return res.json(lastStatusResult);
 
-  if (vm.exists && vm.state === 'Running' && vm.ip) {
-    try {
-      const raw = await ssh.run(vm.ip, '/home/dune/.dune/bin/battlegroup status 2>&1', null, { timeout: 30000, tty: true });
-      bg = { running: true, output: raw };
-    } catch (e) {
-      bg = { running: false, output: e.stdout || e.message };
+  statusInFlight = true;
+  try {
+    const vm = await getVmStatus();
+    let bg = null;
+    let directorPort = null;
+
+    if (vm.exists && vm.state === 'Running' && vm.ip) {
+      try {
+        const raw = await ssh.run(vm.ip, '/home/dune/.dune/bin/battlegroup status 2>&1', null, { timeout: 10000, tty: true });
+        const gameServersSection = raw.split(/Game Servers/i)[1] || '';
+        const hasRunningServers = /\bRunning\b/i.test(gameServersSection);
+        bg = { running: hasRunningServers, output: raw };
+      } catch (e) {
+        bg = { running: false, output: e.stdout || e.message };
+      }
+      directorPort = await getDirectorPort(vm.ip);
+      syncSettingsConfIp(vm.ip);
     }
-    directorPort = await getDirectorPort(vm.ip);
-  }
 
-  res.json({
-    vm,
-    battlegroup: bg,
-    links: vm.ip ? {
-      fileBrowser: `http://${vm.ip}:18888/`,
-      director: directorPort ? `http://${vm.ip}:${directorPort}/` : null,
-    } : null,
-  });
+    lastStatusResult = {
+      vm,
+      battlegroup: bg,
+      links: vm.ip ? {
+        fileBrowser: `http://${vm.ip}:18888/`,
+        director: directorPort ? `http://${vm.ip}:${directorPort}/` : null,
+      } : null,
+    };
+    res.json(lastStatusResult);
+  } catch (e) {
+    if (lastStatusResult) return res.json(lastStatusResult);
+    res.status(500).json({ error: e.message });
+  } finally {
+    statusInFlight = false;
+  }
 });
 
 // --- VM controls ---
@@ -137,6 +176,7 @@ app.post('/api/vm/start', async (_req, res) => {
 
     if (ip) {
       log(`VM ready at ${ip}\n`);
+      await syncSettingsConfIp(ip);
     } else {
       log('VM started but could not detect IP within 2 minutes.\n');
     }
@@ -815,11 +855,461 @@ app.post('/api/config', async (req, res) => {
       await ssh.run(vmIp, `echo '${b64}' | base64 -d > ${CONFIG_PATHS.engine}`, null, { timeout: 15000 });
     }
 
-    log('Config saved. Restart the battlegroup to apply changes.\n');
+    // Deploy INI files to the Kubernetes pods so game servers pick them up
+    log('Deploying settings to battlegroup pods…\n');
+    const applyOut = await ssh.run(vmIp,
+      '/home/dune/.dune/bin/battlegroup apply-default-usersettings 2>&1',
+      null, { timeout: 30000 });
+    log(applyOut + '\n');
+
+    log('Config saved and deployed. Stop & start the battlegroup to apply changes.\n');
     res.json({ success: true });
   } catch (e) {
     log(`Config save error: ${e.message}\n`);
     res.status(500).json({ success: false, error: e.message });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// Character Editor
+// ---------------------------------------------------------------------------
+
+let dbPodCache = null;
+let dbPodCacheTime = 0;
+
+async function getDbPod(vmIp) {
+  if (dbPodCache && Date.now() - dbPodCacheTime < 120000) return dbPodCache;
+  const raw = await ssh.run(vmIp,
+    "sudo kubectl get pods --all-namespaces --no-headers 2>/dev/null | grep 'db-dbdepl-sts.*Running'",
+    null, { timeout: 15000 }
+  );
+  const line = raw.trim().split('\n')[0];
+  if (!line) throw new Error('Database pod not found — is the VM fully booted?');
+  const parts = line.trim().split(/\s+/);
+  dbPodCache = { ns: parts[0], name: parts[1] };
+  dbPodCacheTime = Date.now();
+  return dbPodCache;
+}
+
+async function runPsql(vmIp, sql) {
+  const { ns, name } = await getDbPod(vmIp);
+  const b64 = Buffer.from(sql).toString('base64');
+  return ssh.run(vmIp,
+    `echo ${b64} | base64 -d | sudo kubectl exec -i -n ${ns} ${name} -- psql -U dune -d dune -p 15432 -t -A 2>&1`,
+    null, { timeout: 30000 }
+  );
+}
+
+app.get('/api/characters', async (_req, res) => {
+  const ip = await getVmIp();
+  if (!ip) return res.status(400).json({ error: 'VM not running' });
+
+  try {
+    const raw = await runPsql(ip,
+      "SELECT json_agg(row_to_json(t)) FROM (" +
+      "SELECT eps.player_pawn_id as id, decrypt_user_data(eps.encrypted_character_name) as name " +
+      "FROM encrypted_player_state eps " +
+      "WHERE eps.player_pawn_id IS NOT NULL " +
+      "ORDER BY eps.player_pawn_id) t"
+    );
+    res.json({ characters: JSON.parse(raw.trim()) || [] });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.get('/api/characters/:id', async (req, res) => {
+  const ip = await getVmIp();
+  if (!ip) return res.status(400).json({ error: 'VM not running' });
+  const id = parseInt(req.params.id);
+  if (isNaN(id)) return res.status(400).json({ error: 'Invalid ID' });
+
+  try {
+    const propsRaw = await runPsql(ip, `SELECT properties::text FROM actors WHERE id = ${id}`);
+    const gasRaw = await runPsql(ip, `SELECT gas_attributes::text FROM actors WHERE id = ${id}`);
+
+    const invRaw = await runPsql(ip,
+      `SELECT COALESCE(json_agg(row_to_json(t)), '[]') FROM (` +
+      `SELECT id, inventory_type, max_item_count FROM inventories WHERE actor_id = ${id} AND inventory_type IS NOT NULL ORDER BY id) t`
+    );
+
+    const itemsRaw = await runPsql(ip,
+      `SELECT COALESCE(json_agg(row_to_json(t)), '[]') FROM (` +
+      `SELECT i.id, i.inventory_id, i.template_id, i.stack_size, i.position_index, inv.inventory_type ` +
+      `FROM items i JOIN inventories inv ON i.inventory_id = inv.id ` +
+      `WHERE inv.actor_id = ${id} ORDER BY inv.inventory_type, i.position_index) t`
+    );
+
+    res.json({
+      actorId: id,
+      properties: JSON.parse(propsRaw.trim() || '{}'),
+      gasAttributes: JSON.parse(gasRaw.trim() || '{}'),
+      inventories: JSON.parse(invRaw.trim()) || [],
+      items: JSON.parse(itemsRaw.trim()) || [],
+    });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.post('/api/characters/:id/stats', async (req, res) => {
+  const ip = await getVmIp();
+  if (!ip) return res.status(400).json({ error: 'VM not running' });
+  const id = parseInt(req.params.id);
+  const { updates } = req.body;
+  if (!updates || !updates.length) return res.status(400).json({ error: 'No updates' });
+
+  try {
+    const propUpdates = updates.filter(u => u.field === 'properties');
+    const gasUpdates = updates.filter(u => u.field === 'gas_attributes');
+
+    if (propUpdates.length) {
+      let expr = 'properties';
+      for (const u of propUpdates) {
+        const pathStr = '{' + u.path.join(',') + '}';
+        expr = `jsonb_set(${expr}, '${pathStr}', '${JSON.stringify(u.value)}'::jsonb)`;
+      }
+      await runPsql(ip, `UPDATE actors SET properties = ${expr} WHERE id = ${id}`);
+    }
+
+    if (gasUpdates.length) {
+      let expr = 'gas_attributes';
+      for (const u of gasUpdates) {
+        const pathStr = '{' + u.path.join(',') + '}';
+        expr = `jsonb_set(${expr}, '${pathStr}', '${JSON.stringify(u.value)}'::jsonb)`;
+      }
+      await runPsql(ip, `UPDATE actors SET gas_attributes = ${expr} WHERE id = ${id}`);
+    }
+
+    log(`Character ${id} stats updated.\n`);
+    res.json({ success: true });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.post('/api/characters/:id/inventory/add', async (req, res) => {
+  const ip = await getVmIp();
+  if (!ip) return res.status(400).json({ error: 'VM not running' });
+  const actorId = parseInt(req.params.id);
+  const { templateId, stackSize, inventoryId, isEquipment } = req.body;
+
+  if (!templateId || !stackSize || !inventoryId) {
+    return res.status(400).json({ error: 'templateId, stackSize, and inventoryId required' });
+  }
+
+  const safeId = templateId.replace(/'/g, "''");
+  const stats = isEquipment
+    ? '{"FCustomizationStats": [[], {}], "FItemStackAndDurabilityStats": [[], {}]}'
+    : '{"FItemStackAndDurabilityStats": [[], {"DecayedMaxDurability": 0.0}]}';
+
+  try {
+    const posRaw = await runPsql(ip,
+      `SELECT COALESCE(MAX(position_index) + 1, 0) FROM items WHERE inventory_id = ${inventoryId}`
+    );
+    const nextPos = parseInt(posRaw.trim()) || 0;
+
+    await runPsql(ip,
+      `INSERT INTO items (inventory_id, template_id, stack_size, position_index, stats) ` +
+      `VALUES (${inventoryId}, '${safeId}', ${parseInt(stackSize)}, ${nextPos}, '${stats}'::jsonb)`
+    );
+
+    log(`Added ${stackSize}x ${templateId} to inventory.\n`);
+    res.json({ success: true });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// Unlock all tech tree recipes
+app.post('/api/characters/:id/tech/unlock-all', async (req, res) => {
+  const ip = await getVmIp();
+  if (!ip) return res.status(400).json({ error: 'VM not running' });
+  const id = parseInt(req.params.id);
+
+  try {
+    await runPsql(ip,
+      `UPDATE actors SET properties = jsonb_set(` +
+      `properties, '{TechKnowledgePlayerComponent,m_TechKnowledge,m_TechKnowledgeData}', ` +
+      `(SELECT jsonb_agg(CASE WHEN elem->>'UnlockedState' = 'NotPurchased' ` +
+      `THEN jsonb_set(elem, '{UnlockedState}', '"Purchased"') ELSE elem END) ` +
+      `FROM jsonb_array_elements(properties->'TechKnowledgePlayerComponent'->'m_TechKnowledge'->'m_TechKnowledgeData') as elem)` +
+      `) WHERE id = ${id}`
+    );
+    log(`All tech tree recipes unlocked for character ${id}.\n`);
+    res.json({ success: true });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// Lock all tech tree recipes (reset)
+app.post('/api/characters/:id/tech/lock-all', async (req, res) => {
+  const ip = await getVmIp();
+  if (!ip) return res.status(400).json({ error: 'VM not running' });
+  const id = parseInt(req.params.id);
+
+  try {
+    await runPsql(ip,
+      `UPDATE actors SET properties = jsonb_set(` +
+      `properties, '{TechKnowledgePlayerComponent,m_TechKnowledge,m_TechKnowledgeData}', ` +
+      `(SELECT jsonb_agg(jsonb_set(elem, '{UnlockedState}', '"NotPurchased"')) ` +
+      `FROM jsonb_array_elements(properties->'TechKnowledgePlayerComponent'->'m_TechKnowledge'->'m_TechKnowledgeData') as elem)` +
+      `) WHERE id = ${id}`
+    );
+    log(`All tech tree recipes locked for character ${id}.\n`);
+    res.json({ success: true });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// Get cosmetics list
+app.get('/api/characters/:id/cosmetics', async (req, res) => {
+  const ip = await getVmIp();
+  if (!ip) return res.status(400).json({ error: 'VM not running' });
+  const id = parseInt(req.params.id);
+
+  try {
+    const raw = await runPsql(ip,
+      `SELECT COALESCE(json_agg(elem->>'m_CustomizationId' ORDER BY elem->>'m_CustomizationId'), '[]') ` +
+      `FROM (SELECT jsonb_array_elements(properties->'CustomizationLibraryActorComponent'` +
+      `->'m_UnlockedCustomizationSerializableList'->'m_UnlockedCustomizationIds') as elem ` +
+      `FROM actors WHERE id = ${id}) sub`
+    );
+    res.json({ cosmetics: JSON.parse(raw.trim()) || [] });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// Add cosmetic
+app.post('/api/characters/:id/cosmetics/add', async (req, res) => {
+  const ip = await getVmIp();
+  if (!ip) return res.status(400).json({ error: 'VM not running' });
+  const id = parseInt(req.params.id);
+  const { cosmeticId } = req.body;
+  if (!cosmeticId) return res.status(400).json({ error: 'cosmeticId required' });
+
+  const safe = cosmeticId.replace(/[^a-zA-Z0-9_]/g, '');
+  try {
+    await runPsql(ip,
+      `UPDATE actors SET properties = jsonb_set(properties, ` +
+      `'{CustomizationLibraryActorComponent,m_UnlockedCustomizationSerializableList,m_UnlockedCustomizationIds}', ` +
+      `(properties->'CustomizationLibraryActorComponent'->'m_UnlockedCustomizationSerializableList'->'m_UnlockedCustomizationIds') ` +
+      `|| '[{"m_CustomizationId": "${safe}"}]'::jsonb` +
+      `) WHERE id = ${id}`
+    );
+    log(`Cosmetic "${safe}" added to character ${id}.\n`);
+    res.json({ success: true });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// Remove cosmetic
+app.post('/api/characters/:id/cosmetics/remove', async (req, res) => {
+  const ip = await getVmIp();
+  if (!ip) return res.status(400).json({ error: 'VM not running' });
+  const id = parseInt(req.params.id);
+  const { cosmeticId } = req.body;
+  if (!cosmeticId) return res.status(400).json({ error: 'cosmeticId required' });
+
+  const safe = cosmeticId.replace(/[^a-zA-Z0-9_]/g, '');
+  try {
+    await runPsql(ip,
+      `UPDATE actors SET properties = jsonb_set(properties, ` +
+      `'{CustomizationLibraryActorComponent,m_UnlockedCustomizationSerializableList,m_UnlockedCustomizationIds}', ` +
+      `(SELECT COALESCE(jsonb_agg(elem), '[]'::jsonb) FROM jsonb_array_elements(` +
+      `properties->'CustomizationLibraryActorComponent'->'m_UnlockedCustomizationSerializableList'->'m_UnlockedCustomizationIds'` +
+      `) as elem WHERE elem->>'m_CustomizationId' != '${safe}')` +
+      `) WHERE id = ${id}`
+    );
+    log(`Cosmetic "${safe}" removed from character ${id}.\n`);
+    res.json({ success: true });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// Get specialization data
+app.get('/api/characters/:id/specializations', async (req, res) => {
+  const ip = await getVmIp();
+  if (!ip) return res.status(400).json({ error: 'VM not running' });
+  const id = parseInt(req.params.id);
+
+  try {
+    const pawnRow = await runPsql(ip,
+      `SELECT player_controller_id FROM encrypted_player_state WHERE player_pawn_id = ${id}`
+    );
+    const controllerId = parseInt(pawnRow.trim());
+
+    const tracksRaw = await runPsql(ip,
+      `SELECT COALESCE(json_agg(row_to_json(t)), '[]') FROM (` +
+      `SELECT track_type, xp_amount, level FROM specialization_tracks WHERE player_id = ${id} ORDER BY track_type) t`
+    );
+
+    const keystonesRaw = await runPsql(ip,
+      `SELECT COALESCE(json_agg(km.name ORDER BY km.id), '[]') FROM purchased_specialization_keystones pk ` +
+      `JOIN specialization_keystones_map km ON pk.keystone_id = km.id WHERE pk.player_id = ${id}`
+    );
+
+    const allKeystonesRaw = await runPsql(ip,
+      `SELECT COALESCE(json_agg(row_to_json(t) ORDER BY t.id), '[]') FROM (SELECT id, name FROM specialization_keystones_map ORDER BY id) t`
+    );
+
+    res.json({
+      controllerId,
+      tracks: JSON.parse(tracksRaw.trim()) || [],
+      purchasedKeystones: JSON.parse(keystonesRaw.trim()) || [],
+      allKeystones: JSON.parse(allKeystonesRaw.trim()) || [],
+    });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// Set specialization track
+app.post('/api/characters/:id/specializations/track', async (req, res) => {
+  const ip = await getVmIp();
+  if (!ip) return res.status(400).json({ error: 'VM not running' });
+  const id = parseInt(req.params.id);
+  const { trackType, xp, level } = req.body;
+
+  const validTracks = ['Combat', 'Crafting', 'Gathering', 'Exploration', 'Sabotage'];
+  if (!validTracks.includes(trackType)) return res.status(400).json({ error: 'Invalid track type' });
+
+  try {
+    await runPsql(ip,
+      `INSERT INTO specialization_tracks (player_id, track_type, xp_amount, level) ` +
+      `VALUES (${id}, '${trackType}', ${parseInt(xp)}, ${parseFloat(level)}) ` +
+      `ON CONFLICT (player_id, track_type) DO UPDATE SET xp_amount = EXCLUDED.xp_amount, level = EXCLUDED.level`
+    );
+    log(`Specialization ${trackType} set to level ${level} for character ${id}.\n`);
+    res.json({ success: true });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// Unlock all keystones for a track
+app.post('/api/characters/:id/specializations/unlock-keystones', async (req, res) => {
+  const ip = await getVmIp();
+  if (!ip) return res.status(400).json({ error: 'VM not running' });
+  const id = parseInt(req.params.id);
+  const { trackPrefix } = req.body;
+
+  const validPrefixes = ['Combat_', 'Crafting_', 'Exploration_', 'Gathering_', 'Sabotage_'];
+  if (!validPrefixes.some(p => trackPrefix === p)) return res.status(400).json({ error: 'Invalid track prefix' });
+
+  try {
+    await runPsql(ip,
+      `INSERT INTO purchased_specialization_keystones (player_id, keystone_id) ` +
+      `SELECT ${id}, id FROM specialization_keystones_map WHERE name LIKE '${trackPrefix}%' ` +
+      `ON CONFLICT DO NOTHING`
+    );
+    log(`All ${trackPrefix.replace('_', '')} keystones unlocked for character ${id}.\n`);
+    res.json({ success: true });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// Get currency and faction data
+app.get('/api/characters/:id/economy', async (req, res) => {
+  const ip = await getVmIp();
+  if (!ip) return res.status(400).json({ error: 'VM not running' });
+  const id = parseInt(req.params.id);
+
+  try {
+    const pawnRow = await runPsql(ip,
+      `SELECT player_controller_id FROM encrypted_player_state WHERE player_pawn_id = ${id}`
+    );
+    const controllerId = parseInt(pawnRow.trim());
+
+    const currencyRaw = await runPsql(ip,
+      `SELECT COALESCE(json_agg(row_to_json(t)), '[]') FROM (` +
+      `SELECT currency_id, balance FROM player_virtual_currency_balances WHERE player_controller_id = ${controllerId} ORDER BY currency_id) t`
+    );
+
+    const factionRepRaw = await runPsql(ip,
+      `SELECT COALESCE(json_agg(row_to_json(t)), '[]') FROM (` +
+      `SELECT fr.faction_id, f.name as faction_name, fr.reputation_amount ` +
+      `FROM player_faction_reputation fr JOIN factions f ON fr.faction_id = f.id ` +
+      `WHERE fr.actor_id = ${id} ORDER BY fr.faction_id) t`
+    );
+
+    const factionsRaw = await runPsql(ip,
+      `SELECT COALESCE(json_agg(row_to_json(t)), '[]') FROM (SELECT id, name FROM factions ORDER BY id) t`
+    );
+
+    res.json({
+      controllerId,
+      currency: JSON.parse(currencyRaw.trim()) || [],
+      factionRep: JSON.parse(factionRepRaw.trim()) || [],
+      factions: JSON.parse(factionsRaw.trim()) || [],
+    });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// Set currency
+app.post('/api/characters/:id/economy/currency', async (req, res) => {
+  const ip = await getVmIp();
+  if (!ip) return res.status(400).json({ error: 'VM not running' });
+  const id = parseInt(req.params.id);
+  const { currencyId, balance } = req.body;
+
+  try {
+    const pawnRow = await runPsql(ip,
+      `SELECT player_controller_id FROM encrypted_player_state WHERE player_pawn_id = ${id}`
+    );
+    const controllerId = parseInt(pawnRow.trim());
+
+    await runPsql(ip,
+      `INSERT INTO player_virtual_currency_balances (player_controller_id, currency_id, balance) ` +
+      `VALUES (${controllerId}, ${parseInt(currencyId)}, ${parseInt(balance)}) ` +
+      `ON CONFLICT (player_controller_id, currency_id) DO UPDATE SET balance = EXCLUDED.balance`
+    );
+    log(`Currency ${currencyId} set to ${balance} for character ${id}.\n`);
+    res.json({ success: true });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// Set faction reputation
+app.post('/api/characters/:id/economy/reputation', async (req, res) => {
+  const ip = await getVmIp();
+  if (!ip) return res.status(400).json({ error: 'VM not running' });
+  const id = parseInt(req.params.id);
+  const { factionId, amount } = req.body;
+
+  try {
+    await runPsql(ip,
+      `INSERT INTO player_faction_reputation (actor_id, faction_id, reputation_amount) ` +
+      `VALUES (${id}, ${parseInt(factionId)}, ${parseInt(amount)}) ` +
+      `ON CONFLICT (actor_id, faction_id) DO UPDATE SET reputation_amount = EXCLUDED.reputation_amount`
+    );
+    log(`Faction ${factionId} reputation set to ${amount} for character ${id}.\n`);
+    res.json({ success: true });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.delete('/api/characters/:id/inventory/:itemId', async (req, res) => {
+  const ip = await getVmIp();
+  if (!ip) return res.status(400).json({ error: 'VM not running' });
+  const itemId = parseInt(req.params.itemId);
+
+  try {
+    await runPsql(ip, `DELETE FROM items WHERE id = ${itemId}`);
+    log(`Removed item ${itemId}.\n`);
+    res.json({ success: true });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
   }
 });
 

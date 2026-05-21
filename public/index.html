@@ -37,6 +37,7 @@
     <button class="tab" data-tab="battlegroup">Battlegroup</button>
     <button class="tab" data-tab="monitoring">Monitoring</button>
     <button class="tab" data-tab="database">Database</button>
+    <button class="tab" data-tab="characters">Characters</button>
     <button class="tab" data-tab="gameconfig">Game Config</button>
     <button class="tab" data-tab="settings">Settings</button>
   </nav>
@@ -386,6 +387,186 @@
               <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
               Import Backup
             </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Character Editor ============ -->
+    <section class="panel" id="tab-characters">
+      <div class="char-warning">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <span><strong>Editing characters directly modifies the game database.</strong> This may corrupt save data and cause total character loss. Always take a database backup before making changes. Only edit while the battlegroup is stopped and the player is logged out.</span>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h2>Select Character</h2></div>
+        <div class="card-body">
+          <div class="char-select-row">
+            <select id="char-select" class="select-input" style="max-width:280px"><option value="">— Choose a character —</option></select>
+            <button class="btn btn-blue" id="btn-char-load">Load Character</button>
+            <button class="btn btn-blue" id="btn-char-refresh" title="Refresh character list">Refresh List</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="char-editor" style="display:none">
+        <div class="card">
+          <div class="card-header"><h2>Stats</h2><button class="btn btn-green btn-sm" id="btn-stats-save">Save Stats</button></div>
+          <div class="card-body">
+            <div class="config-grid">
+              <div class="config-item">
+                <label>Max Health</label>
+                <input type="number" class="select-input char-stat" id="cs-max-health" data-field="properties" data-path="DamageableActorComponent.m_TotalMaxHealth" step="1" min="1">
+              </div>
+              <div class="config-item">
+                <label>Tech Knowledge Points</label>
+                <input type="number" class="select-input char-stat" id="cs-tech-pts" data-field="properties" data-path="TechKnowledgePlayerComponent.m_TechKnowledgePoints" step="1" min="0">
+              </div>
+              <div class="config-item">
+                <label>Hydration</label>
+                <input type="number" class="select-input char-stat" id="cs-hydration" data-field="gas_attributes" data-path="DuneHydrationAttributeSet.CurrentHydration" step="0.1" min="0">
+              </div>
+              <div class="config-item">
+                <label>Heat Exhaustion</label>
+                <input type="number" class="select-input char-stat" id="cs-heat" data-field="gas_attributes" data-path="DuneHydrationAttributeSet.HeatExhaustion" step="0.1" min="0">
+              </div>
+              <div class="config-item">
+                <label>Current Spice</label>
+                <input type="number" class="select-input char-stat" id="cs-spice" data-field="gas_attributes" data-path="DuneSpiceAddictionAttributeSet.CurrentSpice" step="1" min="0">
+              </div>
+              <div class="config-item">
+                <label>Spice Addiction Level</label>
+                <input type="number" class="select-input char-stat" id="cs-addiction" data-field="gas_attributes" data-path="DuneSpiceAddictionAttributeSet.SpiceAddictionLevel" step="0.1" min="0">
+              </div>
+              <div class="config-item">
+                <label>Spice Tolerance</label>
+                <input type="number" class="select-input char-stat" id="cs-tolerance" data-field="gas_attributes" data-path="DuneSpiceAddictionAttributeSet.SpiceTolerance" step="0.1" min="0">
+              </div>
+              <div class="config-item">
+                <label>Eyes of Ibad <span class="field-hint-inline">0.0 – 1.0</span></label>
+                <input type="number" class="select-input char-stat" id="cs-eyes" data-field="properties" data-path="BP_DunePlayerCharacter_C.m_EyesOfIbadValue" step="0.05" min="0" max="1">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2>Inventory</h2>
+            <span class="badge" id="inv-count">0 items</span>
+          </div>
+          <div class="card-body" style="padding:0">
+            <div class="inv-table-wrap">
+              <table class="inv-table" id="inv-table">
+                <thead><tr><th>Item</th><th>ID</th><th>Qty</th><th>Location</th><th></th></tr></thead>
+                <tbody id="inv-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><h2>Add Item</h2></div>
+          <div class="card-body">
+            <div class="item-search-row">
+              <input type="text" class="select-input" id="item-search" placeholder="Search items by name..." style="flex:1">
+              <select class="select-input" id="item-cat-filter" style="max-width:200px">
+                <option value="">All Categories</option>
+                <option value="Resources">Resources</option>
+                <option value="Consumables">Consumables</option>
+                <option value="Ammo">Ammo</option>
+                <option value="Weapons - Melee">Weapons - Melee</option>
+                <option value="Weapons - Ranged">Weapons - Ranged</option>
+                <option value="Garments">Garments (all)</option>
+                <option value="Tools">Tools</option>
+                <option value="Vehicle Modules">Vehicle Modules</option>
+                <option value="Building">Building</option>
+                <option value="Contract Items">Contract Items</option>
+                <option value="Fuel">Fuel</option>
+                <option value="Misc">Misc</option>
+              </select>
+            </div>
+            <div class="item-results-wrap" id="item-results" style="display:none">
+              <table class="inv-table">
+                <thead><tr><th>Item</th><th>Category</th><th>Qty</th><th>To</th><th></th></tr></thead>
+                <tbody id="item-results-body"></tbody>
+              </table>
+            </div>
+            <p class="card-desc" id="item-results-hint" style="margin-top:.5rem">Type at least 2 characters to search across 981 items.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><h2>Tech Tree</h2><span class="badge" id="tech-count">—</span></div>
+          <div class="card-body">
+            <p class="card-desc">Unlock or lock all recipes and blueprints in the tech knowledge tree.</p>
+            <div class="btn-group">
+              <button class="btn btn-green" id="btn-tech-unlock-all">Unlock All Recipes</button>
+              <button class="btn btn-red" id="btn-tech-lock-all">Lock All Recipes</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><h2>Specializations</h2></div>
+          <div class="card-body">
+            <p class="card-desc">Set XP and level for each specialization track, and unlock all keystones (perks) per tree.</p>
+            <div id="spec-tracks-grid" class="config-grid" style="margin-bottom:1rem"></div>
+            <h3 style="font-size:.8rem;color:var(--text-dim);margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.05em">Unlock Keystones (Perks)</h3>
+            <div class="btn-group" id="spec-keystone-btns">
+              <button class="btn btn-green btn-sm" data-prefix="Combat_">All Combat</button>
+              <button class="btn btn-green btn-sm" data-prefix="Crafting_">All Crafting</button>
+              <button class="btn btn-green btn-sm" data-prefix="Exploration_">All Exploration</button>
+              <button class="btn btn-green btn-sm" data-prefix="Gathering_">All Gathering</button>
+              <button class="btn btn-green btn-sm" data-prefix="Sabotage_">All Sabotage</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><h2>Economy</h2></div>
+          <div class="card-body">
+            <div class="config-grid">
+              <div class="config-item">
+                <label>Solari (Currency 0)</label>
+                <div class="input-with-unit">
+                  <input type="number" class="select-input" id="econ-currency-0" min="0" step="1000" value="0">
+                  <button class="btn btn-green btn-sm" data-currency="0">Set</button>
+                </div>
+              </div>
+              <div class="config-item">
+                <label>House Scrip (Currency 1)</label>
+                <div class="input-with-unit">
+                  <input type="number" class="select-input" id="econ-currency-1" min="0" step="100" value="0">
+                  <button class="btn btn-green btn-sm" data-currency="1">Set</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><h2>Faction Reputation</h2></div>
+          <div class="card-body">
+            <div class="config-grid" id="faction-rep-grid"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><h2>Cosmetics &amp; Skins</h2><span class="badge" id="cosmetic-count">—</span></div>
+          <div class="card-body">
+            <p class="card-desc">Manage unlocked weapon skins, armor skins, dye packs, and vehicle cosmetics.</p>
+            <div class="item-search-row" style="margin-bottom:.5rem">
+              <input type="text" class="select-input" id="cosmetic-add-input" placeholder="Enter cosmetic ID to add..." style="flex:1">
+              <button class="btn btn-green btn-sm" id="btn-cosmetic-add">Add</button>
+            </div>
+            <div class="inv-table-wrap" style="max-height:300px;overflow-y:auto">
+              <table class="inv-table">
+                <thead><tr><th>Cosmetic</th><th>ID</th><th></th></tr></thead>
+                <tbody id="cosmetic-tbody"></tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>

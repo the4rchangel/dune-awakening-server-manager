@@ -15,6 +15,7 @@ A local web-based UI for managing **Dune: Awakening Self-Hosted Servers**. Repla
 - **Setup Wizard** — Guided 6-step first-time installation (VM import, network, SSH, bootstrap — no bat file needed)
 - **Dashboard** — VM status, memory, uptime, IP, and battlegroup health at a glance
 - **Battlegroup Controls** — Start, stop, restart, and update with one click
+- **Character Editor** — Edit stats (health, tech points, hydration, spice, Eyes of Ibad) and manage inventory with a searchable 981-item catalog
 - **Game Config** — Edit PvP, sandstorms, sandworm behavior, mining rates, decay, building limits, and more through a visual editor
 - **Monitoring** — Direct links to the File Browser and Director web interfaces
 - **Database** — Take and import backups
@@ -117,6 +118,38 @@ Back up and restore the battlegroup database. Stop the battlegroup first for bes
 
 ![Database](docs/screenshots/database.png)
 
+### Characters
+
+Edit player stats and inventory directly in the game database. **Stop the battlegroup and have the player logged out before editing.** Includes a searchable catalog of 981 items scraped from the [community wiki](https://awakening.wiki).
+
+![Character Editor](docs/screenshots/character-editor.png)
+
+Search for any item by display name, filter by category, and add it to a character's inventory:
+
+![Add Items](docs/screenshots/character-editor-items.png)
+
+> [!WARNING]
+> Editing characters directly modifies the game database. This may corrupt save data and cause total character loss. Always take a database backup first.
+
+| Section | What you can edit |
+|---------|------------------|
+| **Stats** | Max Health, Tech Knowledge Points, Hydration, Heat Exhaustion, Spice, Addiction Level, Tolerance, Eyes of Ibad |
+| **Inventory** | View all items, remove items, add items by name from a 981-item catalog with category filter |
+| **Stack limits** | Equipment (weapons/armor/tools) enforced at 1, resources at 100, consumables at 20 — warns before exceeding |
+| **Tech Tree** | Unlock or lock all 49 recipes and blueprints with one click |
+| **Specializations** | Set level and XP for Combat, Crafting, Exploration, Gathering, Sabotage — unlock all 205 keystones (perks) per tree |
+| **Economy** | Set Solari and House Scrip balances |
+| **Faction Reputation** | Set reputation with Atreides, Harkonnen, and Smuggler factions |
+| **Cosmetics & Skins** | View, add, and remove unlocked weapon skins, armor skins, dye packs, and vehicle cosmetics with human-readable names |
+
+Tech tree, specializations, economy, and faction reputation:
+
+![Character Unlocks](docs/screenshots/character-unlocks.png)
+
+Cosmetics and skins management with plain-language labels:
+
+![Cosmetics](docs/screenshots/character-cosmetics.png)
+
 ### Game Config
 
 Visual editor for all gameplay settings. **Stop the battlegroup before editing** — changes apply on next start.
@@ -147,7 +180,8 @@ The app is a lightweight Node.js server that:
 1. Calls **PowerShell** for Hyper-V operations (start/stop VM, query status, import, configure)
 2. Uses **SSH** to communicate with the VM for battlegroup commands (same key and mechanism as the official scripts)
 3. Reads and writes **INI config files** on the VM for game settings
-4. Serves a static web UI that talks to the REST API and receives real-time output over WebSocket
+4. Queries the **PostgreSQL** database via `kubectl exec` for character editing
+5. Serves a static web UI that talks to the REST API and receives real-time output over WebSocket
 
 No data leaves your machine. Everything runs locally on `localhost:3000`.
 
@@ -159,9 +193,12 @@ No data leaves your machine. Everything runs locally on `localhost:3000`.
 │   ├── powershell.js      # PowerShell execution wrapper
 │   └── ssh.js             # SSH execution wrapper (with timeout + TTY support)
 ├── public/
-│   ├── index.html         # UI (dashboard, setup wizard, game config, all tabs)
+│   ├── index.html         # UI (dashboard, setup wizard, game config, character editor, all tabs)
 │   ├── css/style.css      # Dune-themed dark UI
-│   └── js/app.js          # Frontend logic (tabs, wizard, config editor, API calls)
+│   ├── js/app.js          # Frontend logic (tabs, wizard, config editor, character editor, API calls)
+│   └── data/
+│       ├── item-catalog.json   # 981 items with template IDs scraped from awakening.wiki
+│       └── stat-reference.json # Character stat keys and inventory type mapping
 ├── start_as_admin.bat     # One-click Windows launcher (auto-elevates to admin)
 ├── docs/screenshots/      # README screenshots
 └── package.json

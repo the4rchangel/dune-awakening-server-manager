@@ -213,7 +213,7 @@
   }
 
   refreshStatus();
-  setInterval(refreshStatus, 8000);
+  setInterval(refreshStatus, 3000);
 
   // -----------------------------------------------------------------------
   // Setup Wizard
@@ -659,7 +659,7 @@
     try {
       const res = await api('POST', 'config', changes);
       if (res.success) {
-        appendConsole(`Saved ${count} config change(s). Restart battlegroup to apply.\n`);
+        appendConsole(`Saved ${count} config change(s). Settings deployed — stop & start the battlegroup to apply.\n`);
         $$('.cfg.cfg-dirty').forEach((el) => el.classList.remove('cfg-dirty'));
       } else {
         throw new Error(res.error);
@@ -670,4 +670,671 @@
     }
     hideOverlay();
   });
+
+  // -----------------------------------------------------------------------
+  // Character Editor
+  // -----------------------------------------------------------------------
+  const INVENTORY_LABELS = {
+    0: 'Backpack', 1: 'Recipes', 12: 'Emotes', 14: 'Social',
+    15: 'Hotbar', 20: 'Quick-use', 25: 'Slot-25', 27: 'Equipped',
+    29: 'Slot-29', 30: 'Storage', 31: 'Slot-31', 32: 'Slot-32', 33: 'Slot-33',
+  };
+  const WRITABLE_INV_TYPES = [0, 15, 20, 27];
+  const STACK_LIMITS = {
+    'Resources': 100, 'Ammo': 100, 'Consumables': 20, 'Fuel': 5,
+    'Weapons - Melee': 1, 'Weapons - Ranged': 1,
+    'Garments': 1, 'Garments - Head': 1, 'Garments - Chest': 1,
+    'Garments - Hands': 1, 'Garments - Legs': 1, 'Garments - Feet': 1,
+    'Tools': 1, 'Vehicle Modules': 1, 'Building': 1, 'Contract Items': 1, 'Misc': 1,
+  };
+
+  let itemCatalog = null;
+  let catalogArr = [];
+  let charData = null;
+
+  async function loadItemCatalog() {
+    if (itemCatalog) return;
+    try {
+      const resp = await fetch('/data/item-catalog.json');
+      const data = await resp.json();
+      itemCatalog = data.items;
+      catalogArr = Object.entries(itemCatalog).map(([tid, info]) => ({
+        tid, name: info.name, category: info.category,
+      }));
+      catalogArr.sort((a, b) => a.name.localeCompare(b.name));
+    } catch (e) {
+      appendConsole('Failed to load item catalog: ' + e.message + '\n');
+    }
+  }
+
+  function catalogName(tid) {
+    if (!itemCatalog) return tid;
+    const info = itemCatalog[tid];
+    return info ? info.name : tid;
+  }
+
+  function catalogCategory(tid) {
+    if (!itemCatalog) return 'Misc';
+    const info = itemCatalog[tid];
+    return info ? info.category : 'Misc';
+  }
+
+  function isEquipmentCategory(cat) {
+    return /Weapon|Garment|Tool/i.test(cat);
+  }
+
+  async function loadCharacterList() {
+    const sel = $('#char-select');
+    sel.innerHTML = '<option value="">Loading...</option>';
+    try {
+      const data = await api('GET', 'characters');
+      sel.innerHTML = '<option value="">— Choose a character —</option>';
+      (data.characters || []).forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.id;
+        opt.textContent = `${c.name} (ID: ${c.id})`;
+        sel.appendChild(opt);
+      });
+    } catch (e) {
+      sel.innerHTML = '<option value="">Error loading characters</option>';
+    }
+  }
+
+  function readStat(data, field, pathStr) {
+    const parts = pathStr.split('.');
+    let obj = field === 'properties' ? data.properties : data.gasAttributes;
+    for (const p of parts) {
+      if (!obj || typeof obj !== 'object') return '';
+      obj = obj[p];
+    }
+    if (obj && typeof obj === 'object' && 'BaseValue' in obj) return obj.BaseValue;
+    return obj != null ? obj : '';
+  }
+
+  function renderInventory() {
+    if (!charData) return;
+    const tbody = $('#inv-tbody');
+    const items = charData.items || [];
+    tbody.innerHTML = '';
+
+    const nonEmoteItems = items.filter(i =>
+      !i.template_id.startsWith('Emote_') && !i.template_id.startsWith('Social_')
+    );
+
+    nonEmoteItems.forEach(item => {
+      const tr = document.createElement('tr');
+      const name = catalogName(item.template_id);
+      const loc = INVENTORY_LABELS[item.inventory_type] || `Type ${item.inventory_type}`;
+      tr.innerHTML = `
+        <td class="item-name">${name}</td>
+        <td class="item-tid">${item.template_id}</td>
+        <td>${item.stack_size}</td>
+        <td>${loc}</td>
+        <td><button class="btn-remove" data-item-id="${item.id}">Remove</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    $('#inv-count').textContent = `${nonEmoteItems.length} items`;
+  }
+
+  async function loadCharacter(actorId) {
+    showOverlay('Loading character...');
+    try {
+      charData = await api('GET', `characters/${actorId}`);
+      $('#char-editor').style.display = '';
+
+      $$('.char-stat').forEach(el => {
+        const field = el.dataset.field;
+        const pathStr = el.dataset.path;
+        el.value = readStat(charData, field, pathStr);
+      });
+
+      charData.writableInvs = charData.inventories
+        .filter(inv => WRITABLE_INV_TYPES.includes(inv.inventory_type))
+        .map(inv => ({
+          id: inv.id,
+          type: inv.inventory_type,
+          label: INVENTORY_LABELS[inv.inventory_type] || `Type ${inv.inventory_type}`,
+        }));
+
+      renderInventory();
+    } catch (e) {
+      alert('Failed to load character: ' + e.message);
+    }
+    hideOverlay();
+  }
+
+  // Character tab — load list on first open
+  let charTabLoaded = false;
+  document.querySelector('.tab[data-tab="characters"]').addEventListener('click', async () => {
+    await loadItemCatalog();
+    if (!charTabLoaded) {
+      charTabLoaded = true;
+      loadCharacterList();
+    }
+  });
+
+  $('#btn-char-refresh').addEventListener('click', () => loadCharacterList());
+  $('#btn-char-load').addEventListener('click', () => {
+    const id = $('#char-select').value;
+    if (!id) { alert('Select a character first.'); return; }
+    loadCharacter(parseInt(id));
+  });
+
+  // Save stats
+  $('#btn-stats-save').addEventListener('click', async () => {
+    if (!charData) return;
+    if (status && status.battlegroup && status.battlegroup.running) {
+      alert('Stop the battlegroup before editing characters.');
+      return;
+    }
+
+    const updates = [];
+    $$('.char-stat').forEach(el => {
+      const field = el.dataset.field;
+      const pathStr = el.dataset.path;
+      const parts = pathStr.split('.');
+      const val = parseFloat(el.value);
+      if (isNaN(val)) return;
+
+      if (field === 'gas_attributes' && parts.length === 2) {
+        updates.push({ field, path: [parts[0], parts[1], 'BaseValue'], value: val });
+        updates.push({ field, path: [parts[0], parts[1], 'CurrentValue'], value: val });
+      } else if (field === 'properties' && pathStr === 'DamageableActorComponent.m_TotalMaxHealth') {
+        updates.push({ field, path: parts, value: val });
+        updates.push({ field, path: ['DamageableActorComponent', 'm_CurrentMaxHealth'], value: val });
+      } else {
+        updates.push({ field, path: parts, value: val });
+      }
+    });
+
+    if (!updates.length) { alert('No changes to save.'); return; }
+
+    showOverlay('Saving stats...');
+    try {
+      const res = await api('POST', `characters/${charData.actorId}/stats`, { updates });
+      if (res.success) {
+        appendConsole(`Stats saved for character ${charData.actorId}.\n`);
+        alert('Stats saved. Restart the battlegroup for changes to take effect.');
+      } else {
+        throw new Error(res.error);
+      }
+    } catch (e) {
+      alert('Save failed: ' + e.message);
+    }
+    hideOverlay();
+  });
+
+  // Remove item
+  $('#inv-tbody').addEventListener('click', async (e) => {
+    const btn = e.target.closest('.btn-remove');
+    if (!btn || !charData) return;
+    if (status && status.battlegroup && status.battlegroup.running) {
+      alert('Stop the battlegroup before editing inventory.');
+      return;
+    }
+
+    const itemId = btn.dataset.itemId;
+    if (!confirm('Remove this item?')) return;
+
+    try {
+      await api('DELETE', `characters/${charData.actorId}/inventory/${itemId}`);
+      charData.items = charData.items.filter(i => i.id !== parseInt(itemId));
+      renderInventory();
+    } catch (e) {
+      alert('Remove failed: ' + e.message);
+    }
+  });
+
+  // Item search
+  let searchTimeout;
+  function runItemSearch() {
+    const query = ($('#item-search').value || '').trim().toLowerCase();
+    const catFilter = $('#item-cat-filter').value;
+    const resultsWrap = $('#item-results');
+    const tbody = $('#item-results-body');
+    const hint = $('#item-results-hint');
+
+    if (query.length < 2 && !catFilter) {
+      resultsWrap.style.display = 'none';
+      hint.style.display = '';
+      return;
+    }
+
+    let results = catalogArr;
+    if (query.length >= 2) {
+      results = results.filter(i => i.name.toLowerCase().includes(query));
+    }
+    if (catFilter) {
+      if (catFilter === 'Garments') {
+        results = results.filter(i => i.category.startsWith('Garments'));
+      } else {
+        results = results.filter(i => i.category === catFilter);
+      }
+    }
+
+    results = results.slice(0, 50);
+
+    tbody.innerHTML = '';
+    if (!results.length) {
+      tbody.innerHTML = '<tr><td colspan="5" style="color:var(--text-dim);text-align:center;padding:1rem">No items found</td></tr>';
+    } else {
+      const invOptions = (charData && charData.writableInvs || [])
+        .map(inv => `<option value="${inv.id}">${inv.label}</option>`)
+        .join('');
+      const defaultInvOption = invOptions || '<option value="">No character loaded</option>';
+
+      results.forEach(item => {
+        const cat = item.category;
+        const maxStack = STACK_LIMITS[cat] || 100;
+        const isEq = isEquipmentCategory(cat);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="item-name">${item.name}<br><span class="item-tid">${item.tid}</span></td>
+          <td style="font-size:.72rem;color:var(--text-dim)">${cat}</td>
+          <td><input type="number" value="${isEq ? 1 : 1}" min="1" max="${maxStack}" class="add-qty" data-max="${maxStack}"></td>
+          <td><select class="add-inv">${defaultInvOption}</select></td>
+          <td><button class="btn-add" data-tid="${item.tid}" data-eq="${isEq ? 1 : 0}">Add</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    resultsWrap.style.display = '';
+    hint.style.display = 'none';
+  }
+
+  $('#item-search').addEventListener('input', () => {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(runItemSearch, 200);
+  });
+  $('#item-cat-filter').addEventListener('change', runItemSearch);
+
+  // Add item
+  $('#item-results-body').addEventListener('click', async (e) => {
+    const btn = e.target.closest('.btn-add');
+    if (!btn || !charData) return;
+    if (status && status.battlegroup && status.battlegroup.running) {
+      alert('Stop the battlegroup before editing inventory.');
+      return;
+    }
+
+    const row = btn.closest('tr');
+    const qty = parseInt(row.querySelector('.add-qty').value);
+    const invId = parseInt(row.querySelector('.add-inv').value);
+    const tid = btn.dataset.tid;
+    const isEq = btn.dataset.eq === '1';
+    const maxStack = parseInt(row.querySelector('.add-qty').dataset.max);
+
+    if (!invId) { alert('Load a character first.'); return; }
+    if (isNaN(qty) || qty < 1) { alert('Invalid quantity.'); return; }
+    if (qty > maxStack) {
+      if (!confirm(`Warning: ${qty} exceeds the estimated max stack of ${maxStack} for this item type. This may cause issues. Continue?`)) return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = '...';
+    try {
+      const res = await api('POST', `characters/${charData.actorId}/inventory/add`, {
+        templateId: tid, stackSize: qty, inventoryId: invId, isEquipment: isEq,
+      });
+      if (res.success) {
+        appendConsole(`Added ${qty}x ${catalogName(tid)} to inventory.\n`);
+        await loadCharacter(charData.actorId);
+        runItemSearch();
+      } else {
+        throw new Error(res.error);
+      }
+    } catch (e) {
+      alert('Add failed: ' + e.message);
+    }
+    btn.disabled = false;
+    btn.textContent = 'Add';
+  });
+
+  // -----------------------------------------------------------------------
+  // Cosmetic name mapping (human-readable labels from internal IDs)
+  // -----------------------------------------------------------------------
+  const COSMETIC_NAMES = {
+    AllDyepackChoam: 'CHOAM Dye Pack', AllDyepackMaula: 'Maula Dye Pack',
+    AllDyePackBonusUniversal01: 'Universal Bonus Dye Pack',
+    RedDesertGlobal: 'Red Desert Global Dye', SmugglerGlobal: 'Smuggler Global Dye',
+    'Watershippers Global': 'Watershippers Global Dye',
+    FVehDyePackUltimate01: 'Ultimate Vehicle Dye Pack',
+    SandbikeDyePackDeluxe01: 'Deluxe Sandbike Dye Pack',
+    Beta_Sword: 'Beta Sword Skin',
+    MTX_Frameblade_Knife: 'Frameblade Knife Skin',
+    MTX_Smuggler_Kindjal: 'Smuggler Kindjal Skin',
+    MTX_Smug_Rifle: 'Smuggler Rifle Skin',
+    MTX_Taligari_Rifle: 'Taligari Rifle Skin',
+    MTX_Taligari_SMG: 'Taligari SMG Skin',
+    MTX_GunnerSniper_Rifle: 'Gunner Sniper Rifle Skin',
+    MTX_Gunner_Battlerifle: 'Gunner Battle Rifle Skin',
+    MTX_WaterS_Drillshot: 'Water Shipper Drillshot Skin',
+    MTX_WaterS_Rapier: 'Water Shipper Rapier Skin',
+    MTX_WaterS_Light_Orni: 'Water Shipper Light Ornithopter',
+    MTX_Buggy_Nomad: 'Nomad Buggy Skin',
+    MTX_Smuggler_Stillsuit_Top: 'Smuggler Stillsuit Top',
+    MTX_Smuggler_Stillsuit_Boots: 'Smuggler Stillsuit Boots',
+    MTX_Smuggler_Stillsuit_Gloves: 'Smuggler Stillsuit Gloves',
+    MTX_Smuggler_Stillsuit_Helmet: 'Smuggler Stillsuit Helmet',
+    MTX_Fremen_MovieSuit_Top_MeshVariant: 'Fremen Movie Suit Top',
+    MTX_Fremen_MovieSuit_Boots_MeshVariant: 'Fremen Movie Suit Boots',
+    MTX_Fremen_MovieSuit_Gloves_MeshVariant: 'Fremen Movie Suit Gloves',
+    MTX_Fremen_MovieSuit_Helmet_MeshVariant: 'Fremen Movie Suit Helmet',
+    MTX_Sard_Stillsuit_01_Top_MeshVariant: 'Sardaukar Stillsuit Top',
+    MTX_Sard_Stillsuit_01_Boots_MeshVariant: 'Sardaukar Stillsuit Boots',
+    MTX_Sard_Stillsuit_01_Gloves_MeshVariant: 'Sardaukar Stillsuit Gloves',
+    MTX_Sard_Stillsuit_01_Helmet_MeshVariant: 'Sardaukar Stillsuit Helmet',
+    MTX_Smug_HeavyArmor_Top_MeshVariant: 'Smuggler Heavy Armor Top',
+    MTX_Smug_HeavyArmor_Bottom_MeshVariant: 'Smuggler Heavy Armor Pants',
+    MTX_Smug_HeavyArmor_Boots_MeshVariant: 'Smuggler Heavy Armor Boots',
+    MTX_Smug_HeavyArmor_Gloves_MeshVariant: 'Smuggler Heavy Armor Gloves',
+    MTX_Smug_HeavyArmor_Helmet_MeshVariant: 'Smuggler Heavy Armor Helmet',
+    MTX_Smug_LightArmor_Top_MeshVariant: 'Smuggler Light Armor Top',
+    MTX_Smug_LightArmor_Bottom_MeshVariant: 'Smuggler Light Armor Pants',
+    MTX_Smug_LightArmor_Boots_MeshVariant: 'Smuggler Light Armor Boots',
+    MTX_Smug_LightArmor_Gloves_MeshVariant: 'Smuggler Light Armor Gloves',
+    MTX_Smug_LightArmor_Helmet_MeshVariant: 'Smuggler Light Armor Helmet',
+    MTX_WaterS_AssaultArmor_Top_MeshVariant: 'Water Shipper Assault Top',
+    MTX_WaterS_AssaultArmor_Bottom_MeshVariant: 'Water Shipper Assault Pants',
+    MTX_WaterS_AssaultArmor_Boots_MeshVariant: 'Water Shipper Assault Boots',
+    MTX_WaterS_AssaultArmor_Gloves_MeshVariant: 'Water Shipper Assault Gloves',
+    MTX_WaterS_AssaultArmor_Helmet_MeshVariant: 'Water Shipper Assault Helmet',
+    MTX_WaterS_HeavyArmor_Top_MeshVariant: 'Water Shipper Heavy Armor Top',
+    MTX_WaterS_HeavyArmor_Bottom_MeshVariant: 'Water Shipper Heavy Armor Pants',
+    MTX_WaterS_HeavyArmor_Boots_MeshVariant: 'Water Shipper Heavy Armor Boots',
+    MTX_WaterS_HeavyArmor_Gloves_MeshVariant: 'Water Shipper Heavy Armor Gloves',
+    MTX_WaterS_HeavyArmor_Helmet_MeshVariant: 'Water Shipper Heavy Armor Helmet',
+    WaterS_Stillsuit_Top: 'Water Shipper Stillsuit Top',
+    WaterS_Stillsuit_Boots: 'Water Shipper Stillsuit Boots',
+    WaterS_Stillsuit_Gloves: 'Water Shipper Stillsuit Gloves',
+    WaterS_Stillsuit_Helmet: 'Water Shipper Stillsuit Helmet',
+  };
+
+  function cosmeticLabel(id) {
+    if (COSMETIC_NAMES[id]) return COSMETIC_NAMES[id];
+    return id.replace(/^MTX_/, '').replace(/_MeshVariant$/, '').replace(/_/g, ' ');
+  }
+
+  // -----------------------------------------------------------------------
+  // Tech Tree
+  // -----------------------------------------------------------------------
+  async function refreshTechCount() {
+    if (!charData) return;
+    try {
+      const d = await api('GET', `characters/${charData.actorId}`);
+      const tree = d.properties?.TechKnowledgePlayerComponent?.m_TechKnowledge?.m_TechKnowledgeData || [];
+      const purchased = tree.filter(i => i.UnlockedState === 'Purchased').length;
+      $('#tech-count').textContent = `${purchased} / ${tree.length} unlocked`;
+    } catch { /* silent */ }
+  }
+
+  $('#btn-tech-unlock-all').addEventListener('click', async () => {
+    if (!charData) return;
+    if (status && status.battlegroup && status.battlegroup.running) {
+      alert('Stop the battlegroup first.'); return;
+    }
+    if (!confirm('Unlock ALL tech tree recipes?')) return;
+    showOverlay('Unlocking all recipes...');
+    try {
+      await api('POST', `characters/${charData.actorId}/tech/unlock-all`);
+      appendConsole('All tech tree recipes unlocked.\n');
+      await refreshTechCount();
+    } catch (e) { alert('Failed: ' + e.message); }
+    hideOverlay();
+  });
+
+  $('#btn-tech-lock-all').addEventListener('click', async () => {
+    if (!charData) return;
+    if (status && status.battlegroup && status.battlegroup.running) {
+      alert('Stop the battlegroup first.'); return;
+    }
+    if (!confirm('Lock ALL tech tree recipes? This resets your entire tech tree.')) return;
+    showOverlay('Locking all recipes...');
+    try {
+      await api('POST', `characters/${charData.actorId}/tech/lock-all`);
+      appendConsole('All tech tree recipes locked.\n');
+      await refreshTechCount();
+    } catch (e) { alert('Failed: ' + e.message); }
+    hideOverlay();
+  });
+
+  // -----------------------------------------------------------------------
+  // Specializations
+  // -----------------------------------------------------------------------
+  const SPEC_TRACKS = [
+    { type: 'Combat', label: 'Combat' },
+    { type: 'Crafting', label: 'Crafting' },
+    { type: 'Exploration', label: 'Exploration' },
+    { type: 'Gathering', label: 'Gathering' },
+    { type: 'Sabotage', label: 'Sabotage' },
+  ];
+
+  async function loadSpecializations() {
+    if (!charData) return;
+    try {
+      const data = await api('GET', `characters/${charData.actorId}/specializations`);
+      const grid = $('#spec-tracks-grid');
+      grid.innerHTML = '';
+
+      SPEC_TRACKS.forEach(spec => {
+        const track = (data.tracks || []).find(t => t.track_type === spec.type);
+        const xp = track ? track.xp_amount : 0;
+        const lvl = track ? track.level : 0;
+
+        const div = document.createElement('div');
+        div.className = 'config-item';
+        div.innerHTML = `
+          <label>${spec.label} <span class="field-hint-inline">current: Lv${Math.floor(lvl)}, ${xp} XP</span></label>
+          <div class="input-with-unit">
+            <input type="number" class="select-input spec-level" data-track="${spec.type}" value="${Math.floor(lvl)}" min="0" max="100" step="1" placeholder="Level" style="width:70px" title="Level">
+            <input type="number" class="select-input spec-xp" data-track="${spec.type}" value="${xp}" min="0" step="1000" placeholder="XP" style="width:100px" title="XP">
+            <button class="btn btn-green btn-sm spec-save" data-track="${spec.type}">Set</button>
+          </div>
+        `;
+        grid.appendChild(div);
+      });
+    } catch (e) {
+      appendConsole('Failed to load specializations: ' + e.message + '\n');
+    }
+  }
+
+  document.addEventListener('click', async (e) => {
+    const saveBtn = e.target.closest('.spec-save');
+    if (!saveBtn || !charData) return;
+    if (status && status.battlegroup && status.battlegroup.running) {
+      alert('Stop the battlegroup first.'); return;
+    }
+
+    const track = saveBtn.dataset.track;
+    const row = saveBtn.closest('.config-item');
+    const level = parseFloat(row.querySelector('.spec-level').value);
+    const xp = parseInt(row.querySelector('.spec-xp').value);
+
+    showOverlay(`Setting ${track}...`);
+    try {
+      await api('POST', `characters/${charData.actorId}/specializations/track`, {
+        trackType: track, xp, level,
+      });
+      appendConsole(`${track} set to level ${level}, ${xp} XP.\n`);
+      await loadSpecializations();
+    } catch (e) { alert('Failed: ' + e.message); }
+    hideOverlay();
+  });
+
+  // Keystone unlock buttons
+  $('#spec-keystone-btns').addEventListener('click', async (e) => {
+    const btn = e.target.closest('[data-prefix]');
+    if (!btn || !charData) return;
+    if (status && status.battlegroup && status.battlegroup.running) {
+      alert('Stop the battlegroup first.'); return;
+    }
+
+    const prefix = btn.dataset.prefix;
+    const trackName = prefix.replace('_', '');
+    if (!confirm(`Unlock ALL ${trackName} keystones (perks)?`)) return;
+
+    showOverlay(`Unlocking ${trackName} keystones...`);
+    try {
+      await api('POST', `characters/${charData.actorId}/specializations/unlock-keystones`, { trackPrefix: prefix });
+      appendConsole(`All ${trackName} keystones unlocked.\n`);
+    } catch (e) { alert('Failed: ' + e.message); }
+    hideOverlay();
+  });
+
+  // -----------------------------------------------------------------------
+  // Economy (Currency + Faction Rep)
+  // -----------------------------------------------------------------------
+  async function loadEconomy() {
+    if (!charData) return;
+    try {
+      const data = await api('GET', `characters/${charData.actorId}/economy`);
+
+      (data.currency || []).forEach(c => {
+        const el = $(`#econ-currency-${c.currency_id}`);
+        if (el) el.value = c.balance;
+      });
+
+      const grid = $('#faction-rep-grid');
+      grid.innerHTML = '';
+      (data.factions || []).forEach(f => {
+        if (f.name === 'None') return;
+        const rep = (data.factionRep || []).find(r => r.faction_id === f.id);
+        const amount = rep ? rep.reputation_amount : 0;
+
+        const div = document.createElement('div');
+        div.className = 'config-item';
+        div.innerHTML = `
+          <label>${f.name} Reputation</label>
+          <div class="input-with-unit">
+            <input type="number" class="select-input faction-rep" data-faction="${f.id}" value="${amount}" min="0" step="500">
+            <button class="btn btn-green btn-sm faction-rep-save" data-faction="${f.id}">Set</button>
+          </div>
+        `;
+        grid.appendChild(div);
+      });
+    } catch (e) {
+      appendConsole('Failed to load economy: ' + e.message + '\n');
+    }
+  }
+
+  // Currency set buttons
+  document.addEventListener('click', async (e) => {
+    const btn = e.target.closest('[data-currency]');
+    if (!btn || btn.tagName !== 'BUTTON' || !charData) return;
+    if (status && status.battlegroup && status.battlegroup.running) {
+      alert('Stop the battlegroup first.'); return;
+    }
+
+    const cid = parseInt(btn.dataset.currency);
+    const balance = parseInt($(`#econ-currency-${cid}`).value);
+    if (isNaN(balance)) { alert('Enter a valid amount.'); return; }
+
+    showOverlay('Setting currency...');
+    try {
+      await api('POST', `characters/${charData.actorId}/economy/currency`, { currencyId: cid, balance });
+      appendConsole(`Currency ${cid} set to ${balance}.\n`);
+    } catch (e) { alert('Failed: ' + e.message); }
+    hideOverlay();
+  });
+
+  // Faction rep set buttons
+  document.addEventListener('click', async (e) => {
+    const btn = e.target.closest('.faction-rep-save');
+    if (!btn || !charData) return;
+    if (status && status.battlegroup && status.battlegroup.running) {
+      alert('Stop the battlegroup first.'); return;
+    }
+
+    const fid = parseInt(btn.dataset.faction);
+    const row = btn.closest('.config-item');
+    const amount = parseInt(row.querySelector('.faction-rep').value);
+    if (isNaN(amount)) { alert('Enter a valid amount.'); return; }
+
+    showOverlay('Setting reputation...');
+    try {
+      await api('POST', `characters/${charData.actorId}/economy/reputation`, { factionId: fid, amount });
+      appendConsole(`Faction ${fid} reputation set to ${amount}.\n`);
+    } catch (e) { alert('Failed: ' + e.message); }
+    hideOverlay();
+  });
+
+  // -----------------------------------------------------------------------
+  // Cosmetics
+  // -----------------------------------------------------------------------
+  async function loadCosmetics() {
+    if (!charData) return;
+    try {
+      const data = await api('GET', `characters/${charData.actorId}/cosmetics`);
+      const list = data.cosmetics || [];
+      const tbody = $('#cosmetic-tbody');
+      tbody.innerHTML = '';
+
+      list.forEach(id => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="item-name">${cosmeticLabel(id)}</td>
+          <td class="item-tid">${id}</td>
+          <td><button class="btn-remove cosmetic-remove" data-cosmetic="${id}">Remove</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      $('#cosmetic-count').textContent = `${list.length} unlocked`;
+    } catch (e) {
+      appendConsole('Failed to load cosmetics: ' + e.message + '\n');
+    }
+  }
+
+  $('#btn-cosmetic-add').addEventListener('click', async () => {
+    if (!charData) return;
+    if (status && status.battlegroup && status.battlegroup.running) {
+      alert('Stop the battlegroup first.'); return;
+    }
+
+    const input = $('#cosmetic-add-input');
+    const cosmeticId = input.value.trim();
+    if (!cosmeticId) { alert('Enter a cosmetic ID.'); return; }
+
+    showOverlay('Adding cosmetic...');
+    try {
+      await api('POST', `characters/${charData.actorId}/cosmetics/add`, { cosmeticId });
+      appendConsole(`Cosmetic "${cosmeticId}" added.\n`);
+      input.value = '';
+      await loadCosmetics();
+    } catch (e) { alert('Failed: ' + e.message); }
+    hideOverlay();
+  });
+
+  $('#cosmetic-tbody').addEventListener('click', async (e) => {
+    const btn = e.target.closest('.cosmetic-remove');
+    if (!btn || !charData) return;
+    if (status && status.battlegroup && status.battlegroup.running) {
+      alert('Stop the battlegroup first.'); return;
+    }
+
+    const cosmeticId = btn.dataset.cosmetic;
+    if (!confirm(`Remove cosmetic "${cosmeticLabel(cosmeticId)}"?`)) return;
+
+    try {
+      await api('POST', `characters/${charData.actorId}/cosmetics/remove`, { cosmeticId });
+      await loadCosmetics();
+    } catch (e) { alert('Failed: ' + e.message); }
+  });
+
+  // -----------------------------------------------------------------------
+  // Load all sections when a character is loaded
+  // -----------------------------------------------------------------------
+  const origLoadCharacter = loadCharacter;
+  loadCharacter = async function(actorId) {
+    await origLoadCharacter(actorId);
+    if (charData) {
+      refreshTechCount();
+      loadSpecializations();
+      loadEconomy();
+      loadCosmetics();
+    }
+  };
 })();
