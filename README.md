@@ -218,21 +218,34 @@ No data leaves your machine. Everything runs locally on `localhost:3000`.
 | Problem | Fix |
 |---------|-----|
 | _"You do not have the required permission"_ | Run the app as **Administrator** (use `start_as_admin.bat` or an admin terminal) |
+| _"Cannot find module 'express'"_ | Dependencies weren't installed. Run `npm install` in the project folder, then try again |
+| _"running scripts is disabled on this system"_ | PowerShell execution policy is blocking npm. Open PowerShell as Admin and run: `Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned` |
 | _"EADDRINUSE: address already in use :::3000"_ | Another process is on port 3000. Kill it or set a different port: `set PORT=3001 && npm start` |
 | _"Node.js is required but not found"_ | Install Node.js 18+ from [nodejs.org](https://nodejs.org) and restart your terminal |
+| Battlegroup says "Starting" then nothing | Check the console output — it may be a timeout or SSH issue. Make sure the VM is fully booted and SSH is reachable. The battlegroup can take several minutes to start on first boot |
+| Battlegroup shows as inactive despite VM running | The battlegroup may not have been started yet — click Start and wait. If it was recently started, the game servers take a few minutes to reach "Running" state |
 | SSH connection failures | Make sure the VM is running and you've completed initial setup (the SSH key is generated in step 4) |
 | _"No .vmcx file found"_ | Verify the Dune Awakening Self-Hosted Server is installed in Steam and the path is correct |
 | VM fails to start with memory error | Your system doesn't have enough free RAM. Lower the memory allocation and enable swap memory |
 | _"No battlegroup found"_ on start | The initial setup didn't complete. Re-run the setup wizard or use `battlegroup.bat → initial-setup` |
+| Server visible in browser but players can't connect | Make sure **Server Visibility** is set to your public IP (not a private/LAN IP), the battlegroup was restarted after changing it, and the required ports are forwarded on your router (see below) |
+| Visibility IP reverts to LAN after applying | Update the app — this was a bug in older versions where `settings.conf` wasn't being read correctly |
 
 ## Ports
 
-If players outside your LAN need to connect, forward these on your router:
+If players outside your LAN need to connect, forward these on your router **to your VM's IP address** (not your Windows host IP):
 
 | Port | Protocol | Purpose |
 |------|----------|---------|
-| 7777–7810 | UDP | Game servers |
-| 31982 | TCP | RabbitMQ |
+| 7777–7800 | UDP | Game server traffic |
+| Director NodePort | TCP | Client matchmaking (check `kubectl get svc -A` for the actual port — it's randomized by Kubernetes, typically 30000–32767) |
+
+> [!TIP]
+> To find the Director NodePort, look at the Dashboard — it's shown in the Quick Links section. You can also SSH into the VM and run:
+> ```
+> sudo kubectl get svc -A | grep bgd-svc
+> ```
+> The number after `11717:` (e.g. `11717:31642`) is the NodePort to forward.
 
 The web UI itself (`localhost:3000`) does **not** need to be exposed — it's for local management only.
 

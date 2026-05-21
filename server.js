@@ -246,7 +246,10 @@ app.post('/api/vm/rotate-key', async (_req, res) => {
 function bgRoute(action, label, timeoutMs) {
   app.post(`/api/bg/${action}`, async (_req, res) => {
     const ip = await getVmIp();
-    if (!ip) return res.status(400).json({ error: 'VM not running' });
+    if (!ip) {
+      log(`Cannot ${action}: VM is not running.\n`);
+      return res.status(400).json({ error: 'VM not running' });
+    }
 
     try {
       log(`${label}...\n`);
@@ -259,7 +262,15 @@ function bgRoute(action, label, timeoutMs) {
       log(`\n${label} complete.\n`);
       res.json({ success: true, output: out });
     } catch (e) {
-      log(`Error: ${e.message}\n`);
+      const hint = /timed out/i.test(e.message)
+        ? `\nThe ${action} command timed out. The battlegroup may still be processing — check status in a minute.\n`
+        : /ECONNREFUSED|connect/i.test(e.message)
+        ? `\nCould not connect to the VM at ${ip}. Make sure the VM is running and SSH is reachable.\n`
+        : /permission|denied/i.test(e.message)
+        ? `\nSSH authentication failed. The VM may need its SSH key reconfigured.\n`
+        : '';
+      log(`Error: ${e.message}${hint}\n`);
+      if (e.stdout) log(`Output before error:\n${e.stdout}\n`);
       res.status(500).json({ success: false, error: e.message });
     }
   });
