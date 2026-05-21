@@ -252,6 +252,22 @@ function bgRoute(action, label, timeoutMs) {
     }
 
     try {
+      // Re-apply the visibility IP before start/restart so the Director
+      // registers the correct address with Funcom's discovery service.
+      if (action === 'start' || action === 'restart') {
+        try {
+          const currentIp = (await ssh.run(ip,
+            "sed -n '4p' /home/dune/.dune/settings.conf 2>/dev/null",
+            null, { timeout: 10000 })).trim();
+          if (currentIp && /^\d+\.\d+\.\d+\.\d+$/.test(currentIp)) {
+            await ssh.run(ip,
+              `printf '\\n\\n\\n${currentIp}\\n' > /home/dune/.dune/settings.conf`,
+              null, { timeout: 10000 });
+            log(`Confirmed visibility IP: ${currentIp}\n`);
+          }
+        } catch { /* non-critical */ }
+      }
+
       log(`${label}...\n`);
       const out = await ssh.run(
         ip,
