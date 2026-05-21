@@ -10,6 +10,31 @@ A local web-based UI for managing **Dune: Awakening Self-Hosted Servers**. Repla
 
 ![Dashboard](docs/screenshots/dashboard.png)
 
+---
+
+### Table of Contents
+
+- [Features](#features)
+- [Prerequisites](#prerequisites)
+- [Quick Start](#quick-start)
+- [Setup Wizard](#setup-wizard)
+- [Tabs](#tabs)
+  - [Dashboard](#dashboard)
+  - [Battlegroup](#battlegroup)
+  - [Monitoring](#monitoring)
+  - [Database](#database)
+  - [Characters](#characters)
+  - [Game Config](#game-config)
+  - [Settings](#settings)
+- [How It Works](#how-it-works)
+- [Project Structure](#project-structure)
+- [Configuration](#configuration)
+- [Troubleshooting](#troubleshooting)
+- [Ports](#ports)
+- [License](#license)
+
+---
+
 ## Features
 
 - **Setup Wizard** — Guided 6-step first-time installation (VM import, network, SSH, bootstrap — no bat file needed)
