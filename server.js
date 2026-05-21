@@ -73,7 +73,8 @@ async function getVmIp() {
   return st && st.ip ? st.ip : null;
 }
 
-// Keep settings.conf in sync when the VM IP changes
+// Keep settings.conf in sync when the VM IP changes (only for private/LAN mode).
+// If the user has set a public IP, don't overwrite it.
 let lastKnownVmIp = null;
 
 async function syncSettingsConfIp(ip) {
@@ -81,10 +82,11 @@ async function syncSettingsConfIp(ip) {
   try {
     const conf = await ssh.run(ip, 'cat /home/dune/.dune/settings.conf 2>/dev/null', null, { timeout: 10000 });
     const lines = conf.split('\n');
-    // settings.conf format: line 1-3 can be token/blank, line 4 is the IP
     const currentIpInConf = (lines[3] || '').trim();
-    if (currentIpInConf && currentIpInConf !== ip) {
-      log(`VM IP changed (${currentIpInConf} → ${ip}), updating settings.conf...\n`);
+    // Only auto-update if the current IP looks like a private/LAN address that's gone stale
+    const isPrivate = /^(10\.|172\.(1[6-9]|2\d|3[01])\.|192\.168\.)/.test(currentIpInConf);
+    if (currentIpInConf && currentIpInConf !== ip && isPrivate) {
+      log(`VM private IP changed (${currentIpInConf} → ${ip}), updating settings.conf...\n`);
       lines[3] = ip;
       const updated = lines.join('\n');
       const b64 = Buffer.from(updated).toString('base64');
@@ -785,10 +787,28 @@ function parseIni(raw) {
   const result = {};
   for (const line of raw.split('\n')) {
     const trimmed = line.trim();
-    if (!trimmed || trimmed.startsWith(';') || trimmed.startsWith('[')) continue;
-    const eq = trimmed.indexOf('=');
+    if (!trimmed || trimmed.startsWith('[')) continue;
+    // Parse both active and commented-out key=value lines
+    let active = true;
+    let content = trimmed;
+    if (trimmed.startsWith(';')) {
+      // Only parse as a commented key=value if it looks like one (no spaces before =)
+      const rest = trimmed.slice(1).trim();
+      if (!/^[A-Za-z]/.test(rest)) continue; // pure comment
+      const eq = rest.indexOf('=');
+      if (eq === -1) continue;
+      active = false;
+      content = rest;
+    }
+    const eq = content.indexOf('=');
     if (eq === -1) continue;
-    result[trimmed.slice(0, eq).trim()] = trimmed.slice(eq + 1).trim();
+    const key = content.slice(0, eq).trim();
+    if (active) {
+      result[key] = content.slice(eq + 1).trim();
+    } else if (!(key in result)) {
+      // Commented-out values shown as empty so UI knows the key exists but is off
+      result[key] = '';
+    }
   }
   return result;
 }
@@ -796,18 +816,45 @@ function parseIni(raw) {
 function applyToIni(raw, updates) {
   const lines = raw.split('\n');
   const applied = new Set();
+  const quotedKeys = new Set(['Bgd.ServerDisplayName', 'Bgd.ServerLoginPassword']);
+
   const result = lines.map((line) => {
     const trimmed = line.trim();
-    if (!trimmed || trimmed.startsWith(';') || trimmed.startsWith('[')) return line;
-    const eq = trimmed.indexOf('=');
+    if (!trimmed || trimmed.startsWith('[')) return line;
+
+    let content = trimmed;
+    if (trimmed.startsWith(';')) {
+      content = trimmed.slice(1).trim();
+      if (!/^[A-Za-z]/.test(content)) return line;
+    }
+    const eq = content.indexOf('=');
     if (eq === -1) return line;
-    const key = trimmed.slice(0, eq).trim();
+    const key = content.slice(0, eq).trim();
+
     if (key in updates) {
       applied.add(key);
-      return `${key}=${updates[key]}`;
+      const val = updates[key];
+      if (!val && val !== '0' && val !== 0) {
+        // Empty value → comment out the line
+        const defaultVal = content.slice(eq + 1).trim();
+        return `;${key}=${defaultVal || '""'}`;
+      }
+      // Wrap in quotes if this key expects quoted values
+      const formatted = quotedKeys.has(key) && !String(val).startsWith('"')
+        ? `"${val}"` : String(val);
+      return `${key}=${formatted}`;
     }
     return line;
   });
+
+  // Append any keys that weren't found in the file
+  for (const [key, val] of Object.entries(updates)) {
+    if (applied.has(key) || (!val && val !== '0' && val !== 0)) continue;
+    const formatted = quotedKeys.has(key) && !String(val).startsWith('"')
+      ? `"${val}"` : String(val);
+    result.push(`${key}=${formatted}`);
+  }
+
   return result.join('\n');
 }
 
@@ -1307,6 +1354,50 @@ app.delete('/api/characters/:id/inventory/:itemId', async (req, res) => {
   try {
     await runPsql(ip, `DELETE FROM items WHERE id = ${itemId}`);
     log(`Removed item ${itemId}.\n`);
+    res.json({ success: true });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// Server Visibility (LAN / Public)
+// ---------------------------------------------------------------------------
+
+app.get('/api/server-visibility', async (_req, res) => {
+  const ip = await getVmIp();
+  if (!ip) return res.status(400).json({ error: 'VM not running' });
+
+  try {
+    const conf = await ssh.run(ip, 'cat /home/dune/.dune/settings.conf 2>/dev/null', null, { timeout: 10000 });
+    const lines = conf.split('\n');
+    const advertisedIp = (lines[3] || '').trim();
+
+    // Detect public IP from the VM
+    let publicIp = null;
+    try {
+      const out = await ssh.run(ip, 'curl -s --max-time 5 https://api.ipify.org 2>/dev/null', null, { timeout: 10000 });
+      if (out && /^\d+\.\d+\.\d+\.\d+$/.test(out.trim())) publicIp = out.trim();
+    } catch { /* non-critical */ }
+
+    res.json({ advertisedIp, vmIp: ip, publicIp });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.post('/api/server-visibility', async (req, res) => {
+  const ip = await getVmIp();
+  if (!ip) return res.status(400).json({ error: 'VM not running' });
+  const { advertisedIp } = req.body;
+  if (!advertisedIp) return res.status(400).json({ error: 'advertisedIp required' });
+
+  try {
+    await ssh.run(ip,
+      `printf '\\n\\n\\n${advertisedIp}\\n' > /home/dune/.dune/settings.conf`,
+      null, { timeout: 10000 });
+    lastKnownVmIp = null; // Reset cache so syncSettingsConfIp doesn't overwrite
+    log(`Server visibility IP set to ${advertisedIp}.\n`);
     res.json({ success: true });
   } catch (e) {
     res.status(500).json({ error: e.message });

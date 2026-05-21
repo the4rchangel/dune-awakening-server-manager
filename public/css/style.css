@@ -583,6 +583,15 @@ select.select-input {
 .item-results-wrap { max-height: 350px; overflow-y: auto; border: 1px solid var(--border); border-radius: var(--radius); }
 
 
+/* ------ Radio Group (Server Visibility) ------ */
+.radio-group { display: flex; flex-direction: column; gap: .5rem; }
+.radio-option { display: flex; align-items: center; gap: .6rem; padding: .5rem .75rem; border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; transition: border-color .15s, background .15s; }
+.radio-option:hover { border-color: var(--gold); }
+.radio-option input[type="radio"] { accent-color: var(--gold); }
+.radio-option.selected { border-color: var(--gold); background: rgba(212,175,55,.08); }
+.radio-option .radio-label { font-size: .85rem; }
+.radio-option .radio-hint { font-size: .72rem; color: var(--text-dim); margin-left: auto; }
+
 /* ------ Scrollbars ------ */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }

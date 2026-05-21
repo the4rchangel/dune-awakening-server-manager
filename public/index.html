@@ -590,6 +590,26 @@
 
       <div id="config-panels" style="display:none">
 
+        <!-- Server Visibility -->
+        <div class="card">
+          <div class="card-header"><h2>Server Visibility</h2></div>
+          <div class="card-body">
+            <p class="card-desc">Controls how players find your server. <strong>LAN</strong> = only players on your network. <strong>Public</strong> = anyone with your IP (requires port forwarding on your router).</p>
+            <div id="visibility-loading" style="color:var(--text-dim)">Detecting IPs...</div>
+            <div id="visibility-controls" style="display:none">
+              <div class="radio-group" id="visibility-radios"></div>
+              <div class="config-item" id="visibility-custom-row" style="display:none;margin-top:.5rem">
+                <label>Custom IP</label>
+                <input type="text" class="select-input" id="visibility-custom-ip" placeholder="e.g. 203.0.113.42">
+              </div>
+              <div style="margin-top:.75rem">
+                <button class="btn btn-green" id="btn-visibility-save">Apply</button>
+                <span class="visibility-current" id="visibility-current" style="margin-left:1rem;font-size:.8rem;color:var(--text-dim)"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- PvP & Security -->
         <div class="card">
           <div class="card-header"><h2>PvP &amp; Security</h2></div>

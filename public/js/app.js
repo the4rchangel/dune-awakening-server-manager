@@ -637,14 +637,7 @@
     $$('.cfg.cfg-dirty').forEach((el) => {
       const file = el.dataset.file;
       const key = el.dataset.key;
-      let val = el.value;
-
-      // Wrap string values that need quotes (ServerDisplayName, ServerLoginPassword)
-      if (key === 'Bgd.ServerDisplayName' || key === 'Bgd.ServerLoginPassword') {
-        val = `"${val}"`;
-      }
-
-      changes[file][key] = val;
+      changes[file][key] = el.value;
       count++;
     });
 
@@ -670,6 +663,108 @@
     }
     hideOverlay();
   });
+
+  // -----------------------------------------------------------------------
+  // Server Visibility
+  // -----------------------------------------------------------------------
+  let visibilityData = null;
+
+  async function loadVisibility() {
+    const loading = $('#visibility-loading');
+    const controls = $('#visibility-controls');
+    loading.style.display = '';
+    controls.style.display = 'none';
+
+    try {
+      visibilityData = await api('GET', 'server-visibility');
+      if (visibilityData.error) throw new Error(visibilityData.error);
+
+      const radios = $('#visibility-radios');
+      radios.innerHTML = '';
+
+      const options = [];
+      if (visibilityData.publicIp) {
+        options.push({
+          value: visibilityData.publicIp,
+          label: `Public — ${visibilityData.publicIp}`,
+          hint: 'Requires port forwarding (7777-7800 TCP/UDP)',
+        });
+      }
+      options.push({
+        value: visibilityData.vmIp,
+        label: `LAN — ${visibilityData.vmIp}`,
+        hint: 'Only players on your local network',
+      });
+      options.push({ value: 'custom', label: 'Custom IP', hint: 'Enter manually' });
+
+      const current = visibilityData.advertisedIp || visibilityData.vmIp;
+      let matchedCustom = true;
+
+      options.forEach((opt) => {
+        const id = 'vis-' + opt.value.replace(/\./g, '-');
+        const isSelected = opt.value !== 'custom' && current === opt.value;
+        if (isSelected) matchedCustom = false;
+        const div = document.createElement('label');
+        div.className = 'radio-option' + (isSelected ? ' selected' : '');
+        div.innerHTML =
+          `<input type="radio" name="visibility" value="${opt.value}" id="${id}" ${isSelected ? 'checked' : ''}>` +
+          `<span class="radio-label">${opt.label}</span>` +
+          `<span class="radio-hint">${opt.hint}</span>`;
+        radios.appendChild(div);
+      });
+
+      if (matchedCustom && current) {
+        const customRadio = radios.querySelector('input[value="custom"]');
+        if (customRadio) {
+          customRadio.checked = true;
+          customRadio.closest('.radio-option').classList.add('selected');
+          $('#visibility-custom-ip').value = current;
+          $('#visibility-custom-row').style.display = '';
+        }
+      }
+
+      radios.querySelectorAll('input[type="radio"]').forEach((r) => {
+        r.addEventListener('change', () => {
+          radios.querySelectorAll('.radio-option').forEach((o) => o.classList.remove('selected'));
+          r.closest('.radio-option').classList.add('selected');
+          $('#visibility-custom-row').style.display = r.value === 'custom' ? '' : 'none';
+        });
+      });
+
+      $('#visibility-current').textContent = `Currently advertising: ${current}`;
+
+      loading.style.display = 'none';
+      controls.style.display = '';
+    } catch (e) {
+      loading.textContent = 'Failed to load visibility: ' + e.message;
+    }
+  }
+
+  $('#btn-visibility-save').addEventListener('click', async () => {
+    const selected = document.querySelector('input[name="visibility"]:checked');
+    if (!selected) { alert('Select an option.'); return; }
+
+    let ip = selected.value;
+    if (ip === 'custom') {
+      ip = $('#visibility-custom-ip').value.trim();
+      if (!ip) { alert('Enter a custom IP address.'); return; }
+    }
+
+    showOverlay('Setting server visibility...');
+    try {
+      await api('POST', 'server-visibility', { advertisedIp: ip });
+      appendConsole(`Server visibility set to ${ip}. Restart the battlegroup to apply.\n`);
+      await loadVisibility();
+    } catch (e) { alert('Failed: ' + e.message); }
+    hideOverlay();
+  });
+
+  // Load visibility when Game Config tab opens
+  const origConfigLoad = loadConfig;
+  loadConfig = async function() {
+    await origConfigLoad();
+    loadVisibility();
+  };
 
   // -----------------------------------------------------------------------
   // Character Editor
