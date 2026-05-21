@@ -73,25 +73,21 @@ async function getVmIp() {
   return st && st.ip ? st.ip : null;
 }
 
-// Keep settings.conf in sync when the VM IP changes (only for private/LAN mode).
-// If the user has set a public IP, don't overwrite it.
+// Auto-sync is disabled once the user explicitly sets an IP via the dashboard.
+// It only runs on first boot to seed settings.conf when it's empty.
 let lastKnownVmIp = null;
+let visibilityManuallySet = false;
 
 async function syncSettingsConfIp(ip) {
-  if (!ip || ip === lastKnownVmIp) return;
+  if (!ip || ip === lastKnownVmIp || visibilityManuallySet) return;
   try {
     const conf = await ssh.run(ip, 'cat /home/dune/.dune/settings.conf 2>/dev/null', null, { timeout: 10000 });
     const lines = conf.split('\n');
     const currentIpInConf = (lines[3] || '').trim();
-    // Only auto-update if the current IP looks like a private/LAN address that's gone stale
-    const isPrivate = /^(10\.|172\.(1[6-9]|2\d|3[01])\.|192\.168\.)/.test(currentIpInConf);
-    if (currentIpInConf && currentIpInConf !== ip && isPrivate) {
-      log(`VM private IP changed (${currentIpInConf} → ${ip}), updating settings.conf...\n`);
-      lines[3] = ip;
-      const updated = lines.join('\n');
-      const b64 = Buffer.from(updated).toString('base64');
-      await ssh.run(ip, `echo '${b64}' | base64 -d > /home/dune/.dune/settings.conf`, null, { timeout: 10000 });
-      log('settings.conf updated with new IP.\n');
+    if (!currentIpInConf) {
+      // settings.conf has no IP yet — seed it with the VM's private IP
+      log(`Seeding settings.conf with VM IP ${ip}...\n`);
+      await ssh.run(ip, `printf '\\n\\n\\n${ip}\\n' > /home/dune/.dune/settings.conf`, null, { timeout: 10000 });
     }
     lastKnownVmIp = ip;
   } catch { /* non-critical */ }
@@ -1396,7 +1392,7 @@ app.post('/api/server-visibility', async (req, res) => {
     await ssh.run(ip,
       `printf '\\n\\n\\n${advertisedIp}\\n' > /home/dune/.dune/settings.conf`,
       null, { timeout: 10000 });
-    lastKnownVmIp = null; // Reset cache so syncSettingsConfIp doesn't overwrite
+    visibilityManuallySet = true;
     log(`Server visibility IP set to ${advertisedIp}.\n`);
     res.json({ success: true });
   } catch (e) {
