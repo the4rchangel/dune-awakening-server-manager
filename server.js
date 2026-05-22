@@ -243,6 +243,74 @@ app.post('/api/vm/rotate-key', async (_req, res) => {
 });
 
 // --- Battlegroup commands ---
+async function fixImageTagsIfNeeded(ip) {
+  try {
+    const ns = (await ssh.run(ip,
+      "sudo kubectl get battlegroups -A --no-headers -o custom-columns=':metadata.namespace' 2>/dev/null | head -1",
+      null, { timeout: 15000 })).trim();
+    const bgName = (await ssh.run(ip,
+      "sudo kubectl get battlegroups -A --no-headers -o custom-columns=':metadata.name' 2>/dev/null | head -1",
+      null, { timeout: 15000 })).trim();
+    if (!ns || !bgName) return;
+
+    const raw = await ssh.run(ip,
+      `sudo kubectl get battlegroup ${bgName} -n ${ns} -o json 2>/dev/null`,
+      null, { timeout: 30000 });
+    const bg = JSON.parse(raw);
+
+    const serverImage = bg.spec?.serverGroup?.template?.spec?.sets?.[0]?.image || '';
+    if (!/:0-0-shipping$/.test(serverImage)) return;
+
+    log('Detected placeholder image tags (0-0-shipping). Looking up correct version...\n');
+
+    const imgLine = (await ssh.run(ip,
+      "sudo crictl images 2>/dev/null | grep 'seabass-server ' | head -1",
+      null, { timeout: 15000 })).trim();
+    const parts = imgLine.split(/\s+/);
+    const correctTag = parts[1];
+    if (!correctTag || correctTag === '0-0-shipping') {
+      log('Could not determine correct image tag from local images.\n');
+      return;
+    }
+
+    log(`Patching image tags from 0-0-shipping to ${correctTag}...\n`);
+    await ssh.run(ip,
+      `sudo kubectl get battlegroup ${bgName} -n ${ns} -o json 2>/dev/null | ` +
+      `sed 's|:0-0-shipping|:${correctTag}|g' | ` +
+      `sudo kubectl apply -f - 2>&1`,
+      null, { timeout: 30000 });
+    log('Image tags corrected.\n');
+
+    // Clean up any pods stuck from the bad tags
+    const stuckPods = (await ssh.run(ip,
+      `sudo kubectl get pods -n ${ns} --no-headers 2>/dev/null | grep -E 'ImagePullBackOff|ErrImagePull|Init:ImagePullBackOff' | awk '{print $1}'`,
+      null, { timeout: 15000 })).trim();
+    if (stuckPods) {
+      const podList = stuckPods.split('\n').filter(Boolean);
+      log(`Cleaning up ${podList.length} stuck pod(s)...\n`);
+      await ssh.run(ip,
+        `sudo kubectl delete pods -n ${ns} ${podList.join(' ')} 2>&1`,
+        null, { timeout: 15000 });
+    }
+
+    // Clean up Error pods from failed DB init jobs so the operator can retry
+    const errorPods = (await ssh.run(ip,
+      `sudo kubectl get pods -n ${ns} --no-headers 2>/dev/null | grep -E 'Error' | grep 'db-dbdepl-util' | awk '{print $1}'`,
+      null, { timeout: 15000 })).trim();
+    if (errorPods) {
+      const podList = errorPods.split('\n').filter(Boolean);
+      log(`Cleaning up ${podList.length} failed DB init pod(s)...\n`);
+      await ssh.run(ip,
+        `sudo kubectl delete pods -n ${ns} ${podList.join(' ')} 2>&1`,
+        null, { timeout: 15000 });
+    }
+
+    log('Pre-start cleanup complete.\n');
+  } catch (e) {
+    log(`Image tag check warning: ${e.message}\n`);
+  }
+}
+
 function bgRoute(action, label, timeoutMs) {
   app.post(`/api/bg/${action}`, async (_req, res) => {
     const ip = await getVmIp();
@@ -252,9 +320,11 @@ function bgRoute(action, label, timeoutMs) {
     }
 
     try {
-      // Re-apply the visibility IP before start/restart so the Director
-      // registers the correct address with Funcom's discovery service.
       if (action === 'start' || action === 'restart') {
+        // Fix placeholder image tags before starting
+        await fixImageTagsIfNeeded(ip);
+
+        // Re-apply the visibility IP so the Director registers the correct address
         try {
           const currentIp = (await ssh.run(ip,
             "sed -n '4p' /home/dune/.dune/settings.conf 2>/dev/null",

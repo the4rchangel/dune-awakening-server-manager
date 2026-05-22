@@ -273,6 +273,7 @@ No data leaves your machine. Everything runs locally on `localhost:3000`.
 | _"No .vmcx file found"_ | Verify the Dune Awakening Self-Hosted Server is installed in Steam and the path is correct |
 | VM fails to start with memory error | Your system doesn't have enough free RAM. Lower the memory allocation and enable swap memory |
 | _"No battlegroup found"_ on start | The initial setup didn't complete. Re-run the setup wizard or use `battlegroup.bat → initial-setup` |
+| Database stuck on "Modifying" after first start | The app auto-detects and fixes this (placeholder image tags). If it persists, restart the battlegroup — the app will patch the Kubernetes CRD with the correct image versions on the next start |
 | Server visible in browser but players can't connect | Make sure **Server Visibility** is set to your public IP (not a private/LAN IP), the battlegroup was restarted after changing it, and the required ports are forwarded on your router (see below) |
 | Visibility IP reverts to LAN after applying | Update the app — this was a bug in older versions where `settings.conf` wasn't being read correctly |
 
