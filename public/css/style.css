@@ -550,6 +550,15 @@ select.select-input {
   font-size: .8rem;
 }
 
+#repair-bootstrap-panel {
+  margin-bottom: 1rem;
+  border: 1px solid var(--yellow);
+  background: rgba(200, 160, 40, .08);
+}
+#repair-bootstrap-panel .card-header h2 {
+  color: var(--yellow);
+}
+
 /* ------ Character Editor ------ */
 .char-warning {
   display: flex;

@@ -125,6 +125,78 @@ async function getDirectorPort(ip) {
   }
 }
 
+function battlegroupOutputNeedsBootstrap(output) {
+  return /No resources found/i.test(output || '');
+}
+
+async function cleanOrphanBattlegroupNamespaces(ip) {
+  const bgCount = (await ssh.run(ip,
+    "sudo kubectl get battlegroups -A --no-headers 2>/dev/null | wc -l",
+    null, { timeout: 15000 })).trim();
+  if (parseInt(bgCount, 10) > 0) return false;
+
+  log('No battlegroup CR found — removing empty seabass namespace(s)...\n');
+  await ssh.run(ip, [
+    "for ns in $(sudo kubectl get ns -o jsonpath='{.items[*].metadata.name}' 2>/dev/null | tr ' ' '\\n' | grep '^funcom-seabass-'); do",
+    '  sudo kubectl delete ns "$ns" --wait=false 2>/dev/null || true',
+    'done',
+    'echo CLEAN_OK',
+  ].join(' '), log, { timeout: 120000 });
+  await new Promise((r) => setTimeout(r, 8000));
+  return true;
+}
+
+async function runBootstrapSetup(ip, { token, worldName, region, enableSwap }) {
+  log('Uploading bootstrap files...\n');
+  const psUpload = `
+    $scriptDir = '${DEFAULT_SERVER_PATH}\\battlegroup-management'
+    $sshKey = "$env:LOCALAPPDATA\\DuneAwakeningServer\\sshKey"
+    $bootstrapSetup = Join-Path $scriptDir 'bootstrap\\setup'
+    $setupText = (Get-Content $bootstrapSetup -Raw) -replace "\`r\`n", "\`n"
+    $b64Setup = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($setupText))
+    $uploadScript = @"
+#!/bin/sh
+set -e
+echo $b64Setup | base64 -d | sudo -n tee /home/dune/.dune/bin/setup > /dev/null
+sudo -n chmod +x /home/dune/.dune/bin/setup
+echo UPLOAD_OK
+"@
+    $uploadScript = $uploadScript -replace "\`r\`n", "\`n"
+    $b64Upload = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($uploadScript))
+    $uploadCmd = "echo $b64Upload | base64 -d | sh"
+    $out = & ssh -o StrictHostKeyChecking=no -o LogLevel=QUIET -i "$sshKey" "dune@${ip}" $uploadCmd 2>&1
+    $out | Out-String
+  `;
+  const uploadOut = await ps.run(psUpload, log);
+  if (!uploadOut.includes('UPLOAD_OK')) {
+    throw new Error('Bootstrap upload failed');
+  }
+
+  const stdinLines = [
+    worldName || 'Dune Server',
+    region || '3',
+    token || '',
+  ].join('\n') + '\n';
+
+  log('\nRunning first-time battlegroup setup (this takes a while)...\n');
+  await ssh.run(ip, '/home/dune/.dune/bin/setup 2>&1', log, {
+    timeout: 900000,
+    stdin: stdinLines,
+  });
+  log('\nBattlegroup setup complete.\n');
+
+  if (enableSwap) {
+    log('\nEnabling experimental swap memory...\n');
+    await ssh.run(
+      ip,
+      'echo yes | /home/dune/.dune/bin/battlegroup enable-experimental-swap 2>&1',
+      log,
+      { timeout: 600000, tty: true }
+    );
+    log('Swap memory enabled.\n');
+  }
+}
+
 // ---------------------------------------------------------------------------
 // REST API
 // ---------------------------------------------------------------------------
@@ -147,9 +219,18 @@ app.get('/api/status', async (_req, res) => {
         const raw = await ssh.run(vm.ip, '/home/dune/.dune/bin/battlegroup status 2>&1', null, { timeout: 10000, tty: true });
         const gameServersSection = raw.split(/Game Servers/i)[1] || '';
         const hasRunningServers = /\bRunning\b/i.test(gameServersSection);
-        bg = { running: hasRunningServers, output: raw };
+        bg = {
+          running: hasRunningServers,
+          output: raw,
+          needsBootstrap: battlegroupOutputNeedsBootstrap(raw),
+        };
       } catch (e) {
-        bg = { running: false, output: e.stdout || e.message };
+        const out = e.stdout || e.message;
+        bg = {
+          running: false,
+          output: out,
+          needsBootstrap: battlegroupOutputNeedsBootstrap(out),
+        };
       }
       directorPort = await getDirectorPort(vm.ip);
       syncSettingsConfIp(vm.ip);
@@ -913,63 +994,33 @@ app.post('/api/setup/bootstrap', async (req, res) => {
   if (!ip) return res.status(400).json({ error: 'ip required' });
 
   try {
-    // Upload bootstrap
-    log('Uploading bootstrap files...\n');
-    const psUpload = `
-      $scriptDir = '${DEFAULT_SERVER_PATH}\\battlegroup-management'
-      $sshKey = "$env:LOCALAPPDATA\\DuneAwakeningServer\\sshKey"
-      $bootstrapSetup = Join-Path $scriptDir 'bootstrap\\setup'
-      $setupText = (Get-Content $bootstrapSetup -Raw) -replace "\`r\`n", "\`n"
-      $b64Setup = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($setupText))
-      $uploadScript = @"
-#!/bin/sh
-set -e
-echo $b64Setup | base64 -d | sudo -n tee /home/dune/.dune/bin/setup > /dev/null
-sudo -n chmod +x /home/dune/.dune/bin/setup
-echo UPLOAD_OK
-"@
-      $uploadScript = $uploadScript -replace "\`r\`n", "\`n"
-      $b64Upload = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($uploadScript))
-      $uploadCmd = "echo $b64Upload | base64 -d | sh"
-      $out = & ssh -o StrictHostKeyChecking=no -o LogLevel=QUIET -i "$sshKey" "dune@${ip}" $uploadCmd 2>&1
-      $out | Out-String
-    `;
-    const uploadOut = await ps.run(psUpload, log);
-    if (!uploadOut.includes('UPLOAD_OK')) {
-      throw new Error('Bootstrap upload failed');
-    }
-
-    // Run setup — feed all interactive answers via stdin
-    // Prompt order: 1) world name, 2) region (1-5), 3) token
-    const stdinLines = [
-      worldName || 'Dune Server',
-      region || '3',
-      token || '',
-    ].join('\n') + '\n';
-
-    log('\nRunning first-time battlegroup setup (this takes a while)...\n');
-    await ssh.run(ip, '/home/dune/.dune/bin/setup 2>&1', log, {
-      timeout: 900000,
-      stdin: stdinLines,
-    });
-    log('\nBattlegroup setup complete.\n');
-
-    // Optional swap
-    if (enableSwap) {
-      log('\nEnabling experimental swap memory...\n');
-      await ssh.run(
-        ip,
-        'echo yes | /home/dune/.dune/bin/battlegroup enable-experimental-swap 2>&1',
-        log,
-        { timeout: 600000, tty: true }
-      );
-      log('Swap memory enabled.\n');
-    }
-
+    await runBootstrapSetup(ip, { token, worldName, region, enableSwap });
     cachedVmStatus = null;
+    lastStatusResult = null;
     res.json({ success: true });
   } catch (e) {
     log(`\nError: ${e.message}\n`);
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
+// Repair incomplete install (empty namespace / no battlegroup CR)
+app.post('/api/setup/repair', async (req, res) => {
+  const { token, worldName, region, enableSwap } = req.body;
+  if (!token) return res.status(400).json({ error: 'token required' });
+
+  const ip = await getVmIp();
+  if (!ip) return res.status(400).json({ error: 'VM not running' });
+
+  try {
+    log('=== Repairing incomplete battlegroup setup ===\n');
+    await cleanOrphanBattlegroupNamespaces(ip);
+    await runBootstrapSetup(ip, { token, worldName, region, enableSwap });
+    cachedVmStatus = null;
+    lastStatusResult = null;
+    res.json({ success: true });
+  } catch (e) {
+    log(`\nRepair error: ${e.message}\n`);
     res.status(500).json({ success: false, error: e.message });
   }
 });

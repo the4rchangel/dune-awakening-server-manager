@@ -84,6 +84,48 @@
         </div>
       </div>
 
+      <div class="card" id="repair-bootstrap-panel" hidden>
+        <div class="card-header">
+          <h2>Battlegroup setup incomplete</h2>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">The VM exists but the battlegroup was never fully installed (empty namespace). Enter your server token and run repair — this deletes the empty namespace and re-runs bootstrap.</p>
+          <div class="setup-row">
+            <div class="field">
+              <label for="repair-world-name">World Name</label>
+              <input type="text" id="repair-world-name" class="select-input" maxlength="50" placeholder="Dunewatchers" value="Dunewatchers">
+            </div>
+            <div class="field">
+              <label for="repair-region">Region</label>
+              <select id="repair-region" class="select-input">
+                <option value="1">Asia</option>
+                <option value="2">Europe</option>
+                <option value="3" selected>North America</option>
+                <option value="4">Oceania</option>
+                <option value="5">South America</option>
+              </select>
+            </div>
+          </div>
+          <div class="field" style="margin-top:.75rem">
+            <label for="repair-token">Server Token</label>
+            <input type="password" id="repair-token" class="select-input" placeholder="Paste token from account.duneawakening.com">
+          </div>
+          <div class="field" style="margin-top:.75rem">
+            <label class="radio-label">
+              <input type="checkbox" id="repair-swap">
+              Enable experimental swap memory
+            </label>
+          </div>
+          <div class="setup-progress-area" style="margin-top:1rem">
+            <div class="spinner" id="repair-spinner" hidden></div>
+            <pre class="setup-log" id="repair-log"></pre>
+          </div>
+        </div>
+        <div class="card-actions">
+          <button type="button" class="btn btn-blue btn-lg" id="btn-repair-bootstrap">Repair &amp; Complete Setup</button>
+        </div>
+      </div>
+
       <div class="card quick-links-card" id="quick-links">
         <div class="card-header"><h2>Quick Links</h2></div>
         <div class="card-body link-row">

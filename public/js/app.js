@@ -217,6 +217,13 @@
         cw.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l2.5 2.5L16 9"/></svg><span><strong>Battlegroup is offline.</strong> Safe to edit. Changes will apply on next start.</span>';
       }
     }
+
+    const repairPanel = $('#repair-bootstrap-panel');
+    if (repairPanel) {
+      const needsRepair = running && bg && bg.needsBootstrap;
+      repairPanel.hidden = !needsRepair;
+      $('#btn-repair-bootstrap').disabled = busy || !needsRepair;
+    }
   }
 
   async function refreshStatus() {
@@ -612,6 +619,41 @@
     runAction('bg/stop', 'Stopping battlegroup');
   });
   $('#btn-bg-update').addEventListener('click',   () => runAction('bg/update', 'Checking for updates'));
+
+  $('#btn-repair-bootstrap').addEventListener('click', async () => {
+    const token = $('#repair-token').value.trim();
+    const worldName = $('#repair-world-name').value.trim();
+    if (!token) { alert('Server token is required.'); return; }
+    if (!worldName) { alert('World name is required.'); return; }
+    if (!confirm('Repair will delete the empty battlegroup namespace and re-run setup. Continue?')) return;
+
+    const logEl = $('#repair-log');
+    const spinner = $('#repair-spinner');
+    logEl.textContent = '';
+    spinner.hidden = false;
+    $('#btn-repair-bootstrap').disabled = true;
+    showOverlay('Repairing battlegroup setup...');
+
+    try {
+      const res = await api('POST', 'setup/repair', {
+        token,
+        worldName,
+        region: $('#repair-region').value,
+        enableSwap: $('#repair-swap').checked,
+      });
+      if (res.success) {
+        logEl.textContent += '\nRepair complete. Refreshing status...\n';
+        await refreshStatus();
+      } else {
+        logEl.textContent += `\nError: ${res.error}\n`;
+      }
+    } catch (e) {
+      logEl.textContent += `\nError: ${e.message}\n`;
+    }
+    spinner.hidden = true;
+    $('#btn-repair-bootstrap').disabled = false;
+    hideOverlay();
+  });
 
   // data-action buttons (battlegroup tab, monitoring, database)
   $$('[data-action]').forEach((btn) => {

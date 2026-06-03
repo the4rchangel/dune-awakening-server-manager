@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.3 — 2026-06-03
+
+### Incomplete bootstrap repair
+
+- **`needsBootstrap` in `/api/status`** — Detects the “No resources found in funcom-seabass-… namespace” state (VM imported but bootstrap never finished).
+- **`POST /api/setup/repair`** — Deletes empty seabass namespace(s) when no battlegroup CR exists, then re-runs bootstrap automatically.
+- **Dashboard repair panel** — Yellow banner with token/world/region form when incomplete setup is detected.
+
 ## 1.0.2 — 2026-06-03
 
 ### Setup — delete and start fresh
