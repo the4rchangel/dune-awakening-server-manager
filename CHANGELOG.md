@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.2 — 2026-06-03
+
+### Setup — delete and start fresh
+
+- **Setup tab → Delete & Start Fresh** — When pre-flight detects an existing `dune-awakening` VM, a reset panel appears on step 1.
+- **`POST /api/setup/reset`** — Stops the battlegroup (if reachable), removes the Hyper-V VM, deletes `DuneAwakeningServer` folders on all drives, removes SSH keys, and clears cached manager state.
+- Requires typing **DELETE** to confirm. Re-runs pre-flight automatically after reset so you can walk through the wizard again.
+
 ## 1.0.1 — 2026-06-03
 
 ### Server finder / WAN visibility fixes

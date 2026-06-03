@@ -460,6 +460,87 @@ app.get('/api/setup/preflight', async (_req, res) => {
   }
 });
 
+// Reset — remove VM, install folders, SSH keys (fresh setup)
+app.post('/api/setup/reset', async (_req, res) => {
+  const fs = require('fs');
+  const os = require('os');
+
+  try {
+    log('=== Resetting Dune server installation ===\n');
+
+    const vm = await getVmStatus();
+    if (vm.exists && vm.state === 'Running' && vm.ip) {
+      log('Stopping battlegroup (if running)...\n');
+      try {
+        await ssh.run(vm.ip, '/home/dune/.dune/bin/battlegroup stop 2>&1', log, { timeout: 180000, tty: true });
+        log('Battlegroup stop sent.\n');
+      } catch (e) {
+        log(`Battlegroup stop skipped: ${e.message}\n`);
+      }
+    }
+
+    log('Removing Hyper-V VM and install folders...\n');
+    const psOut = await ps.run(`
+      $removedVm = $false
+      $vm = Get-VM -Name '${VM_NAME}' -ErrorAction SilentlyContinue
+      if ($vm) {
+        if ($vm.State -eq 'Running') { Stop-VM -Name '${VM_NAME}' -TurnOff -Force }
+        Remove-VM -Name '${VM_NAME}' -Force
+        $removedVm = $true
+        Write-Output 'Removed VM dune-awakening.'
+      }
+
+      $cleared = @()
+      Get-PSDrive -PSProvider FileSystem | ForEach-Object {
+        $dest = "$($_.Name):\\DuneAwakeningServer"
+        if (Test-Path $dest) {
+          Remove-Item $dest -Recurse -Force -ErrorAction SilentlyContinue
+          if (-not (Test-Path $dest)) { $cleared += $dest }
+        }
+      }
+      if ($cleared.Count -gt 0) { Write-Output ("Cleared: " + ($cleared -join ', ')) }
+
+      $sw = Get-VMSwitch -Name 'DuneAwakeningServerSwitch' -ErrorAction SilentlyContinue
+      if ($sw) {
+        $used = @(Get-VMNetworkAdapter -All | Where-Object { $_.SwitchName -eq 'DuneAwakeningServerSwitch' })
+        if ($used.Count -eq 0) {
+          Remove-VMSwitch -Name 'DuneAwakeningServerSwitch' -Force -ErrorAction SilentlyContinue
+          Write-Output 'Removed unused DuneAwakeningServerSwitch.'
+        }
+      }
+
+      @{ removedVm = $removedVm; vmExists = [bool](Get-VM -Name '${VM_NAME}' -ErrorAction SilentlyContinue) } | ConvertTo-Json -Compress
+    `, log);
+
+    let resetMeta = {};
+    try { resetMeta = JSON.parse(psOut.trim().split('\n').pop()); } catch { /* ignore */ }
+
+    const keyDir = path.join(
+      process.env.LOCALAPPDATA || path.join(os.homedir(), 'AppData', 'Local'),
+      'DuneAwakeningServer'
+    );
+    if (fs.existsSync(keyDir)) {
+      fs.rmSync(keyDir, { recursive: true, force: true });
+      log(`Removed SSH keys at ${keyDir}\n`);
+    }
+
+    visibilityManuallySet = false;
+    lastKnownVmIp = null;
+    cachedVmStatus = null;
+    lastStatusResult = null;
+
+    log('Reset complete. Run the setup wizard from step 1.\n');
+    res.json({
+      success: true,
+      removedVm: !!resetMeta.removedVm,
+      vmExists: !!resetMeta.vmExists,
+    });
+  } catch (e) {
+    log(`Reset error: ${e.message}\n`);
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
 // Step 2 — Import VM: remove old if needed, import, configure network+memory, start
 app.post('/api/setup/import', async (req, res) => {
   const { drive, memoryGB, networkMode, nicName } = req.body;

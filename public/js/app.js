@@ -277,53 +277,112 @@
   let preflightPassed = false;
   let preflightData = null;
 
-  $('#btn-preflight').addEventListener('click', async () => {
+  function applyPreflightResults(data) {
+    preflightData = data;
+
+    function mark(id, ok) {
+      const el = $(id);
+      el.classList.toggle('pass', ok);
+      el.classList.toggle('fail', !ok);
+      el.querySelector('.pf-icon').textContent = ok ? '\u2705' : '\u274C';
+    }
+    mark('#pf-hyperv', data.hyperv);
+    mark('#pf-vmcx', data.vmcxFound);
+    mark('#pf-drives', data.drives && data.drives.length > 0);
+
+    preflightPassed = data.hyperv && data.vmcxFound && data.drives && data.drives.length > 0;
+
+    const resetPanel = $('#setup-reset-panel');
+    const resetDesc = $('#setup-reset-desc');
+    if (resetPanel) {
+      if (data.vmExists) {
+        resetPanel.hidden = false;
+        if (resetDesc) {
+          resetDesc.textContent = data.vmState
+            ? `VM "dune-awakening" exists (${data.vmState}). Delete everything below to run setup again from scratch.`
+            : 'VM "dune-awakening" exists. Delete everything below to run setup again from scratch.';
+        }
+      } else {
+        resetPanel.hidden = true;
+      }
+    }
+
+    if (preflightPassed) {
+      const sel = $('#setup-drive');
+      sel.innerHTML = '';
+      data.drives.forEach((d) => {
+        const opt = document.createElement('option');
+        opt.value = d.name;
+        opt.textContent = `${d.name}: — ${d.freeGB} GB free`;
+        sel.appendChild(opt);
+      });
+
+      if (data.nics && data.nics.length > 0) {
+        const nicSel = $('#setup-nic');
+        nicSel.innerHTML = '';
+        data.nics.forEach((n) => {
+          const opt = document.createElement('option');
+          opt.value = n.name;
+          opt.textContent = `${n.name} (${n.desc})`;
+          nicSel.appendChild(opt);
+        });
+      }
+    }
+  }
+
+  async function runPreflight() {
     $('#btn-preflight').disabled = true;
     $('#btn-preflight').textContent = 'Checking...';
     try {
-      const data = await api('GET', 'setup/preflight');
-      preflightData = data;
-
-      function mark(id, ok) {
-        const el = $(id);
-        el.classList.toggle('pass', ok);
-        el.classList.toggle('fail', !ok);
-        el.querySelector('.pf-icon').textContent = ok ? '\u2705' : '\u274C';
-      }
-      mark('#pf-hyperv', data.hyperv);
-      mark('#pf-vmcx', data.vmcxFound);
-      mark('#pf-drives', data.drives && data.drives.length > 0);
-
-      preflightPassed = data.hyperv && data.vmcxFound && data.drives && data.drives.length > 0;
-
-      if (preflightPassed) {
-        // Populate drive select
-        const sel = $('#setup-drive');
-        sel.innerHTML = '';
-        data.drives.forEach((d) => {
-          const opt = document.createElement('option');
-          opt.value = d.name;
-          opt.textContent = `${d.name}: — ${d.freeGB} GB free`;
-          sel.appendChild(opt);
-        });
-
-        // Populate NIC select
-        if (data.nics && data.nics.length > 0) {
-          const nicSel = $('#setup-nic');
-          nicSel.innerHTML = '';
-          data.nics.forEach((n) => {
-            const opt = document.createElement('option');
-            opt.value = n.name;
-            opt.textContent = `${n.name} (${n.desc})`;
-            nicSel.appendChild(opt);
-          });
-        }
-      }
+      applyPreflightResults(await api('GET', 'setup/preflight'));
     } catch (e) {
       appendConsole(`Preflight error: ${e.message}\n`);
     }
     $('#btn-preflight').disabled = false;
     $('#btn-preflight').textContent = 'Run Checks';
+  }
+
+  $('#btn-preflight').addEventListener('click', runPreflight);
+
+  document.querySelector('.tab[data-tab="setup"]')?.addEventListener('click', () => {
+    if (!preflightData) runPreflight();
+  });
+
+  $('#btn-setup-reset').addEventListener('click', async () => {
+    if (busy) return;
+
+    const msg =
+      'This permanently deletes your Dune VM, all battlegroup/world data inside it, ' +
+      'install folders, and SSH keys.\n\n' +
+      'Export a database backup first if you need to keep your world.\n\n' +
+      'Type DELETE to confirm.';
+    const typed = prompt(msg);
+    if (typed !== 'DELETE') {
+      if (typed !== null) alert('Reset cancelled — you must type DELETE exactly.');
+      return;
+    }
+
+    busy = true;
+    showOverlay('Deleting existing installation...');
+    try {
+      const res = await api('POST', 'setup/reset');
+      if (!res.success) throw new Error(res.error || 'Reset failed');
+
+      wizData = {};
+      preflightPassed = false;
+      showWizStep(1);
+      $('#setup-log').textContent = '';
+      $('#bootstrap-log').textContent = '';
+      appendConsole('Installation reset complete. Run pre-flight checks to begin a fresh setup.\n');
+      cachedVmStatus = null;
+      await runPreflight();
+      refreshStatus();
+    } catch (e) {
+      alert('Reset failed: ' + e.message);
+      appendConsole(`Reset error: ${e.message}\n`);
+    }
+    hideOverlay();
+    busy = false;
   });
 
   // Show/hide NIC field based on network mode
@@ -355,7 +414,10 @@
         return;
       }
       if (preflightData && preflightData.vmExists) {
-        if (!confirm(`A VM named "dune-awakening" already exists (${preflightData.vmState}). It will be removed and re-created. Continue?`)) return;
+        if (!confirm(
+          'A VM already exists. Continuing will replace it during import, but SSH keys may be stale.\n\n' +
+          'For a clean reinstall, use "Delete & Start Fresh" on step 1 instead.\n\nContinue anyway?'
+        )) return;
       }
       showWizStep(2);
 

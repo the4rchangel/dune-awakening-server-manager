@@ -135,6 +135,19 @@
             <div class="btn-group" style="margin-top: 1rem">
               <button class="btn btn-blue btn-lg" id="btn-preflight">Run Checks</button>
             </div>
+
+            <div id="setup-reset-panel" class="setup-reset-panel" hidden>
+              <div class="setup-reset-title">Existing installation detected</div>
+              <p class="card-desc" id="setup-reset-desc">A Dune server VM is already on this machine. Delete everything and run setup again from scratch.</p>
+              <ul class="setup-reset-list">
+                <li>Hyper-V VM <code>dune-awakening</code></li>
+                <li><code>DuneAwakeningServer</code> folders on all drives</li>
+                <li>SSH keys and saved VM credentials</li>
+                <li>All in-VM battlegroup data (world, characters, configs)</li>
+              </ul>
+              <p class="field-hint" style="color:var(--yellow)">This cannot be undone. Export a database backup first if you need your world data.</p>
+              <button type="button" class="btn btn-red btn-lg" id="btn-setup-reset">Delete &amp; Start Fresh</button>
+            </div>
           </div>
 
           <!-- Step 2: Configuration -->

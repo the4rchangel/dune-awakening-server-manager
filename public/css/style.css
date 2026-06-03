@@ -526,6 +526,30 @@ select.select-input {
 }
 .retry-msg { color: var(--yellow); margin-bottom: .75rem; }
 
+.setup-reset-panel {
+  margin-top: 1.25rem;
+  padding: 1rem;
+  background: rgba(180, 60, 60, .08);
+  border: 1px solid var(--red);
+  border-radius: var(--radius);
+}
+.setup-reset-title {
+  font-weight: 600;
+  color: var(--red);
+  margin-bottom: .35rem;
+}
+.setup-reset-list {
+  margin: .5rem 0 .75rem 1.2rem;
+  padding: 0;
+  font-size: .82rem;
+  line-height: 1.6;
+  color: var(--text-dim);
+}
+.setup-reset-list code {
+  color: var(--text);
+  font-size: .8rem;
+}
+
 /* ------ Character Editor ------ */
 .char-warning {
   display: flex;
