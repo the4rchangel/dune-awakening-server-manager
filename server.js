@@ -78,16 +78,36 @@ async function getVmIp() {
 let lastKnownVmIp = null;
 let visibilityManuallySet = false;
 
+// Funcom reads line 4 of settings.conf at gateway startup as GameRmqAddress.
+const PORT_FORWARD_INFO = {
+  rmqTcp: 31982,
+  gameUdpStart: 7777,
+  gameUdpEnd: 7810,
+};
+
+async function readSettingsConfIp(vmIp) {
+  return (await ssh.run(vmIp,
+    "sed -n '4p' /home/dune/.dune/settings.conf 2>/dev/null",
+    null, { timeout: 10000 })).trim();
+}
+
+async function writeSettingsConfIp(vmIp, advertisedIp) {
+  if (!/^\d+\.\d+\.\d+\.\d+$/.test(advertisedIp)) {
+    throw new Error(`Invalid IP address: ${advertisedIp}`);
+  }
+  const content = `\n\n\n${advertisedIp}\n`;
+  const b64 = Buffer.from(content).toString('base64');
+  await ssh.run(vmIp, `echo ${b64} | base64 -d > /home/dune/.dune/settings.conf`, null, { timeout: 10000 });
+}
+
 async function syncSettingsConfIp(ip) {
   if (!ip || ip === lastKnownVmIp || visibilityManuallySet) return;
   try {
-    const currentIpInConf = (await ssh.run(ip,
-      "sed -n '4p' /home/dune/.dune/settings.conf 2>/dev/null",
-      null, { timeout: 10000 })).trim();
+    const currentIpInConf = await readSettingsConfIp(ip);
     if (!currentIpInConf) {
       // settings.conf has no IP yet — seed it with the VM's private IP
       log(`Seeding settings.conf with VM IP ${ip}...\n`);
-      await ssh.run(ip, `printf '\\n\\n\\n${ip}\\n' > /home/dune/.dune/settings.conf`, null, { timeout: 10000 });
+      await writeSettingsConfIp(ip, ip);
     }
     lastKnownVmIp = ip;
   } catch { /* non-critical */ }
@@ -324,16 +344,15 @@ function bgRoute(action, label, timeoutMs) {
         // Fix placeholder image tags before starting
         await fixImageTagsIfNeeded(ip);
 
-        // Re-apply the visibility IP so the Director registers the correct address
+        // Re-apply the visibility IP so the gateway registers GameRmqAddress on startup
         try {
-          const currentIp = (await ssh.run(ip,
-            "sed -n '4p' /home/dune/.dune/settings.conf 2>/dev/null",
-            null, { timeout: 10000 })).trim();
+          const currentIp = await readSettingsConfIp(ip);
           if (currentIp && /^\d+\.\d+\.\d+\.\d+$/.test(currentIp)) {
-            await ssh.run(ip,
-              `printf '\\n\\n\\n${currentIp}\\n' > /home/dune/.dune/settings.conf`,
-              null, { timeout: 10000 });
+            await writeSettingsConfIp(ip, currentIp);
             log(`Confirmed visibility IP: ${currentIp}\n`);
+            if (currentIp !== ip) {
+              log(`WAN mode: ensure TCP ${PORT_FORWARD_INFO.rmqTcp}, Director NodePort, and UDP ${PORT_FORWARD_INFO.gameUdpStart}-${PORT_FORWARD_INFO.gameUdpEnd} are forwarded to VM ${ip}\n`);
+            }
           }
         } catch { /* non-critical */ }
       }
@@ -797,7 +816,7 @@ app.post('/api/setup/network', async (req, res) => {
     // Write player IP to VM settings
     const pIp = playerIp || finalIp;
     log(`Setting player-facing IP to ${pIp}...\n`);
-    await ssh.run(finalIp, `printf '\\n\\n\\n${pIp}\\n' > /home/dune/.dune/settings.conf`);
+    await writeSettingsConfIp(finalIp, pIp);
     log('Player IP configured.\n');
 
     res.json({ success: true, vmIp: finalIp });
@@ -1468,9 +1487,8 @@ app.get('/api/server-visibility', async (_req, res) => {
   if (!ip) return res.status(400).json({ error: 'VM not running' });
 
   try {
-    const advertisedIp = (await ssh.run(ip,
-      "sed -n '4p' /home/dune/.dune/settings.conf 2>/dev/null",
-      null, { timeout: 10000 })).trim();
+    const advertisedIp = await readSettingsConfIp(ip);
+    const directorPort = await getDirectorPort(ip);
 
     // Detect public IP — try VM first, fall back to Windows host
     let publicIp = null;
@@ -1485,7 +1503,20 @@ app.get('/api/server-visibility', async (_req, res) => {
       } catch { /* try next */ }
     }
 
-    res.json({ advertisedIp, vmIp: ip, publicIp });
+    const isWan = advertisedIp && advertisedIp !== ip;
+
+    res.json({
+      advertisedIp,
+      vmIp: ip,
+      publicIp,
+      directorPort,
+      isWan,
+      portForward: {
+        targetIp: ip,
+        ...PORT_FORWARD_INFO,
+        directorTcp: directorPort,
+      },
+    });
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
@@ -1499,12 +1530,22 @@ app.post('/api/server-visibility', async (req, res) => {
   if (!advertisedIp) return res.status(400).json({ error: 'advertisedIp required' });
 
   try {
-    await ssh.run(ip,
-      `printf '\\n\\n\\n${advertisedIp}\\n' > /home/dune/.dune/settings.conf`,
-      null, { timeout: 10000 });
+    await writeSettingsConfIp(ip, advertisedIp.trim());
     visibilityManuallySet = true;
+    const isWan = advertisedIp.trim() !== ip;
     log(`Server visibility IP set to ${advertisedIp}.\n`);
-    res.json({ success: true });
+    if (isWan) {
+      log(`WAN: forward TCP ${PORT_FORWARD_INFO.rmqTcp}, Director NodePort, and UDP ${PORT_FORWARD_INFO.gameUdpStart}-${PORT_FORWARD_INFO.gameUdpEnd} to VM ${ip}, then stop and start the battlegroup.\n`);
+    } else {
+      log('LAN mode: players on your local network can join. Stop and start the battlegroup to apply.\n');
+    }
+    log('Self-hosted worlds appear in-game under Servers → Experimental (not Official or Private).\n');
+    res.json({
+      success: true,
+      isWan,
+      requiresBattlegroupRestart: true,
+      message: 'Stop the battlegroup completely, then start it again for the gateway to register the new address with Funcom.',
+    });
   } catch (e) {
     res.status(500).json({ error: e.message });
   }

@@ -1,6 +1,6 @@
 {
   "name": "dune-server-manager",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Web-based management UI for Dune: Awakening Self-Hosted Servers",
   "main": "server.js",
   "scripts": {

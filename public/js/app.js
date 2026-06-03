@@ -239,6 +239,7 @@
       wizNext.hidden = true;
       wizBack.hidden = true;
     }
+    if (n === 5) updateSetupPortForwardPanel();
   }
 
   // Retry start with different memory
@@ -335,6 +336,7 @@
     }
     if (e.target.name === 'playerIpChoice') {
       $('#setup-player-ip-manual').style.display = e.target.value === 'manual' ? '' : 'none';
+      updateSetupPortForwardPanel();
     }
   });
 
@@ -444,6 +446,7 @@
         if (!ips.publicIp) {
           document.querySelector('input[name="playerIpChoice"][value="private"]').checked = true;
         }
+        updateSetupPortForwardPanel();
       } catch { /* ignore */ }
 
     } else if (wizStep === 5) {
@@ -669,6 +672,65 @@
   // -----------------------------------------------------------------------
   let visibilityData = null;
 
+  function buildPortForwardHtml(vmIp, directorPort, opts = {}) {
+    const director = directorPort || 'see Dashboard';
+    const target = vmIp || 'your VM IP';
+    return (
+      '<strong>Router port forwarding required (WAN)</strong>' +
+      '<p class="pf-target">Forward these ports to your <strong>VM</strong> at <code>' + target + '</code> — not your Windows PC.</p>' +
+      '<table><thead><tr><th>Port</th><th>Protocol</th><th>Purpose</th></tr></thead><tbody>' +
+      '<tr><td><strong>31982</strong></td><td>TCP</td><td>Queue / matchmaking (required for server finder)</td></tr>' +
+      '<tr><td><strong>' + director + '</strong></td><td>TCP</td><td>Director (matchmaking)</td></tr>' +
+      '<tr><td><strong>7777–7810</strong></td><td>UDP</td><td>Game server traffic</td></tr>' +
+      '</tbody></table>' +
+      (opts.setupHint
+        ? '<p>Finish setup, then configure these forwards on your router before sharing the server publicly.</p>'
+        : '<p>After applying a public IP, <strong>stop the battlegroup completely</strong>, then start it again so Funcom registers the correct join address.</p>')
+    );
+  }
+
+  function isWanVisibilityChoice(selectedValue, vmIp, publicIp) {
+    if (!selectedValue || selectedValue === 'custom') return true;
+    if (publicIp && selectedValue === publicIp) return true;
+    return vmIp && selectedValue !== vmIp;
+  }
+
+  function updateVisibilityPortForwardPanel() {
+    const panel = $('#visibility-port-forward');
+    if (!panel || !visibilityData) return;
+
+    const selected = document.querySelector('input[name="visibility"]:checked');
+    let selectedValue = selected ? selected.value : '';
+    if (selectedValue === 'custom') {
+      selectedValue = $('#visibility-custom-ip').value.trim() || 'custom';
+    }
+
+    const show = isWanVisibilityChoice(selectedValue, visibilityData.vmIp, visibilityData.publicIp);
+    panel.innerHTML = buildPortForwardHtml(
+      visibilityData.vmIp,
+      visibilityData.directorPort,
+    );
+    panel.hidden = !show;
+    panel.style.display = show ? '' : 'none';
+  }
+
+  function updateSetupPortForwardPanel() {
+    const panel = $('#setup-port-forward');
+    if (!panel) return;
+
+    const choice = document.querySelector('input[name="playerIpChoice"]:checked');
+    const isPublic = choice && (choice.value === 'public' || choice.value === 'manual');
+    if (!isPublic) {
+      panel.hidden = true;
+      panel.style.display = 'none';
+      return;
+    }
+
+    panel.innerHTML = buildPortForwardHtml(wizData.ip || 'VM IP', null, { setupHint: true });
+    panel.hidden = false;
+    panel.style.display = '';
+  }
+
   async function loadVisibility() {
     const loading = $('#visibility-loading');
     const controls = $('#visibility-controls');
@@ -686,8 +748,8 @@
       if (visibilityData.publicIp) {
         options.push({
           value: visibilityData.publicIp,
-          label: `Public — ${visibilityData.publicIp}`,
-          hint: 'Requires port forwarding (7777-7800 TCP/UDP)',
+          label: `Public (WAN) — ${visibilityData.publicIp}`,
+          hint: 'Internet players — port forwarding required',
         });
       }
       options.push({
@@ -728,10 +790,17 @@
           radios.querySelectorAll('.radio-option').forEach((o) => o.classList.remove('selected'));
           r.closest('.radio-option').classList.add('selected');
           $('#visibility-custom-row').style.display = r.value === 'custom' ? '' : 'none';
+          updateVisibilityPortForwardPanel();
         });
       });
 
+      const customIpInput = $('#visibility-custom-ip');
+      if (customIpInput) {
+        customIpInput.addEventListener('input', updateVisibilityPortForwardPanel);
+      }
+
       $('#visibility-current').textContent = `Currently advertising: ${current}`;
+      updateVisibilityPortForwardPanel();
 
       loading.style.display = 'none';
       controls.style.display = '';
@@ -752,8 +821,10 @@
 
     showOverlay('Setting server visibility...');
     try {
-      await api('POST', 'server-visibility', { advertisedIp: ip });
-      appendConsole(`Server visibility set to ${ip}. Restart the battlegroup to apply.\n`);
+      const res = await api('POST', 'server-visibility', { advertisedIp: ip });
+      appendConsole(`Server visibility set to ${ip}.\n`);
+      if (res.message) appendConsole(res.message + '\n');
+      appendConsole('Self-hosted servers appear in-game under Servers → Experimental.\n');
       await loadVisibility();
     } catch (e) { alert('Failed: ' + e.message); }
     hideOverlay();

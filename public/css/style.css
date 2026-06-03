@@ -488,6 +488,34 @@ select.select-input {
   color: #3ddc84;
 }
 
+.port-forward-notice {
+  margin-top: .75rem;
+  padding: .75rem 1rem;
+  background: var(--surface2);
+  border: 1px solid var(--gold);
+  border-radius: var(--radius);
+  font-size: .82rem;
+  line-height: 1.55;
+}
+.port-forward-notice strong { color: var(--gold); }
+.port-forward-notice table {
+  width: 100%;
+  margin: .5rem 0;
+  border-collapse: collapse;
+  font-size: .8rem;
+}
+.port-forward-notice th,
+.port-forward-notice td {
+  text-align: left;
+  padding: .35rem .5rem;
+  border-bottom: 1px solid var(--border);
+}
+.port-forward-notice th { color: var(--text-dim); font-weight: 600; }
+.port-forward-notice .pf-target {
+  margin-top: .5rem;
+  color: var(--yellow);
+}
+
 /* Retry panel */
 .retry-panel {
   margin-top: 1rem;

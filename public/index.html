@@ -264,6 +264,7 @@
               </div>
               <input type="text" id="setup-player-ip-manual" placeholder="Enter IP" class="select-input" style="display:none; margin-top: .5rem">
             </div>
+            <div id="setup-port-forward" class="port-forward-notice" style="display:none;margin-top:1rem" hidden></div>
           </div>
 
           <!-- Step 6: Bootstrap -->
@@ -595,7 +596,8 @@
         <div class="card">
           <div class="card-header"><h2>Server Visibility</h2></div>
           <div class="card-body">
-            <p class="card-desc">Controls how players find your server. <strong>LAN</strong> = only players on your network. <strong>Public</strong> = anyone with your IP (requires port forwarding on your router).</p>
+            <p class="card-desc">Controls how players find your server. <strong>LAN</strong> = only players on your network. <strong>Public (WAN)</strong> = internet players (requires router port forwarding to your <em>VM</em> IP).</p>
+            <p class="card-desc" style="margin-top:.35rem;font-size:.8rem">Self-hosted worlds appear in-game under <strong>Servers → Experimental</strong> (not Official or Private). Match the region you chose during setup.</p>
             <div id="visibility-loading" style="color:var(--text-dim)">Detecting IPs...</div>
             <div id="visibility-controls" style="display:none">
               <div class="radio-group" id="visibility-radios"></div>
@@ -603,10 +605,12 @@
                 <label>Custom IP</label>
                 <input type="text" class="select-input" id="visibility-custom-ip" placeholder="e.g. 203.0.113.42">
               </div>
+              <div id="visibility-port-forward" class="port-forward-notice" style="display:none" hidden></div>
               <div style="margin-top:.75rem">
                 <button type="button" class="btn btn-green" id="btn-visibility-save">Apply</button>
                 <span class="visibility-current" id="visibility-current" style="margin-left:1rem;font-size:.8rem;color:var(--text-dim)"></span>
               </div>
+              <p class="field-hint" style="margin-top:.5rem">After changing visibility, <strong>stop the battlegroup completely</strong>, then start it again. The gateway reads this IP only at startup.</p>
             </div>
           </div>
         </div>
@@ -763,7 +767,8 @@
             <div class="config-grid">
               <div class="config-item wide">
                 <label>Server Display Name <span class="field-hint-inline">shown to players</span></label>
-                <input type="text" class="select-input cfg" data-file="engine" data-key="Bgd.ServerDisplayName" placeholder="Not set (uses world name)">
+                <input type="text" class="select-input cfg" data-file="engine" data-key="Bgd.ServerDisplayName" placeholder="e.g. Sietch Dunewatchers">
+                <span class="field-hint">Shown in the in-game server browser. Leave empty only if you know your world display name from setup.</span>
               </div>
               <div class="config-item wide">
                 <label>Server Login Password <span class="field-hint-inline">blank = no password</span></label>
