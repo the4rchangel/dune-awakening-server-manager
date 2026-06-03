@@ -103,7 +103,21 @@
     const opts = { method, headers: { 'Content-Type': 'application/json' } };
     if (body) opts.body = JSON.stringify(body);
     const res = await fetch(`/api/${path}`, opts);
-    return res.json();
+    const text = await res.text();
+    let data;
+    try {
+      data = text ? JSON.parse(text) : {};
+    } catch {
+      throw new Error(
+        res.ok
+          ? 'Invalid JSON from server'
+          : `Server error (${res.status}): ${text.startsWith('<!') ? 'endpoint missing or manager needs restart' : text.slice(0, 120)}`
+      );
+    }
+    if (!res.ok) {
+      throw new Error(data.error || data.message || `Request failed (${res.status})`);
+    }
+    return data;
   }
 
   function showOverlay(text) {
