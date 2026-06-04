@@ -1468,7 +1468,31 @@
       await loadCosmetics();
       runCosmeticSearch();
     } catch (e) {
-      alert('Failed: ' + e.message);
+      const needsFallback = /404|endpoint not found|manager needs restart/i.test(e.message);
+      if (needsFallback && cosmeticArr.length) {
+        if (!confirm(
+          'Bulk unlock API is unavailable (Server Manager needs a restart).\n\n' +
+          'Use slower one-by-one unlock instead? (~621 requests, may take a few minutes)'
+        )) {
+          hideOverlay();
+          return;
+        }
+        const missing = cosmeticArr.filter(c => !unlockedCosmetics.has(c.id));
+        let added = 0;
+        for (let i = 0; i < missing.length; i++) {
+          overlayText.textContent = `Unlocking ${i + 1} / ${missing.length}...`;
+          try {
+            await api('POST', `characters/${charData.actorId}/cosmetics/add`, { cosmeticId: missing[i].id });
+            unlockedCosmetics.add(missing[i].id);
+            added++;
+          } catch { /* skip failures / duplicates */ }
+        }
+        appendConsole(`Unlocked ${unlockedCosmetics.size} cosmetics (${added} newly added via fallback).\n`);
+        updateCosmeticCount();
+        runCosmeticSearch();
+      } else {
+        alert('Failed: ' + e.message + '\n\nStop and restart the Server Manager (start_as_admin.bat), then try again.');
+      }
     }
     hideOverlay();
   });

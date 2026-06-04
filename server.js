@@ -19,7 +19,6 @@ const DEFAULT_SERVER_PATH = path.join(
 );
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
 
 // ---------------------------------------------------------------------------
 // WebSocket — broadcast helper
@@ -1870,7 +1869,16 @@ app.post('/api/sietches/remove', async (_req, res) => {
   }
 });
 
-// --- Fallback ---
+// --- Static UI (after all API routes) ---
+app.use('/api', (_req, res) => {
+  res.status(404).json({
+    error: 'API endpoint not found. Stop and restart the Server Manager (start_as_admin.bat) to load updates.',
+  });
+});
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+// --- SPA fallback ---
 app.get('*', (_req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
