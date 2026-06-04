@@ -1188,13 +1188,16 @@ async function getDbPod(vmIp) {
   return dbPodCache;
 }
 
-async function runPsql(vmIp, sql) {
+async function runPsql(vmIp, sql, opts = {}) {
   const { ns, name } = await getDbPod(vmIp);
-  const b64 = Buffer.from(sql).toString('base64');
-  return ssh.run(vmIp,
-    `echo ${b64} | base64 -d | sudo kubectl exec -i -n ${ns} ${name} -- psql -U dune -d dune -p 15432 -t -A 2>&1`,
-    null, { timeout: 30000 }
-  );
+  const remoteCmd =
+    `sudo kubectl exec -i -n ${ns} ${name} -- psql -U dune -d dune -p 15432 -t -A 2>&1`;
+  // Pipe SQL via SSH stdin — embedding large queries in the command line hits
+  // Windows ENAMETOOLONG (e.g. unlock-all cosmetics with 600+ IDs).
+  return ssh.run(vmIp, remoteCmd, null, {
+    timeout: opts.timeout || 60000,
+    stdin: sql,
+  });
 }
 
 app.get('/api/characters', async (_req, res) => {
@@ -1458,7 +1461,8 @@ app.post('/api/characters/:id/cosmetics/unlock-all', async (req, res) => {
       `UPDATE actors SET properties = jsonb_set(properties, ` +
       `'{CustomizationLibraryActorComponent,m_UnlockedCustomizationSerializableList,m_UnlockedCustomizationIds}', ` +
       `'${escaped}'::jsonb` +
-      `) WHERE id = ${id}`
+      `) WHERE id = ${id}`,
+      { timeout: 120000 }
     );
     log(`All ${merged.length} cosmetics unlocked for character ${id}.\n`);
     res.json({ success: true, total: merged.length, added: merged.length - current.length });
