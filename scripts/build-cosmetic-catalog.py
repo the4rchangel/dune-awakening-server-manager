@@ -124,7 +124,18 @@ WEAPON_WORDS = (
     "Pistol", "Shotgun", "Battlerifle", "Sniper", "Fireballer", "Minotaur",
     "Frameblade", "Orni", "Ornithopter",
 )
-VEHICLE_WORDS = ("Buggy", "Sandbike", "Ground", "Flying", "Orni", "Ornithopter", "CargoContainer", "Vehicle")
+VEHICLE_PAINT_WORDS = (
+    "Buggy", "Sandbike", "Ornithopter", "Sandcrawler", "Transport", "1MGC", "Orni",
+)
+TYPO = re.compile(
+    r"(Ornitopther|TransportOrnithop$|HeavyArmorlmet|HeavyArmor_Bot$|LightArmor_Bot$|"
+    r"Atreula_|hkula_|_Bot$|Hkula_|Smug_Ornithopter_Transport$)",
+    re.I,
+)
+VEHICLE_WORDS = (
+    "Buggy", "Sandbike", "Ground", "Flying", "Orni", "Ornithopter",
+    "CargoContainer", "Vehicle", "Sandcrawler", "Transport",
+)
 
 NOISE = re.compile(
     r"(_DESC$|_NAME$|_Data$|_MeshData$|_Icon$|_Texture$|_Material$|"
@@ -153,6 +164,8 @@ def is_noise(cid: str) -> bool:
         return True
     if cid.startswith("DA_"):
         return True
+    if TYPO.search(cid):
+        return True
     if NOISE.search(cid):
         return True
     if cid.count("_") < 1 and cid not in MANUAL:
@@ -160,17 +173,34 @@ def is_noise(cid: str) -> bool:
     return False
 
 
+def unlock_mode(cid: str) -> str:
+    """Swatch_* are inventory consumables — not customization-library unlock IDs."""
+    if cid.startswith("Swatch_"):
+        return "inventory"
+    return "customization"
+
+
 def categorize(cid: str) -> str:
     if cid.startswith("DyePack_") or "Dyepack" in cid or "DyePack" in cid or cid.endswith("Global"):
         return "Dye Packs"
+    if cid.startswith("VehicleVariant_"):
+        return "Vehicle Variants"
+    if cid.startswith("MaterialVariant_"):
+        if any(w in cid for w in VEHICLE_PAINT_WORDS) and not any(w in cid for w in ARMOR_WORDS):
+            return "Vehicle Paints"
+        if any(w in cid for w in WEAPON_WORDS):
+            return "Weapon Paints"
+        if any(w in cid for w in ARMOR_WORDS):
+            return "Armor Paints"
+        return "Material Variants"
     if cid.startswith("Swatch_Vehicle_"):
-        return "Vehicle Swatches"
+        return "Swatch Tokens (Inventory)"
     if cid.startswith("Swatch_Wpn_"):
-        return "Weapon Swatches"
+        return "Swatch Tokens (Inventory)"
     if cid.startswith("Swatch_Cloth_"):
-        return "Armor Swatches"
+        return "Swatch Tokens (Inventory)"
     if cid.startswith("Swatch_"):
-        return "Swatches"
+        return "Swatch Tokens (Inventory)"
     upper = cid.upper()
     if any(w.upper() in upper for w in VEHICLE_WORDS) and "Armor" not in cid:
         if cid.endswith("_MeshVariant"):
@@ -214,13 +244,21 @@ def auto_label(cid: str) -> str:
         return f"{expand_token(faction)} Dye Pack"
     if body.startswith("Swatch_Vehicle_"):
         rest = body[len("Swatch_Vehicle_") :].replace("_", " ")
-        return f"Vehicle Swatch — {rest}"
+        return f"Vehicle Swatch Token — {rest}"
     if body.startswith("Swatch_Wpn_"):
         rest = body[len("Swatch_Wpn_") :].replace("_", " ")
-        return f"Weapon Swatch — {rest}"
+        return f"Weapon Swatch Token — {rest}"
     if body.startswith("Swatch_Cloth_"):
         rest = body[len("Swatch_Cloth_") :].replace("_", " ")
-        return f"Armor Swatch — {rest}"
+        return f"Armor Swatch Token — {rest}"
+    if body.startswith("MaterialVariant_"):
+        body = body[len("MaterialVariant_") :]
+        label = " ".join(expand_token(t) for t in body.split("_") if t)
+        return f"{label} Paint"
+    if body.startswith("VehicleVariant_"):
+        body = body[len("VehicleVariant_") :]
+        label = " ".join(expand_token(t) for t in body.split("_") if t)
+        return f"{label} Vehicle Variant"
     if body.endswith("_MeshVariant"):
         body = body[: -len("_MeshVariant")]
 
@@ -239,6 +277,8 @@ def should_include(cid: str) -> bool:
     if is_noise(cid):
         return False
     if cid in MANUAL:
+        return True
+    if cid.startswith("MaterialVariant_") or cid.startswith("VehicleVariant_"):
         return True
     if cid.startswith("Swatch_"):
         return True
@@ -276,6 +316,8 @@ def collect_ids(pak: Path) -> set[str]:
     ids: set[str] = set(MANUAL.keys())
     ids |= grep_ids(r"[A-Za-z0-9_]+_MeshVariant", pak)
     ids |= grep_ids(r"MTX_[A-Za-z][A-Za-z0-9_]{4,80}", pak)
+    ids |= grep_ids(r"MaterialVariant_[A-Za-z0-9_]+", pak)
+    ids |= grep_ids(r"VehicleVariant_[A-Za-z0-9_]+", pak)
     ids |= grep_ids(r"Swatch_[A-Za-z0-9_]+", pak)
     ids |= grep_ids(
         r"(AllDyepack[A-Za-z0-9_]+|AllDyePack[A-Za-z0-9_]+|"
@@ -297,11 +339,17 @@ def build_catalog(pak: Path) -> dict:
         else:
             name = auto_label(cid)
             category = categorize(cid)
-        cosmetics[cid] = {"name": name, "category": category}
+        cosmetics[cid] = {
+            "name": name,
+            "category": category,
+            "unlock": unlock_mode(cid),
+        }
 
+    unlockable = sum(1 for c in cosmetics.values() if c["unlock"] == "customization")
     return {
         "_meta": {
             "total": len(cosmetics),
+            "unlockable": unlockable,
             "source": "Dune Awakening Systems.pak string extraction + curated unlock IDs",
             "pak": str(pak) if pak.is_file() else "not found — used curated subset only",
         },

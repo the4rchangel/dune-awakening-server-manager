@@ -1435,7 +1435,10 @@ app.post('/api/characters/:id/cosmetics/remove', async (req, res) => {
 function loadCosmeticCatalogIds() {
   const catalogPath = path.join(__dirname, 'public', 'data', 'cosmetic-catalog.json');
   const data = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
-  return Object.keys(data.cosmetics || {}).sort();
+  return Object.entries(data.cosmetics || {})
+    .filter(([id, info]) => info.unlock !== 'inventory' && !id.startsWith('Swatch_'))
+    .map(([id]) => id)
+    .sort();
 }
 
 // Unlock all cosmetics from catalog (merge with existing)

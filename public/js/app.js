@@ -1002,12 +1002,12 @@
       const data = await resp.json();
       cosmeticCatalog = data.cosmetics;
       cosmeticArr = Object.entries(cosmeticCatalog).map(([id, info]) => ({
-        id, name: info.name, category: info.category,
+        id, name: info.name, category: info.category, unlock: info.unlock || 'customization',
       }));
       cosmeticArr.sort((a, b) => a.name.localeCompare(b.name));
       const hint = $('#cosmetic-results-hint');
-      if (hint && data._meta?.total) {
-        hint.textContent = `Type at least 2 characters to search across ${data._meta.total} cosmetics, or pick a category filter.`;
+      if (hint && data._meta?.unlockable) {
+        hint.textContent = `Type at least 2 characters to search across ${data._meta.unlockable} unlockable cosmetics (${data._meta.total} total incl. inventory swatch tokens), or pick a category filter.`;
       }
     } catch (e) {
       appendConsole('Failed to load cosmetic catalog: ' + e.message + '\n');
@@ -1396,11 +1396,12 @@
     } else {
       results.forEach(c => {
         const owned = unlockedCosmetics.has(c.id);
+        const invOnly = c.unlock === 'inventory';
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td class="item-name">${c.name}<br><span class="item-tid">${c.id}</span></td>
+          <td class="item-name">${c.name}${invOnly ? ' <span style="color:var(--amber,#c9a227);font-size:.72rem">(inventory item)</span>' : ''}<br><span class="item-tid">${c.id}</span></td>
           <td style="font-size:.72rem;color:var(--text-dim)">${c.category}</td>
-          <td><button class="btn btn-sm cosmetic-toggle ${owned ? 'btn-remove' : 'btn-green'}" data-cosmetic="${c.id}" data-owned="${owned ? '1' : '0'}">${owned ? 'Remove' : 'Add'}</button></td>
+          <td><button class="btn btn-sm cosmetic-toggle ${owned ? 'btn-remove' : 'btn-green'}" data-cosmetic="${c.id}" data-owned="${owned ? '1' : '0'}" ${invOnly ? 'title="Swatch tokens usually need to be added via Inventory, not cosmetics"' : ''}>${owned ? 'Remove' : 'Add'}</button></td>
         `;
         tbody.appendChild(tr);
       });
