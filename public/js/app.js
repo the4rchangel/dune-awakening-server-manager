@@ -991,6 +991,29 @@
     }
   }
 
+  let cosmeticCatalog = null;
+  let cosmeticArr = [];
+  let unlockedCosmetics = new Set();
+
+  async function loadCosmeticCatalog() {
+    if (cosmeticCatalog) return;
+    try {
+      const resp = await fetch('/data/cosmetic-catalog.json');
+      const data = await resp.json();
+      cosmeticCatalog = data.cosmetics;
+      cosmeticArr = Object.entries(cosmeticCatalog).map(([id, info]) => ({
+        id, name: info.name, category: info.category,
+      }));
+      cosmeticArr.sort((a, b) => a.name.localeCompare(b.name));
+      const hint = $('#cosmetic-results-hint');
+      if (hint && data._meta?.total) {
+        hint.textContent = `Type at least 2 characters to search across ${data._meta.total} cosmetics, or pick a category filter.`;
+      }
+    } catch (e) {
+      appendConsole('Failed to load cosmetic catalog: ' + e.message + '\n');
+    }
+  }
+
   function catalogName(tid) {
     if (!itemCatalog) return tid;
     const info = itemCatalog[tid];
@@ -1092,7 +1115,7 @@
   // Character tab — load list on first open
   let charTabLoaded = false;
   document.querySelector('.tab[data-tab="characters"]').addEventListener('click', async () => {
-    await loadItemCatalog();
+    await Promise.all([loadItemCatalog(), loadCosmeticCatalog()]);
     if (!charTabLoaded) {
       charTabLoaded = true;
       loadCharacterList();
@@ -1279,69 +1302,176 @@
   });
 
   // -----------------------------------------------------------------------
-  // Cosmetic name mapping (human-readable labels from internal IDs)
+  // Cosmetics
   // -----------------------------------------------------------------------
-  const COSMETIC_NAMES = {
-    AllDyepackChoam: 'CHOAM Dye Pack', AllDyepackMaula: 'Maula Dye Pack',
-    AllDyePackBonusUniversal01: 'Universal Bonus Dye Pack',
-    RedDesertGlobal: 'Red Desert Global Dye', SmugglerGlobal: 'Smuggler Global Dye',
-    'Watershippers Global': 'Watershippers Global Dye',
-    FVehDyePackUltimate01: 'Ultimate Vehicle Dye Pack',
-    SandbikeDyePackDeluxe01: 'Deluxe Sandbike Dye Pack',
-    Beta_Sword: 'Beta Sword Skin',
-    MTX_Frameblade_Knife: 'Frameblade Knife Skin',
-    MTX_Smuggler_Kindjal: 'Smuggler Kindjal Skin',
-    MTX_Smug_Rifle: 'Smuggler Rifle Skin',
-    MTX_Taligari_Rifle: 'Taligari Rifle Skin',
-    MTX_Taligari_SMG: 'Taligari SMG Skin',
-    MTX_GunnerSniper_Rifle: 'Gunner Sniper Rifle Skin',
-    MTX_Gunner_Battlerifle: 'Gunner Battle Rifle Skin',
-    MTX_WaterS_Drillshot: 'Water Shipper Drillshot Skin',
-    MTX_WaterS_Rapier: 'Water Shipper Rapier Skin',
-    MTX_WaterS_Light_Orni: 'Water Shipper Light Ornithopter',
-    MTX_Buggy_Nomad: 'Nomad Buggy Skin',
-    MTX_Smuggler_Stillsuit_Top: 'Smuggler Stillsuit Top',
-    MTX_Smuggler_Stillsuit_Boots: 'Smuggler Stillsuit Boots',
-    MTX_Smuggler_Stillsuit_Gloves: 'Smuggler Stillsuit Gloves',
-    MTX_Smuggler_Stillsuit_Helmet: 'Smuggler Stillsuit Helmet',
-    MTX_Fremen_MovieSuit_Top_MeshVariant: 'Fremen Movie Suit Top',
-    MTX_Fremen_MovieSuit_Boots_MeshVariant: 'Fremen Movie Suit Boots',
-    MTX_Fremen_MovieSuit_Gloves_MeshVariant: 'Fremen Movie Suit Gloves',
-    MTX_Fremen_MovieSuit_Helmet_MeshVariant: 'Fremen Movie Suit Helmet',
-    MTX_Sard_Stillsuit_01_Top_MeshVariant: 'Sardaukar Stillsuit Top',
-    MTX_Sard_Stillsuit_01_Boots_MeshVariant: 'Sardaukar Stillsuit Boots',
-    MTX_Sard_Stillsuit_01_Gloves_MeshVariant: 'Sardaukar Stillsuit Gloves',
-    MTX_Sard_Stillsuit_01_Helmet_MeshVariant: 'Sardaukar Stillsuit Helmet',
-    MTX_Smug_HeavyArmor_Top_MeshVariant: 'Smuggler Heavy Armor Top',
-    MTX_Smug_HeavyArmor_Bottom_MeshVariant: 'Smuggler Heavy Armor Pants',
-    MTX_Smug_HeavyArmor_Boots_MeshVariant: 'Smuggler Heavy Armor Boots',
-    MTX_Smug_HeavyArmor_Gloves_MeshVariant: 'Smuggler Heavy Armor Gloves',
-    MTX_Smug_HeavyArmor_Helmet_MeshVariant: 'Smuggler Heavy Armor Helmet',
-    MTX_Smug_LightArmor_Top_MeshVariant: 'Smuggler Light Armor Top',
-    MTX_Smug_LightArmor_Bottom_MeshVariant: 'Smuggler Light Armor Pants',
-    MTX_Smug_LightArmor_Boots_MeshVariant: 'Smuggler Light Armor Boots',
-    MTX_Smug_LightArmor_Gloves_MeshVariant: 'Smuggler Light Armor Gloves',
-    MTX_Smug_LightArmor_Helmet_MeshVariant: 'Smuggler Light Armor Helmet',
-    MTX_WaterS_AssaultArmor_Top_MeshVariant: 'Water Shipper Assault Top',
-    MTX_WaterS_AssaultArmor_Bottom_MeshVariant: 'Water Shipper Assault Pants',
-    MTX_WaterS_AssaultArmor_Boots_MeshVariant: 'Water Shipper Assault Boots',
-    MTX_WaterS_AssaultArmor_Gloves_MeshVariant: 'Water Shipper Assault Gloves',
-    MTX_WaterS_AssaultArmor_Helmet_MeshVariant: 'Water Shipper Assault Helmet',
-    MTX_WaterS_HeavyArmor_Top_MeshVariant: 'Water Shipper Heavy Armor Top',
-    MTX_WaterS_HeavyArmor_Bottom_MeshVariant: 'Water Shipper Heavy Armor Pants',
-    MTX_WaterS_HeavyArmor_Boots_MeshVariant: 'Water Shipper Heavy Armor Boots',
-    MTX_WaterS_HeavyArmor_Gloves_MeshVariant: 'Water Shipper Heavy Armor Gloves',
-    MTX_WaterS_HeavyArmor_Helmet_MeshVariant: 'Water Shipper Heavy Armor Helmet',
-    WaterS_Stillsuit_Top: 'Water Shipper Stillsuit Top',
-    WaterS_Stillsuit_Boots: 'Water Shipper Stillsuit Boots',
-    WaterS_Stillsuit_Gloves: 'Water Shipper Stillsuit Gloves',
-    WaterS_Stillsuit_Helmet: 'Water Shipper Stillsuit Helmet',
-  };
-
   function cosmeticLabel(id) {
-    if (COSMETIC_NAMES[id]) return COSMETIC_NAMES[id];
+    if (cosmeticCatalog && cosmeticCatalog[id]) return cosmeticCatalog[id].name;
     return id.replace(/^MTX_/, '').replace(/_MeshVariant$/, '').replace(/_/g, ' ');
   }
+
+  function cosmeticCategory(id) {
+    if (cosmeticCatalog && cosmeticCatalog[id]) return cosmeticCatalog[id].category;
+    return 'Other';
+  }
+
+  async function addCosmetic(cosmeticId) {
+    if (!charData) { alert('Load a character first.'); return false; }
+    if (status && status.battlegroup && status.battlegroup.running) {
+      alert('Stop the battlegroup first.'); return false;
+    }
+    if (unlockedCosmetics.has(cosmeticId)) return true;
+
+    showOverlay('Adding cosmetic...');
+    try {
+      await api('POST', `characters/${charData.actorId}/cosmetics/add`, { cosmeticId });
+      appendConsole(`Cosmetic "${cosmeticLabel(cosmeticId)}" added.\n`);
+      unlockedCosmetics.add(cosmeticId);
+      updateCosmeticCount();
+      runCosmeticSearch();
+      return true;
+    } catch (e) {
+      alert('Failed: ' + e.message);
+      return false;
+    } finally {
+      hideOverlay();
+    }
+  }
+
+  async function removeCosmetic(cosmeticId, { confirmRemove = true } = {}) {
+    if (!charData) { alert('Load a character first.'); return false; }
+    if (status && status.battlegroup && status.battlegroup.running) {
+      alert('Stop the battlegroup first.'); return false;
+    }
+    if (!unlockedCosmetics.has(cosmeticId)) return true;
+    if (confirmRemove && !confirm(`Remove cosmetic "${cosmeticLabel(cosmeticId)}"?`)) return false;
+
+    showOverlay('Removing cosmetic...');
+    try {
+      await api('POST', `characters/${charData.actorId}/cosmetics/remove`, { cosmeticId });
+      appendConsole(`Cosmetic "${cosmeticLabel(cosmeticId)}" removed.\n`);
+      unlockedCosmetics.delete(cosmeticId);
+      updateCosmeticCount();
+      runCosmeticSearch();
+      return true;
+    } catch (e) {
+      alert('Failed: ' + e.message);
+      return false;
+    } finally {
+      hideOverlay();
+    }
+  }
+
+  function updateCosmeticCount() {
+    $('#cosmetic-count').textContent = `${unlockedCosmetics.size} unlocked`;
+  }
+
+  let cosmeticSearchTimeout;
+  function runCosmeticSearch() {
+    const query = ($('#cosmetic-search').value || '').trim().toLowerCase();
+    const catFilter = $('#cosmetic-cat-filter').value;
+    const resultsWrap = $('#cosmetic-results');
+    const tbody = $('#cosmetic-results-body');
+    const hint = $('#cosmetic-results-hint');
+
+    if (query.length < 2 && !catFilter) {
+      resultsWrap.style.display = 'none';
+      hint.style.display = '';
+      return;
+    }
+
+    let results = cosmeticArr;
+    if (query.length >= 2) {
+      results = results.filter(c =>
+        c.name.toLowerCase().includes(query) || c.id.toLowerCase().includes(query));
+    }
+    if (catFilter) {
+      results = results.filter(c => c.category === catFilter);
+    }
+
+    results = results.slice(0, 100);
+
+    tbody.innerHTML = '';
+    if (!results.length) {
+      tbody.innerHTML = '<tr><td colspan="3" style="color:var(--text-dim);text-align:center;padding:1rem">No cosmetics found</td></tr>';
+    } else {
+      results.forEach(c => {
+        const owned = unlockedCosmetics.has(c.id);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="item-name">${c.name}<br><span class="item-tid">${c.id}</span></td>
+          <td style="font-size:.72rem;color:var(--text-dim)">${c.category}</td>
+          <td><button class="btn btn-sm cosmetic-toggle ${owned ? 'btn-remove' : 'btn-green'}" data-cosmetic="${c.id}" data-owned="${owned ? '1' : '0'}">${owned ? 'Remove' : 'Add'}</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    resultsWrap.style.display = '';
+    hint.style.display = 'none';
+  }
+
+  $('#cosmetic-search').addEventListener('input', () => {
+    clearTimeout(cosmeticSearchTimeout);
+    cosmeticSearchTimeout = setTimeout(runCosmeticSearch, 200);
+  });
+  $('#cosmetic-cat-filter').addEventListener('change', runCosmeticSearch);
+
+  $('#cosmetic-results-body').addEventListener('click', async (e) => {
+    const btn = e.target.closest('.cosmetic-toggle');
+    if (!btn) return;
+
+    const cosmeticId = btn.dataset.cosmetic;
+    const owned = btn.dataset.owned === '1';
+    btn.disabled = true;
+    btn.textContent = '...';
+
+    const ok = owned
+      ? await removeCosmetic(cosmeticId)
+      : await addCosmetic(cosmeticId);
+
+    if (!ok) {
+      btn.disabled = false;
+      btn.textContent = owned ? 'Remove' : 'Add';
+    }
+  });
+
+  async function loadCosmetics() {
+    if (!charData) return;
+    try {
+      const data = await api('GET', `characters/${charData.actorId}/cosmetics`);
+      unlockedCosmetics = new Set(data.cosmetics || []);
+      updateCosmeticCount();
+    } catch (e) {
+      appendConsole('Failed to load cosmetics: ' + e.message + '\n');
+    }
+  }
+
+  $('#btn-cosmetic-add').addEventListener('click', async () => {
+    const input = $('#cosmetic-add-input');
+    const cosmeticId = input.value.trim();
+    if (!cosmeticId) { alert('Enter a cosmetic ID.'); return; }
+    const ok = await addCosmetic(cosmeticId);
+    if (ok) input.value = '';
+  });
+
+  $('#btn-cosmetic-unlock-all').addEventListener('click', async () => {
+    if (!charData) { alert('Load a character first.'); return; }
+    if (status && status.battlegroup && status.battlegroup.running) {
+      alert('Stop the battlegroup first.'); return;
+    }
+    if (!confirm('Unlock ALL cosmetics and swatches from the catalog on this character?')) return;
+
+    showOverlay('Unlocking all cosmetics...');
+    try {
+      const res = await api('POST', `characters/${charData.actorId}/cosmetics/unlock-all`);
+      appendConsole(`Unlocked ${res.total} cosmetics (${res.added} newly added).\n`);
+      await loadCosmetics();
+      runCosmeticSearch();
+    } catch (e) {
+      alert('Failed: ' + e.message);
+    }
+    hideOverlay();
+  });
 
   // -----------------------------------------------------------------------
   // Tech Tree
@@ -1547,69 +1677,6 @@
   });
 
   // -----------------------------------------------------------------------
-  // Cosmetics
-  // -----------------------------------------------------------------------
-  async function loadCosmetics() {
-    if (!charData) return;
-    try {
-      const data = await api('GET', `characters/${charData.actorId}/cosmetics`);
-      const list = data.cosmetics || [];
-      const tbody = $('#cosmetic-tbody');
-      tbody.innerHTML = '';
-
-      list.forEach(id => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td class="item-name">${cosmeticLabel(id)}</td>
-          <td class="item-tid">${id}</td>
-          <td><button class="btn-remove cosmetic-remove" data-cosmetic="${id}">Remove</button></td>
-        `;
-        tbody.appendChild(tr);
-      });
-
-      $('#cosmetic-count').textContent = `${list.length} unlocked`;
-    } catch (e) {
-      appendConsole('Failed to load cosmetics: ' + e.message + '\n');
-    }
-  }
-
-  $('#btn-cosmetic-add').addEventListener('click', async () => {
-    if (!charData) return;
-    if (status && status.battlegroup && status.battlegroup.running) {
-      alert('Stop the battlegroup first.'); return;
-    }
-
-    const input = $('#cosmetic-add-input');
-    const cosmeticId = input.value.trim();
-    if (!cosmeticId) { alert('Enter a cosmetic ID.'); return; }
-
-    showOverlay('Adding cosmetic...');
-    try {
-      await api('POST', `characters/${charData.actorId}/cosmetics/add`, { cosmeticId });
-      appendConsole(`Cosmetic "${cosmeticId}" added.\n`);
-      input.value = '';
-      await loadCosmetics();
-    } catch (e) { alert('Failed: ' + e.message); }
-    hideOverlay();
-  });
-
-  $('#cosmetic-tbody').addEventListener('click', async (e) => {
-    const btn = e.target.closest('.cosmetic-remove');
-    if (!btn || !charData) return;
-    if (status && status.battlegroup && status.battlegroup.running) {
-      alert('Stop the battlegroup first.'); return;
-    }
-
-    const cosmeticId = btn.dataset.cosmetic;
-    if (!confirm(`Remove cosmetic "${cosmeticLabel(cosmeticId)}"?`)) return;
-
-    try {
-      await api('POST', `characters/${charData.actorId}/cosmetics/remove`, { cosmeticId });
-      await loadCosmetics();
-    } catch (e) { alert('Failed: ' + e.message); }
-  });
-
-  // -----------------------------------------------------------------------
   // Load all sections when a character is loaded
   // -----------------------------------------------------------------------
   const origLoadCharacter = loadCharacter;
@@ -1619,7 +1686,8 @@
       refreshTechCount();
       loadSpecializations();
       loadEconomy();
-      loadCosmetics();
+      await loadCosmetics();
+      runCosmeticSearch();
     }
   };
 

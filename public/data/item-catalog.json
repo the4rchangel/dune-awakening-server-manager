@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "total": 997,
+    "total": 1000,
     "source": "awakening.wiki + CUE4Parse game files",
     "scraped": "2026-05-20",
     "patched": "2026-06-04"
@@ -3796,6 +3796,18 @@
     },
     "TreadwheelEngine_6": {
       "name": "Treadwheel Engine Mk6",
+      "category": "Vehicle Modules"
+    },
+    "TreadwheelEngine_Unique_Engine_Speed_4": {
+      "name": "Swift Treadwheel Engine Mk4",
+      "category": "Vehicle Modules"
+    },
+    "TreadwheelEngine_Unique_Engine_Speed_5": {
+      "name": "Swift Treadwheel Engine Mk5",
+      "category": "Vehicle Modules"
+    },
+    "TreadwheelEngine_Unique_Engine_Speed_6": {
+      "name": "Swift Treadwheel Engine Mk6",
       "category": "Vehicle Modules"
     },
     "TreadwheelGenerator_4": {

@@ -43,7 +43,7 @@ if (File.Exists(catalogPath))
 
 // Inventory template IDs for vehicle modules: SandbikeChassis_5, TreadwheelEngine_4, etc.
 var modulePattern = new Regex(
-    @"^(?<prefix>Sandbike|Buggy|Treadwheel|OrnithopterTransport|OrnithopterLight|OrnithopterMedium|AssaultOrnithopter|CarrierOrnithopter|Sandcrawler|Groundcar|OrnithopterHeavy)(?<part>[A-Za-z_]+)_(?<tier>\d+)$",
+    @"^(?<prefix>Sandbike|Buggy|Treadwheel|OrnithopterTransport|OrnithopterLight|OrnithopterMedium|AssaultOrnithopter|CarrierOrnithopter|Sandcrawler|Groundcar|OrnithopterHeavy)(?<part>(?:Unique_[A-Za-z0-9_]+|[A-Za-z_]+))_(?<tier>\d+)$",
     RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
 var moduleIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);

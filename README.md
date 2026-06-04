@@ -41,7 +41,7 @@ A local web-based UI for managing **Dune: Awakening Self-Hosted Servers**. Repla
 - **Setup Wizard** — Guided 6-step first-time installation (VM import, network, SSH, bootstrap — no bat file needed)
 - **Dashboard** — VM status, memory, uptime, IP, and battlegroup health at a glance
 - **Battlegroup Controls** — Start, stop, restart, and update with one click
-- **Character Editor** — Edit stats (health, tech points, hydration, spice, Eyes of Ibad) and manage inventory with a searchable 981-item catalog
+- **Character Editor** — Edit stats (health, tech points, hydration, spice, Eyes of Ibad) and manage inventory with a searchable 1,000-item catalog
 - **Game Config** — Edit PvP, sandstorms, sandworm behavior, mining rates, decay, building limits, and more through a visual editor
 - **Monitoring** — Direct links to the File Browser and Director web interfaces
 - **Database** — Take and import backups
@@ -146,11 +146,11 @@ Back up and restore the battlegroup database. Stop the battlegroup first for bes
 
 ### Characters
 
-Edit player stats and inventory directly in the game database. **Stop the battlegroup and have the player logged out before editing.** Includes a searchable catalog of 981 items scraped from the [community wiki](https://awakening.wiki).
+Edit player stats and inventory directly in the game database. **Stop the battlegroup and have the player logged out before editing.** Includes a searchable catalog of **1,000 items** (wiki scrape + game-file IDs for vehicle modules, patents, and more).
 
 ![Character Editor](docs/screenshots/character-editor.png)
 
-Search for any item by display name, filter by category, and add it to a character's inventory:
+Search for any item by display name **or template ID** (e.g. `TreadwheelChassis_5`, `Patent`), filter by category, and add it to a character's inventory:
 
 ![Add Items](docs/screenshots/character-editor-items.png)
 
@@ -160,21 +160,23 @@ Search for any item by display name, filter by category, and add it to a charact
 | Section | What you can edit |
 |---------|------------------|
 | **Stats** | Max Health, Tech Knowledge Points, Hydration, Heat Exhaustion, Spice, Addiction Level, Tolerance, Eyes of Ibad |
-| **Inventory** | View all items, remove items, add items by name from a 981-item catalog with category filter |
+| **Inventory** | View all items, remove items, add items by name or template ID from a 1,000-item catalog with category filter |
 | **Stack limits** | Equipment (weapons/armor/tools) enforced at 1, resources at 100, consumables at 20 — warns before exceeding |
-| **Tech Tree** | Unlock or lock all 49 recipes and blueprints with one click |
+| **Tech Tree** | Unlock or lock all fabrication recipes and blueprints with one click |
 | **Specializations** | Set level and XP for Combat, Crafting, Exploration, Gathering, Sabotage — unlock all 205 keystones (perks) per tree |
 | **Economy** | Set Solari and House Scrip balances |
 | **Faction Reputation** | Set reputation with Atreides, Harkonnen, and Smuggler factions |
-| **Cosmetics & Skins** | View, add, and remove unlocked weapon skins, armor skins, dye packs, and vehicle cosmetics with human-readable names |
+| **Cosmetics & Skins** | Searchable catalog of **621** cosmetics (dye packs, MTX skins, armor/weapon/vehicle swatches) — click Add/Remove per row, or **Unlock All Cosmetics & Swatches** in one shot |
 
 Tech tree, specializations, economy, and faction reputation:
 
 ![Character Unlocks](docs/screenshots/character-unlocks.png)
 
-Cosmetics and skins management with plain-language labels:
+Cosmetics and skins — searchable list with Add/Remove toggle and bulk unlock:
 
 ![Cosmetics](docs/screenshots/character-cosmetics.png)
+
+> **Patents vs skins:** Building/furniture vendor packs are **Patent** items in inventory (search `furniture` or `CHOAM`). Weapon, armor, and vehicle looks are **cosmetics** — use the Cosmetics section above, not the item catalog. **Unlock All Recipes** only covers the fabrication tech tree.
 
 ### Game Config
 
@@ -242,8 +244,13 @@ No data leaves your machine. Everything runs locally on `localhost:3000`.
 │   ├── css/style.css      # Dune-themed dark UI
 │   ├── js/app.js          # Frontend logic (tabs, wizard, config editor, character editor, API calls)
 │   └── data/
-│       ├── item-catalog.json   # 981 items with template IDs scraped from awakening.wiki
-│       └── stat-reference.json # Character stat keys and inventory type mapping
+│       ├── item-catalog.json      # 1,000 items (wiki + CUE4Parse game-file IDs)
+│       ├── cosmetic-catalog.json  # 621 cosmetics/skins/swatches (from Systems.pak)
+│       └── stat-reference.json    # Character stat keys and inventory type mapping
+├── scripts/
+│   └── build-cosmetic-catalog.py  # Regenerate cosmetic-catalog.json from game paks
+├── tools/
+│   └── Cue4ParsePatents/          # CUE4Parse scanner for item/patent/module IDs in game files
 ├── start_as_admin.bat     # One-click Windows launcher (auto-elevates to admin)
 ├── docs/screenshots/      # README screenshots
 └── package.json

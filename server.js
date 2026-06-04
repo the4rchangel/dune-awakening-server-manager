@@ -1,5 +1,6 @@
 const express = require('express');
 const http = require('http');
+const fs = require('fs');
 const { WebSocketServer } = require('ws');
 const path = require('path');
 const ps = require('./lib/powershell');
@@ -1388,13 +1389,13 @@ app.post('/api/characters/:id/cosmetics/add', async (req, res) => {
   const { cosmeticId } = req.body;
   if (!cosmeticId) return res.status(400).json({ error: 'cosmeticId required' });
 
-  const safe = cosmeticId.replace(/[^a-zA-Z0-9_]/g, '');
+  const safe = cosmeticId.replace(/[^a-zA-Z0-9_ ]/g, '');
   try {
     await runPsql(ip,
       `UPDATE actors SET properties = jsonb_set(properties, ` +
       `'{CustomizationLibraryActorComponent,m_UnlockedCustomizationSerializableList,m_UnlockedCustomizationIds}', ` +
       `(properties->'CustomizationLibraryActorComponent'->'m_UnlockedCustomizationSerializableList'->'m_UnlockedCustomizationIds') ` +
-      `|| '[{"m_CustomizationId": "${safe}"}]'::jsonb` +
+      `|| '[{"m_CustomizationId": "${safe.replace(/'/g, "''")}"}]'::jsonb` +
       `) WHERE id = ${id}`
     );
     log(`Cosmetic "${safe}" added to character ${id}.\n`);
@@ -1412,18 +1413,56 @@ app.post('/api/characters/:id/cosmetics/remove', async (req, res) => {
   const { cosmeticId } = req.body;
   if (!cosmeticId) return res.status(400).json({ error: 'cosmeticId required' });
 
-  const safe = cosmeticId.replace(/[^a-zA-Z0-9_]/g, '');
+  const safe = cosmeticId.replace(/[^a-zA-Z0-9_ ]/g, '');
   try {
     await runPsql(ip,
       `UPDATE actors SET properties = jsonb_set(properties, ` +
       `'{CustomizationLibraryActorComponent,m_UnlockedCustomizationSerializableList,m_UnlockedCustomizationIds}', ` +
       `(SELECT COALESCE(jsonb_agg(elem), '[]'::jsonb) FROM jsonb_array_elements(` +
       `properties->'CustomizationLibraryActorComponent'->'m_UnlockedCustomizationSerializableList'->'m_UnlockedCustomizationIds'` +
-      `) as elem WHERE elem->>'m_CustomizationId' != '${safe}')` +
+      `) as elem WHERE elem->>'m_CustomizationId' != '${safe.replace(/'/g, "''")}')` +
       `) WHERE id = ${id}`
     );
     log(`Cosmetic "${safe}" removed from character ${id}.\n`);
     res.json({ success: true });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+function loadCosmeticCatalogIds() {
+  const catalogPath = path.join(__dirname, 'public', 'data', 'cosmetic-catalog.json');
+  const data = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
+  return Object.keys(data.cosmetics || {}).sort();
+}
+
+// Unlock all cosmetics from catalog (merge with existing)
+app.post('/api/characters/:id/cosmetics/unlock-all', async (req, res) => {
+  const ip = await getVmIp();
+  if (!ip) return res.status(400).json({ error: 'VM not running' });
+  const id = parseInt(req.params.id);
+
+  try {
+    const catalogIds = loadCosmeticCatalogIds();
+    const raw = await runPsql(ip,
+      `SELECT COALESCE(json_agg(elem->>'m_CustomizationId' ORDER BY elem->>'m_CustomizationId'), '[]') ` +
+      `FROM (SELECT jsonb_array_elements(properties->'CustomizationLibraryActorComponent'` +
+      `->'m_UnlockedCustomizationSerializableList'->'m_UnlockedCustomizationIds') as elem ` +
+      `FROM actors WHERE id = ${id}) sub`
+    );
+    const current = JSON.parse(raw.trim()) || [];
+    const merged = [...new Set([...current, ...catalogIds])].sort();
+    const payload = JSON.stringify(merged.map((cid) => ({ m_CustomizationId: cid })));
+    const escaped = payload.replace(/'/g, "''");
+
+    await runPsql(ip,
+      `UPDATE actors SET properties = jsonb_set(properties, ` +
+      `'{CustomizationLibraryActorComponent,m_UnlockedCustomizationSerializableList,m_UnlockedCustomizationIds}', ` +
+      `'${escaped}'::jsonb` +
+      `) WHERE id = ${id}`
+    );
+    log(`All ${merged.length} cosmetics unlocked for character ${id}.\n`);
+    res.json({ success: true, total: merged.length, added: merged.length - current.length });
   } catch (e) {
     res.status(500).json({ error: e.message });
   }

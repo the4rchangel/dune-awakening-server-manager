@@ -550,7 +550,7 @@
                 <tbody id="item-results-body"></tbody>
               </table>
             </div>
-            <p class="card-desc" id="item-results-hint" style="margin-top:.5rem">Type at least 2 characters to search by name or template ID across 997 items.</p>
+            <p class="card-desc" id="item-results-hint" style="margin-top:.5rem">Type at least 2 characters to search by name or template ID across 1000 items.</p>
           </div>
         </div>
 
@@ -613,17 +613,39 @@
         <div class="card">
           <div class="card-header"><h2>Cosmetics &amp; Skins</h2><span class="badge" id="cosmetic-count">—</span></div>
           <div class="card-body">
-            <p class="card-desc">Manage unlocked weapon skins, armor skins, dye packs, and vehicle cosmetics.</p>
-            <div class="item-search-row" style="margin-bottom:.5rem">
-              <input type="text" class="select-input" id="cosmetic-add-input" placeholder="Enter cosmetic ID to add..." style="flex:1">
-              <button class="btn btn-green btn-sm" id="btn-cosmetic-add">Add</button>
+            <p class="card-desc">Search and unlock weapon skins, armor skins, dye packs, and vehicle cosmetics — no ID memorization required.</p>
+            <div class="btn-group" style="margin-bottom:.75rem">
+              <button class="btn btn-green btn-sm" id="btn-cosmetic-unlock-all">Unlock All Cosmetics &amp; Swatches</button>
             </div>
-            <div class="inv-table-wrap" style="max-height:300px;overflow-y:auto">
+            <div class="item-search-row" style="margin-bottom:.5rem">
+              <input type="text" class="select-input" id="cosmetic-search" placeholder="Search cosmetics by name or ID..." style="flex:1">
+              <select class="select-input" id="cosmetic-cat-filter" style="max-width:200px">
+                <option value="">All Categories</option>
+                <option value="Dye Packs">Dye Packs</option>
+                <option value="Vehicle Skins">Vehicle Skins</option>
+                <option value="Weapon Skins">Weapon Skins</option>
+                <option value="Armor Skins">Armor Skins</option>
+                <option value="Vehicle Swatches">Vehicle Swatches</option>
+                <option value="Weapon Swatches">Weapon Swatches</option>
+                <option value="Armor Swatches">Armor Swatches</option>
+                <option value="Swatches">Other Swatches</option>
+                <option value="Premium (MTX)">Premium (MTX)</option>
+              </select>
+            </div>
+            <div class="item-results-wrap" id="cosmetic-results" style="display:none;margin-bottom:.75rem">
               <table class="inv-table">
-                <thead><tr><th>Cosmetic</th><th>ID</th><th></th></tr></thead>
-                <tbody id="cosmetic-tbody"></tbody>
+                <thead><tr><th>Cosmetic</th><th>Category</th><th></th></tr></thead>
+                <tbody id="cosmetic-results-body"></tbody>
               </table>
             </div>
+            <p class="card-desc" id="cosmetic-results-hint" style="margin-bottom:.75rem">Type at least 2 characters to search across 621 cosmetics, or pick a category filter.</p>
+            <details>
+              <summary style="cursor:pointer;color:var(--text-dim);font-size:.8rem">Advanced: add by exact ID</summary>
+              <div class="item-search-row" style="margin-top:.5rem">
+                <input type="text" class="select-input" id="cosmetic-add-input" placeholder="Enter cosmetic ID to add..." style="flex:1">
+                <button class="btn btn-green btn-sm" id="btn-cosmetic-add">Add</button>
+              </div>
+            </details>
           </div>
         </div>
       </div>

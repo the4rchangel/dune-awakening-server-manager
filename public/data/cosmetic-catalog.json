@@ -1,0 +1,2493 @@
+{
+  "_meta": {
+    "total": 621,
+    "source": "Dune Awakening Systems.pak string extraction + curated unlock IDs",
+    "pak": "/mnt/c/Program Files (x86)/Steam/steamapps/common/DuneAwakening/DuneSandbox/Content/Paks/Systems.pak"
+  },
+  "cosmetics": {
+    "AllDyePackBonusUniversal01": {
+      "name": "Universal Bonus Dye Pack",
+      "category": "Dye Packs"
+    },
+    "AllDyepackChoam": {
+      "name": "CHOAM Dye Pack",
+      "category": "Dye Packs"
+    },
+    "AllDyepackMaula": {
+      "name": "Maula Dye Pack",
+      "category": "Dye Packs"
+    },
+    "Beta_Sword": {
+      "name": "Beta Sword Skin",
+      "category": "Weapon Skins"
+    },
+    "DyePack_Agrosaz_01": {
+      "name": "Agrosaz 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_Alexin_01": {
+      "name": "Alexin 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_Atre_01": {
+      "name": "Atre 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_BloodLine_Reward": {
+      "name": "Blood Line Reward Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_Bonus_Universal_01": {
+      "name": "Bonus Universal 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_Choam_01": {
+      "name": "Choam 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_ChoamFree_01": {
+      "name": "Choam Free 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_Deluxe_Sandbike_01": {
+      "name": "Deluxe Sandbike 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_Dyvetz_01": {
+      "name": "Dyvetz 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_Ecaz_01": {
+      "name": "Ecaz 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_Frem_01": {
+      "name": "Frem 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_Graben_01": {
+      "name": "Graben 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_Hagal_01": {
+      "name": "Hagal 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_Hark_01": {
+      "name": "Hark 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_Hurata_01": {
+      "name": "Hurata 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_Imota_01": {
+      "name": "Imota 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_Kenola_01": {
+      "name": "Kenola 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_Kirab_01": {
+      "name": "Kirab 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_Lindaren_01": {
+      "name": "Lindaren 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_MaasK_01": {
+      "name": "Maas K 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_Maros_01": {
+      "name": "Maros 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_MaulaFree_01": {
+      "name": "Maula Free 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_Mikarrol_01": {
+      "name": "Mikarrol 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_Moritani_01": {
+      "name": "Moritani 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_Mutelli_01": {
+      "name": "Mutelli 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_Novebruns_01": {
+      "name": "Novebruns 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_Ordos_01": {
+      "name": "Ordos 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_PolarGuards": {
+      "name": "Polar Guards Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_RedD_01": {
+      "name": "Red D 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_Richese_01": {
+      "name": "Richese 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_SandF_01": {
+      "name": "Sand F 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_Scav_01": {
+      "name": "Scav 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_Slav_01": {
+      "name": "Slav 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_Smug_01": {
+      "name": "Smug 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_SmugTech_01": {
+      "name": "Smug Tech 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_Sor_01": {
+      "name": "Sor 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_Spinette_01": {
+      "name": "Spinette 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_Talgari_01": {
+      "name": "Talgari 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_Thorvald_01": {
+      "name": "Thorvald 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_Tseida_01": {
+      "name": "Tseida 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_Ultimate_Ornithopter_01": {
+      "name": "Ultimate Ornithopter 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_Varota_01": {
+      "name": "Varota 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_Vernius_01": {
+      "name": "Vernius 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_Wallach_01": {
+      "name": "Wallach 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_WaterFat_Ornithopter_01": {
+      "name": "Water Fat Ornithopter 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_WaterS_01": {
+      "name": "Water S 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_Wayku_01": {
+      "name": "Wayku 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "DyePack_Wydras_01": {
+      "name": "Wydras 01 Dye Pack",
+      "category": "Dye Packs"
+    },
+    "FVehDyePackUltimate01": {
+      "name": "Ultimate Vehicle Dye Pack",
+      "category": "Dye Packs"
+    },
+    "MTX_ArtDeco_Sword_Variant": {
+      "name": "Art Deco Sword Variant Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_Atre_CaladanTrenchcoat_Gloves_MeshVariant": {
+      "name": "Atreides Caladan Trenchcoat Gloves",
+      "category": "Armor Skins"
+    },
+    "MTX_Atre_CaladanTrenchcoat_Top_MeshVariant": {
+      "name": "Atreides Caladan Trenchcoat Chest",
+      "category": "Armor Skins"
+    },
+    "MTX_Atre_Formal01_Boots": {
+      "name": "Atreides Formal01 Boots",
+      "category": "Armor Skins"
+    },
+    "MTX_Atre_Formal01_Bottom_MeshVariant": {
+      "name": "Atreides Formal01 Pants",
+      "category": "Armor Skins"
+    },
+    "MTX_Atre_Formal01_Footwear_MeshVariant": {
+      "name": "Atreides Formal01 Boots",
+      "category": "Armor Skins"
+    },
+    "MTX_Atre_Formal01_Gloves_MeshVariant": {
+      "name": "Atreides Formal01 Gloves",
+      "category": "Armor Skins"
+    },
+    "MTX_Atre_Formal01_Top_MeshVariant": {
+      "name": "Atreides Formal01 Chest",
+      "category": "Armor Skins"
+    },
+    "MTX_Atreides_Battlerifle": {
+      "name": "Atreides Battlerifle Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_Atreides_Battlerifle_Variant": {
+      "name": "Atreides Battlerifle Variant Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_B1C3__Smuggler_Rifle": {
+      "name": "B1C3 Smuggler Rifle Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_B1C3_Minotaur_Memento": {
+      "name": "B1C3 Minotaur Memento Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_B1C3_Minotaur_Memento_Variant": {
+      "name": "B1C3 Minotaur Memento Variant Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_B1C3_Minotaur_MementoshData": {
+      "name": "B1C3 Minotaur Mementosh Data Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_B1C3_Minotaur_Sword": {
+      "name": "B1C3 Minotaur Sword Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_B1C3_Minotaur_Sword_Variant": {
+      "name": "B1C3 Minotaur Sword Variant Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_B1C3_Smug_Drillshot": {
+      "name": "B1C3 Smuggler Drillshot Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_B1C3_Smug_Fireballer": {
+      "name": "B1C3 Smuggler Fireballer Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_B1C3_Smug_Snubnose_Pistol": {
+      "name": "B1C3 Smuggler Snubnose Pistol Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_B1C3_Smuggler_Heavy_Boots_MeshVariant": {
+      "name": "B1C3 Smuggler Heavy Boots",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C3_Smuggler_Heavy_Bottom_MeshVariant": {
+      "name": "B1C3 Smuggler Heavy Pants",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C3_Smuggler_Heavy_Bottoms": {
+      "name": "B1C3 Smuggler Heavy Pants",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C3_Smuggler_Heavy_Gloves_MeshVariant": {
+      "name": "B1C3 Smuggler Heavy Gloves",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C3_Smuggler_Heavy_Helmet_MeshVariant": {
+      "name": "B1C3 Smuggler Heavy Helmet",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C3_Smuggler_Heavy_Top_MeshVariant": {
+      "name": "B1C3 Smuggler Heavy Chest",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C3_Smuggler_Kindjal": {
+      "name": "B1C3 Smuggler Kindjal Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_B1C3_Smuggler_Kindjal_Variant": {
+      "name": "B1C3 Smuggler Kindjal Variant Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_B1C3_Smuggler_Light_Boots_MeshVariant": {
+      "name": "B1C3 Smuggler Light Boots",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C3_Smuggler_Light_Bottom_MeshVariant": {
+      "name": "B1C3 Smuggler Light Pants",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C3_Smuggler_Light_Bottoms": {
+      "name": "B1C3 Smuggler Light Pants",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C3_Smuggler_Light_Gloves_MeshVariant": {
+      "name": "B1C3 Smuggler Light Gloves",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C3_Smuggler_Light_Helmet_MeshVariant": {
+      "name": "B1C3 Smuggler Light Helmet",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C3_Smuggler_Light_Top_MeshVariant": {
+      "name": "B1C3 Smuggler Light Chest",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C3_Smuggler_Rifle_Variant": {
+      "name": "B1C3 Smuggler Rifle Variant Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_B1C3_Smuggler_Stillsuit_Boots_MeshVariant": {
+      "name": "B1C3 Smuggler Stillsuit Boots",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C3_Smuggler_Stillsuit_Gloves_MeshVariant": {
+      "name": "B1C3 Smuggler Stillsuit Gloves",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C3_Smuggler_Stillsuit_Helmet_MeshVariant": {
+      "name": "B1C3 Smuggler Stillsuit Helmet",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C3_Smuggler_Stillsuit_Top_MeshVariant": {
+      "name": "B1C3 Smuggler Stillsuit Chest",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C3_Smuggler_Transport_Ornithopter": {
+      "name": "B1C3 Smuggler Transport Ornithopter",
+      "category": "Vehicle Skins"
+    },
+    "MTX_B1C3_Smugglers_Snubnose_Pistol": {
+      "name": "B1C3 Smugglers Snubnose Pistol Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_B1C3_SmugStillsuit_Boots_MeshVariant": {
+      "name": "B1C3 Smug Stillsuit Boots",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C3_SmugStillsuit_Gloves_MeshVariant": {
+      "name": "B1C3 Smug Stillsuit Gloves",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C3_SmugStillsuit_Helmet_MeshVariant": {
+      "name": "B1C3 Smug Stillsuit Helmet",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C3_SmugStillsuit_Top_MeshVariant": {
+      "name": "B1C3 Smug Stillsuit Chest",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C3_Vehicle_Smuggler_Sandcrawler": {
+      "name": "B1C3 Vehicle Smuggler Sandcrawler Skin",
+      "category": "Vehicle Skins"
+    },
+    "MTX_B1C4_LightOrnithopter_WaterS": {
+      "name": "B1C4 Light Ornithopter Water Shipper",
+      "category": "Vehicle Skins"
+    },
+    "MTX_B1C4_Waters_Assault_Boots_MeshVariant": {
+      "name": "B1C4 Waters Assault Boots",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C4_Waters_Assault_Bottom_MeshVariant": {
+      "name": "B1C4 Waters Assault Pants",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C4_Waters_Assault_Gloves_MeshVariant": {
+      "name": "B1C4 Waters Assault Gloves",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C4_Waters_Assault_Helmet_MeshVariant": {
+      "name": "B1C4 Waters Assault Helmet",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C4_Waters_Assault_Top_MeshVariant": {
+      "name": "B1C4 Waters Assault Chest",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C4_WaterS_Drillshot": {
+      "name": "B1C4 Water Shipper Drillshot Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_B1C4_WaterS_Drillshot_Variant": {
+      "name": "B1C4 Water Shipper Drillshot Variant Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_B1C4_WaterS_Heavy_Boots": {
+      "name": "B1C4 Water Shipper Heavy Boots",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C4_Waters_Heavy_Boots_MeshVariant": {
+      "name": "B1C4 Waters Heavy Boots",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C4_Waters_Heavy_Bottom_MeshVariant": {
+      "name": "B1C4 Waters Heavy Pants",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C4_WaterS_Heavy_Bottoms": {
+      "name": "B1C4 Water Shipper Heavy Pants",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C4_WaterS_Heavy_Gloves": {
+      "name": "B1C4 Water Shipper Heavy Gloves",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C4_Waters_Heavy_Gloves_MeshVariant": {
+      "name": "B1C4 Waters Heavy Gloves",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C4_WaterS_Heavy_Helmet": {
+      "name": "B1C4 Water Shipper Heavy Helmet",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C4_Waters_Heavy_Helmet_MeshVariant": {
+      "name": "B1C4 Waters Heavy Helmet",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C4_WaterS_Heavy_Top": {
+      "name": "B1C4 Water Shipper Heavy Chest",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C4_Waters_Heavy_Top_MeshVariant": {
+      "name": "B1C4 Waters Heavy Chest",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C4_WaterS_Light_Boots": {
+      "name": "B1C4 Water Shipper Light Boots",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C4_WaterS_Light_Bottoms": {
+      "name": "B1C4 Water Shipper Light Pants",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C4_WaterS_Light_Gloves": {
+      "name": "B1C4 Water Shipper Light Gloves",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C4_WaterS_Light_Helmet": {
+      "name": "B1C4 Water Shipper Light Helmet",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C4_WaterS_Light_Top": {
+      "name": "B1C4 Water Shipper Light Chest",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C4_WaterS_Rapier": {
+      "name": "B1C4 Water Shipper Rapier Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_B1C4_WaterS_Rapier_Variant": {
+      "name": "B1C4 Water Shipper Rapier Variant Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_B1C4_WaterS_Stillsuit_Boots_MeshVariant": {
+      "name": "B1C4 Water Shipper Stillsuit Boots",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C4_WaterS_Stillsuit_Gloves_MeshVariant": {
+      "name": "B1C4 Water Shipper Stillsuit Gloves",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C4_WaterS_Stillsuit_Helmet_MeshVariant": {
+      "name": "B1C4 Water Shipper Stillsuit Helmet",
+      "category": "Armor Skins"
+    },
+    "MTX_B1C4_WaterS_Stillsuit_Top_MeshVariant": {
+      "name": "B1C4 Water Shipper Stillsuit Chest",
+      "category": "Armor Skins"
+    },
+    "MTX_Buggy_Nomad": {
+      "name": "Nomad Buggy Skin",
+      "category": "Vehicle Skins"
+    },
+    "MTX_Choam_SpiceMask_MeshVariant": {
+      "name": "CHOAM Spice Mask",
+      "category": "Armor Skins"
+    },
+    "MTX_DesertMechanic_Bottom_MeshVariant": {
+      "name": "Desert Mechanic Pants",
+      "category": "Armor Skins"
+    },
+    "MTX_DesertMechanic_Footwear_MeshVariant": {
+      "name": "Desert Mechanic Boots",
+      "category": "Armor Skins"
+    },
+    "MTX_DesertMechanic_Gloves_MeshVariant": {
+      "name": "Desert Mechanic Gloves",
+      "category": "Armor Skins"
+    },
+    "MTX_DesertMechanic_Headwear_MeshVariant": {
+      "name": "Desert Mechanic Helmet",
+      "category": "Armor Skins"
+    },
+    "MTX_DesertMechanic_MaulaPistol": {
+      "name": "Desert Mechanic Maula Pistol Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_DesertMechanic_MaulaPistol_Variant": {
+      "name": "Desert Mechanic Maula Pistol Variant Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_DesertMechanic_Top_MeshVariant": {
+      "name": "Desert Mechanic Chest",
+      "category": "Armor Skins"
+    },
+    "MTX_DuneManCoveralls_Bottoms_MeshVariant": {
+      "name": "Dune Man Coveralls Pants",
+      "category": "Armor Skins"
+    },
+    "MTX_DuneManCoveralls_Footwear_MeshVariant": {
+      "name": "Dune Man Coveralls Boots",
+      "category": "Armor Skins"
+    },
+    "MTX_DuneManCoveralls_Gloves_MeshVariant": {
+      "name": "Dune Man Coveralls Gloves",
+      "category": "Armor Skins"
+    },
+    "MTX_DuneManCoveralls_Headwear_MeshVariant": {
+      "name": "Dune Man Coveralls Helmet",
+      "category": "Armor Skins"
+    },
+    "MTX_DuneManCoveralls_Top_MeshVariant": {
+      "name": "Dune Man Coveralls Chest",
+      "category": "Armor Skins"
+    },
+    "MTX_DuneManFlamethrower_Bottoms_MeshVariant": {
+      "name": "Dune Man Flamethrower Pants",
+      "category": "Armor Skins"
+    },
+    "MTX_DuneManFlamethrower_Footwear_MeshVariant": {
+      "name": "Dune Man Flamethrower Boots",
+      "category": "Armor Skins"
+    },
+    "MTX_DuneManFlamethrower_Gloves_MeshVariant": {
+      "name": "Dune Man Flamethrower Gloves",
+      "category": "Armor Skins"
+    },
+    "MTX_DuneManFlamethrower_Headwear_MeshVariant": {
+      "name": "Dune Man Flamethrower Helmet",
+      "category": "Armor Skins"
+    },
+    "MTX_DuneManFlamethrower_Top_MeshVariant": {
+      "name": "Dune Man Flamethrower Chest",
+      "category": "Armor Skins"
+    },
+    "MTX_Env_sOrnithopter": {
+      "name": "Env s Ornithopter",
+      "category": "Vehicle Skins"
+    },
+    "MTX_Frameblade_Knife": {
+      "name": "Frameblade Knife Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_Frameblade_Knife_Variant": {
+      "name": "Frameblade Knife Variant Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_Frblade_Knife": {
+      "name": "Frblade Knife Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_Fremen_MovieSuit_Boots_MeshVariant": {
+      "name": "Fremen Movie Suit Boots",
+      "category": "Armor Skins"
+    },
+    "MTX_Fremen_MovieSuit_Gloves_MeshVariant": {
+      "name": "Fremen Movie Suit Gloves",
+      "category": "Armor Skins"
+    },
+    "MTX_Fremen_MovieSuit_Helmet_MeshVariant": {
+      "name": "Fremen Movie Suit Helmet",
+      "category": "Armor Skins"
+    },
+    "MTX_Fremen_MovieSuit_Top_MeshVariant": {
+      "name": "Fremen Movie Suit Chest",
+      "category": "Armor Skins"
+    },
+    "MTX_FremenMovieSuit_Footwear": {
+      "name": "Fremen Movie Suit Boots",
+      "category": "Armor Skins"
+    },
+    "MTX_FremenMovieSuit_Gloves": {
+      "name": "Fremen Movie Suit Gloves",
+      "category": "Armor Skins"
+    },
+    "MTX_FremenMovieSuit_Headwear": {
+      "name": "Fremen Movie Suit Helmet",
+      "category": "Armor Skins"
+    },
+    "MTX_FremenMovieSuit_Top": {
+      "name": "Fremen Movie Suit Chest",
+      "category": "Armor Skins"
+    },
+    "MTX_G_Suit_Maula_Pistol": {
+      "name": "G Suit Maula Pistol Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_G_Suit_Maula_Pistol_MeshData_Variant": {
+      "name": "G Suit Maula Pistol Mesh Data Variant Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_Gunner_Battlerifle": {
+      "name": "Gunner Battle Rifle Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_Gunner_Battlerifle_Variant": {
+      "name": "Gunner Battlerifle Variant Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_GunnerSniper_Rifle": {
+      "name": "Gunner Sniper Rifle Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_GunnerSniper_Rifle_Variant": {
+      "name": "Gunner Sniper Rifle Variant Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_HeavyRacer_Boots_MeshVariant": {
+      "name": "Heavy Racer Boots",
+      "category": "Armor Skins"
+    },
+    "MTX_HeavyRacer_Bottom_MeshVariant": {
+      "name": "Heavy Racer Pants",
+      "category": "Armor Skins"
+    },
+    "MTX_HeavyRacer_Gloves_MeshVariant": {
+      "name": "Heavy Racer Gloves",
+      "category": "Armor Skins"
+    },
+    "MTX_HeavyRacer_Helmet_MeshVariant": {
+      "name": "Heavy Racer Helmet",
+      "category": "Armor Skins"
+    },
+    "MTX_HeavyRacer_Shotgun": {
+      "name": "Heavy Racer Shotgun Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_HeavyRacer_Shotgun_Variant": {
+      "name": "Heavy Racer Shotgun Variant Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_HeavyRacer_Top_MeshVariant": {
+      "name": "Heavy Racer Chest",
+      "category": "Armor Skins"
+    },
+    "MTX_KirabSniper_Rifle_Variant": {
+      "name": "Kirab Sniper Rifle Variant Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_MaterialVariant_Weapon_G_Suit_Maula_Pistol": {
+      "name": "Material Variant Weapon G Suit Maula Pistol Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_MaterialVariant_Weapon_ScrapGlassKnife": {
+      "name": "Material Variant Weapon Scrap Glass Knife Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_Neut_ScrapKnife_01_Glass_Variant": {
+      "name": "Neut Scrap Knife 01 Glass Variant Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_Neut_ScrapKnife_01_Premium_Dat": {
+      "name": "Neut Scrap Knife 01 Premium Dat Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_Neut_ScrapKnife_01_Premium_Variant": {
+      "name": "Neut Scrap Knife 01 Premium Variant Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_Nomad_HeavyPistol": {
+      "name": "Nomad Heavy Pistol Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_Nomad_HeavyPistol_Variant": {
+      "name": "Nomad Heavy Pistol Variant Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_Nomad_SmugRifle_Variant": {
+      "name": "Nomad Smug Rifle Variant Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_Richese_MaulaPistol": {
+      "name": "Richese Maula Pistol Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_SandFlies_Kindjal": {
+      "name": "Sand Flies Kindjal Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_SandFlies_Kindjal_Variant": {
+      "name": "Sand Flies Kindjal Variant Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_Sard_Scout_Boots_MeshVariant": {
+      "name": "Sardaukar Scout Boots",
+      "category": "Armor Skins"
+    },
+    "MTX_Sard_Scout_Bottom_MeshVariant": {
+      "name": "Sardaukar Scout Pants",
+      "category": "Armor Skins"
+    },
+    "MTX_Sard_Scout_Gloves_MeshVariant": {
+      "name": "Sardaukar Scout Gloves",
+      "category": "Armor Skins"
+    },
+    "MTX_Sard_Scout_Helmet_MeshVariant": {
+      "name": "Sardaukar Scout Helmet",
+      "category": "Armor Skins"
+    },
+    "MTX_Sard_Scout_Top_MeshVariant": {
+      "name": "Sardaukar Scout Chest",
+      "category": "Armor Skins"
+    },
+    "MTX_Sard_Stillsuit_01_Boots_MeshVariant": {
+      "name": "Sardaukar Stillsuit 01 Boots",
+      "category": "Armor Skins"
+    },
+    "MTX_Sard_Stillsuit_01_Gloves_MeshVariant": {
+      "name": "Sardaukar Stillsuit 01 Gloves",
+      "category": "Armor Skins"
+    },
+    "MTX_Sard_Stillsuit_01_Helmet_MeshVariant": {
+      "name": "Sardaukar Stillsuit 01 Helmet",
+      "category": "Armor Skins"
+    },
+    "MTX_Sard_Stillsuit_01_Top_MeshVariant": {
+      "name": "Sardaukar Stillsuit 01 Chest",
+      "category": "Armor Skins"
+    },
+    "MTX_ScrapGlassKnife_Knife": {
+      "name": "Scrap Glass Knife Knife Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_ScrapGlassKnife_Knife_MeshData_Variant": {
+      "name": "Scrap Glass Knife Knife Mesh Data Variant Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_Smug_Formal01_Boots": {
+      "name": "Smuggler Formal01 Boots",
+      "category": "Armor Skins"
+    },
+    "MTX_Smug_Formal01_Bottom_MeshVariant": {
+      "name": "Smuggler Formal01 Pants",
+      "category": "Armor Skins"
+    },
+    "MTX_Smug_Formal01_Footwear_MeshVariant": {
+      "name": "Smuggler Formal01 Boots",
+      "category": "Armor Skins"
+    },
+    "MTX_Smug_Formal01_Gloves_MeshVariant": {
+      "name": "Smuggler Formal01 Gloves",
+      "category": "Armor Skins"
+    },
+    "MTX_Smug_Formal01_Top_MeshVariant": {
+      "name": "Smuggler Formal01 Chest",
+      "category": "Armor Skins"
+    },
+    "MTX_Smug_Rifle": {
+      "name": "Smuggler Rifle Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_Smuggler_Kindjal": {
+      "name": "Smuggler Kindjal Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_Taligari_Rifle": {
+      "name": "Taligari Rifle Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_Taligari_Rifle_Variant": {
+      "name": "Taligari Rifle Variant Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_Taligari_SMG": {
+      "name": "Taligari SMG Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_Taligari_SMG_Variant": {
+      "name": "Taligari SMG Variant Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_ThopterGsuit_Boots_MeshVariant": {
+      "name": "Thopter Gsuit Boots",
+      "category": "Armor Skins"
+    },
+    "MTX_ThopterGsuit_Bottom_MeshVariant": {
+      "name": "Thopter Gsuit Pants",
+      "category": "Armor Skins"
+    },
+    "MTX_ThopterGsuit_Gloves_MeshVariant": {
+      "name": "Thopter Gsuit Gloves",
+      "category": "Armor Skins"
+    },
+    "MTX_ThopterGsuit_Helmet_MeshVariant": {
+      "name": "Thopter Gsuit Helmet",
+      "category": "Armor Skins"
+    },
+    "MTX_ThopterGsuit_Top_MeshVariant": {
+      "name": "Thopter Gsuit Chest",
+      "category": "Armor Skins"
+    },
+    "MTX_Variant_Weapon_Prisoner_Maula_Pistol": {
+      "name": "Variant Weapon Prisoner Maula Pistol Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_Vehicle_Buggy_HRC": {
+      "name": "Vehicle Buggy HRC Skin",
+      "category": "Vehicle Skins"
+    },
+    "MTX_VehicleVariant_Buggy_Kirab": {
+      "name": "Vehicle Variant Buggy Kirab Skin",
+      "category": "Vehicle Skins"
+    },
+    "MTX_VehicleVariant_Buggy_Nomad": {
+      "name": "Vehicle Variant Buggy Nomad Skin",
+      "category": "Vehicle Skins"
+    },
+    "MTX_VehicleVariant_Sandcrawler_SandFlies": {
+      "name": "Vehicle Variant Sandcrawler Sand Flies Skin",
+      "category": "Vehicle Skins"
+    },
+    "MTX_WaterFat_Ornithop_01": {
+      "name": "Water Fat Ornithop 01 Skin",
+      "category": "Vehicle Skins"
+    },
+    "MTX_WaterFat_Ornithopter_01": {
+      "name": "Water Fat Ornithopter Skin",
+      "category": "Vehicle Skins"
+    },
+    "MTX_WaterS_Drillshot": {
+      "name": "Water Shipper Drillshot Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_WaterS_Light_Orni": {
+      "name": "Water Shipper Light Ornithopter",
+      "category": "Vehicle Skins"
+    },
+    "MTX_WaterS_Rapier": {
+      "name": "Water Shipper Rapier Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_Watershipper_Rapier_Variant": {
+      "name": "Watershipper Rapier Variant Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_Wpn_Graben_Pistol_01": {
+      "name": "Wpn Graben Pistol 01 Skin",
+      "category": "Weapon Skins"
+    },
+    "MTX_Wpn_Graben_Rifle_01": {
+      "name": "Wpn Graben Rifle 01 Skin",
+      "category": "Weapon Skins"
+    },
+    "RedDesertGlobal": {
+      "name": "Red Desert Global Dye",
+      "category": "Dye Packs"
+    },
+    "SandbikeDyePackDeluxe01": {
+      "name": "Deluxe Sandbike Dye Pack",
+      "category": "Dye Packs"
+    },
+    "SmugglerGlobal": {
+      "name": "Smuggler Global Dye",
+      "category": "Dye Packs"
+    },
+    "SunsetDyeGlobal": {
+      "name": "Sunset Global Dye",
+      "category": "Dye Packs"
+    },
+    "Swatch_1": {
+      "name": "Swatch 1",
+      "category": "Swatches"
+    },
+    "Swatch_2": {
+      "name": "Swatch 2",
+      "category": "Swatches"
+    },
+    "Swatch_3": {
+      "name": "Swatch 3",
+      "category": "Swatches"
+    },
+    "Swatch_4": {
+      "name": "Swatch 4",
+      "category": "Swatches"
+    },
+    "Swatch_Agrosaz_01": {
+      "name": "Swatch Agrosaz 01",
+      "category": "Swatches"
+    },
+    "Swatch_Alexin_01": {
+      "name": "Swatch Alexin 01",
+      "category": "Swatches"
+    },
+    "Swatch_Atre_01": {
+      "name": "Swatch Atreides 01",
+      "category": "Swatches"
+    },
+    "Swatch_Bonus_Universal_01": {
+      "name": "Swatch Bonus Universal 01",
+      "category": "Swatches"
+    },
+    "Swatch_CargoContainer_Atreides": {
+      "name": "Swatch Cargo Container Atreides",
+      "category": "Swatches"
+    },
+    "Swatch_CargoContainer_CHOAM": {
+      "name": "Swatch Cargo Container CHOAM",
+      "category": "Swatches"
+    },
+    "Swatch_CargoContainer_Harkonnen": {
+      "name": "Swatch Cargo Container Harkonnen",
+      "category": "Swatches"
+    },
+    "Swatch_CargoContainer_Maula": {
+      "name": "Swatch Cargo Container Maula",
+      "category": "Swatches"
+    },
+    "Swatch_CargoContainer_RedD": {
+      "name": "Swatch Cargo Container Red Duke",
+      "category": "Swatches"
+    },
+    "Swatch_CargoContainer_UltimateOrnithopter": {
+      "name": "Swatch Cargo Container Ultimate Ornithopter",
+      "category": "Swatches"
+    },
+    "Swatch_CargoContainer_Universal": {
+      "name": "Swatch Cargo Container Universal",
+      "category": "Swatches"
+    },
+    "Swatch_Choam_01": {
+      "name": "Swatch CHOAM 01",
+      "category": "Swatches"
+    },
+    "Swatch_ChoamFree_01": {
+      "name": "Swatch Choam Free 01",
+      "category": "Swatches"
+    },
+    "Swatch_Cloth_Agrosaz_ArmorHeavy_01": {
+      "name": "Armor Swatch — Agrosaz ArmorHeavy 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Agrosaz_ArmorLight_01": {
+      "name": "Armor Swatch — Agrosaz ArmorLight 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Agrosaz_Stillsuit_01": {
+      "name": "Armor Swatch — Agrosaz Stillsuit 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Alexin_ArmorHeavy_01": {
+      "name": "Armor Swatch — Alexin ArmorHeavy 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Alexin_ArmorLight_01": {
+      "name": "Armor Swatch — Alexin ArmorLight 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Alexin_Stillsuit_01": {
+      "name": "Armor Swatch — Alexin Stillsuit 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Atre_ArmorHeavy_01": {
+      "name": "Armor Swatch — Atre ArmorHeavy 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Atre_ArmorLight_01": {
+      "name": "Armor Swatch — Atre ArmorLight 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Atre_Stillsuit_01": {
+      "name": "Armor Swatch — Atre Stillsuit 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Choam_ArmorHeavy_01": {
+      "name": "Armor Swatch — Choam ArmorHeavy 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Choam_ArmorLight_01": {
+      "name": "Armor Swatch — Choam ArmorLight 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Choam_Stillsuit_01": {
+      "name": "Armor Swatch — Choam Stillsuit 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Dyvetz_ArmorHeavy_01": {
+      "name": "Armor Swatch — Dyvetz ArmorHeavy 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Dyvetz_ArmorLight_01": {
+      "name": "Armor Swatch — Dyvetz ArmorLight 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Dyvetz_Stillsuit_01": {
+      "name": "Armor Swatch — Dyvetz Stillsuit 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Ecaz_ArmorHeavy_01": {
+      "name": "Armor Swatch — Ecaz ArmorHeavy 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Ecaz_ArmorLight_01": {
+      "name": "Armor Swatch — Ecaz ArmorLight 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Ecaz_Stillsuit_01": {
+      "name": "Armor Swatch — Ecaz Stillsuit 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Frem_ArmorHeavy_01": {
+      "name": "Armor Swatch — Frem ArmorHeavy 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Frem_ArmorLight_01": {
+      "name": "Armor Swatch — Frem ArmorLight 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Frem_Stillsuit_01": {
+      "name": "Armor Swatch — Frem Stillsuit 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Fremen_ArmorHeavy_01": {
+      "name": "Armor Swatch — Fremen ArmorHeavy 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Fremen_ArmorLight_01": {
+      "name": "Armor Swatch — Fremen ArmorLight 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Fremen_Stillsuit_01": {
+      "name": "Armor Swatch — Fremen Stillsuit 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Hagal_ArmorHeavy_01": {
+      "name": "Armor Swatch — Hagal ArmorHeavy 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Hagal_ArmorLight_01": {
+      "name": "Armor Swatch — Hagal ArmorLight 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Hagal_Stillsuit_01": {
+      "name": "Armor Swatch — Hagal Stillsuit 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Hark_ArmorHeavy_01": {
+      "name": "Armor Swatch — Hark ArmorHeavy 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Hark_ArmorLight_01": {
+      "name": "Armor Swatch — Hark ArmorLight 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Hark_Stillsuit_01": {
+      "name": "Armor Swatch — Hark Stillsuit 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Hurata_ArmorHeavy_01": {
+      "name": "Armor Swatch — Hurata ArmorHeavy 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Hurata_ArmorLight_01": {
+      "name": "Armor Swatch — Hurata ArmorLight 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Hurata_Stillsuit_01": {
+      "name": "Armor Swatch — Hurata Stillsuit 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Imota_ArmorHeavy_01": {
+      "name": "Armor Swatch — Imota ArmorHeavy 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Imota_ArmorLight_01": {
+      "name": "Armor Swatch — Imota ArmorLight 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Imota_Stillsuit_01": {
+      "name": "Armor Swatch — Imota Stillsuit 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Kenola_ArmorHeavy_01": {
+      "name": "Armor Swatch — Kenola ArmorHeavy 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Kenola_ArmorLight_01": {
+      "name": "Armor Swatch — Kenola ArmorLight 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Kenola_Stillsuit_01": {
+      "name": "Armor Swatch — Kenola Stillsuit 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Kirab_ArmorHeavy_01": {
+      "name": "Armor Swatch — Kirab ArmorHeavy 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Kirab_ArmorLight_01": {
+      "name": "Armor Swatch — Kirab ArmorLight 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Kirab_Stillsuit_01": {
+      "name": "Armor Swatch — Kirab Stillsuit 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Lindaren_ArmorHeavy_01": {
+      "name": "Armor Swatch — Lindaren ArmorHeavy 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Lindaren_ArmorLight_01": {
+      "name": "Armor Swatch — Lindaren ArmorLight 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Lindaren_Stillsuit_01": {
+      "name": "Armor Swatch — Lindaren Stillsuit 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_MaasK_ArmorHeavy_01": {
+      "name": "Armor Swatch — MaasK ArmorHeavy 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_MaasK_ArmorLight_01": {
+      "name": "Armor Swatch — MaasK ArmorLight 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_MaasK_Stillsuit_01": {
+      "name": "Armor Swatch — MaasK Stillsuit 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Maros_ArmorHeavy_01": {
+      "name": "Armor Swatch — Maros ArmorHeavy 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Maros_ArmorLight_01": {
+      "name": "Armor Swatch — Maros ArmorLight 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Maros_Stillsuit_01": {
+      "name": "Armor Swatch — Maros Stillsuit 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Merc_ArmorHeavy_01": {
+      "name": "Armor Swatch — Merc ArmorHeavy 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Merc_ArmorLight_01": {
+      "name": "Armor Swatch — Merc ArmorLight 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Merc_Stillsuit_01": {
+      "name": "Armor Swatch — Merc Stillsuit 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Mikarrol_ArmorHeavy_01": {
+      "name": "Armor Swatch — Mikarrol ArmorHeavy 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Mikarrol_ArmorLight_01": {
+      "name": "Armor Swatch — Mikarrol ArmorLight 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Mikarrol_Stillsuit_01": {
+      "name": "Armor Swatch — Mikarrol Stillsuit 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Moritani_ArmorHeavy_01": {
+      "name": "Armor Swatch — Moritani ArmorHeavy 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Moritani_ArmorLight_01": {
+      "name": "Armor Swatch — Moritani ArmorLight 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Moritani_Stillsuit_01": {
+      "name": "Armor Swatch — Moritani Stillsuit 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Mutelli_ArmorHeavy_01": {
+      "name": "Armor Swatch — Mutelli ArmorHeavy 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Mutelli_ArmorLight_01": {
+      "name": "Armor Swatch — Mutelli ArmorLight 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Mutelli_Stillsuit_01": {
+      "name": "Armor Swatch — Mutelli Stillsuit 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Novebruns_ArmorHeavy_01": {
+      "name": "Armor Swatch — Novebruns ArmorHeavy 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Novebruns_ArmorLight_01": {
+      "name": "Armor Swatch — Novebruns ArmorLight 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Novebruns_Stillsuit_01": {
+      "name": "Armor Swatch — Novebruns Stillsuit 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Ordos_ArmorHeavy_01": {
+      "name": "Armor Swatch — Ordos ArmorHeavy 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Ordos_ArmorLight_01": {
+      "name": "Armor Swatch — Ordos ArmorLight 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Ordos_Stillsuit_01": {
+      "name": "Armor Swatch — Ordos Stillsuit 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Richese_ArmorHeavy_01": {
+      "name": "Armor Swatch — Richese ArmorHeavy 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Richese_ArmorLight_01": {
+      "name": "Armor Swatch — Richese ArmorLight 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Richese_Stillsuit_01": {
+      "name": "Armor Swatch — Richese Stillsuit 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_SandF_ArmorHeavy_01": {
+      "name": "Armor Swatch — SandF ArmorHeavy 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_SandF_ArmorLight_01": {
+      "name": "Armor Swatch — SandF ArmorLight 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_SandF_Stillsuit_01": {
+      "name": "Armor Swatch — SandF Stillsuit 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Scav_ArmorHeavy_01": {
+      "name": "Armor Swatch — Scav ArmorHeavy 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Scav_ArmorLight_01": {
+      "name": "Armor Swatch — Scav ArmorLight 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Scav_Stillsuit_01": {
+      "name": "Armor Swatch — Scav Stillsuit 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Slav_ArmorHeavy_01": {
+      "name": "Armor Swatch — Slav ArmorHeavy 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Slav_ArmorLight_01": {
+      "name": "Armor Swatch — Slav ArmorLight 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Slav_Stillsuit_01": {
+      "name": "Armor Swatch — Slav Stillsuit 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Sor_ArmorHeavy_01": {
+      "name": "Armor Swatch — Sor ArmorHeavy 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Sor_ArmorLight_01": {
+      "name": "Armor Swatch — Sor ArmorLight 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Sor_Stillsuit_01": {
+      "name": "Armor Swatch — Sor Stillsuit 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Spinette_ArmorHeavy_01": {
+      "name": "Armor Swatch — Spinette ArmorHeavy 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Spinette_ArmorLight_01": {
+      "name": "Armor Swatch — Spinette ArmorLight 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Spinette_Stillsuit_01": {
+      "name": "Armor Swatch — Spinette Stillsuit 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Talgari_ArmorHeavy_01": {
+      "name": "Armor Swatch — Talgari ArmorHeavy 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Talgari_ArmorLight_01": {
+      "name": "Armor Swatch — Talgari ArmorLight 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Talgari_Stillsuit_01": {
+      "name": "Armor Swatch — Talgari Stillsuit 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Thorvald_ArmorHeavy_01": {
+      "name": "Armor Swatch — Thorvald ArmorHeavy 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Thorvald_ArmorLight_01": {
+      "name": "Armor Swatch — Thorvald ArmorLight 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Thorvald_Stillsuit_01": {
+      "name": "Armor Swatch — Thorvald Stillsuit 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Tseida_ArmorHeavy_01": {
+      "name": "Armor Swatch — Tseida ArmorHeavy 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Tseida_ArmorLight_01": {
+      "name": "Armor Swatch — Tseida ArmorLight 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Tseida_Stillsuit_01": {
+      "name": "Armor Swatch — Tseida Stillsuit 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Varota_ArmorHeavy_01": {
+      "name": "Armor Swatch — Varota ArmorHeavy 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Varota_ArmorLight_01": {
+      "name": "Armor Swatch — Varota ArmorLight 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Varota_Stillsuit_01": {
+      "name": "Armor Swatch — Varota Stillsuit 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Vernius_ArmorHeavy_01": {
+      "name": "Armor Swatch — Vernius ArmorHeavy 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Vernius_ArmorLight_01": {
+      "name": "Armor Swatch — Vernius ArmorLight 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Vernius_Stillsuit_01": {
+      "name": "Armor Swatch — Vernius Stillsuit 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Wallach_ArmorHeavy_01": {
+      "name": "Armor Swatch — Wallach ArmorHeavy 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Wallach_ArmorLight_01": {
+      "name": "Armor Swatch — Wallach ArmorLight 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Wallach_Stillsuit_01": {
+      "name": "Armor Swatch — Wallach Stillsuit 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Wayku_ArmorHeavy_01": {
+      "name": "Armor Swatch — Wayku ArmorHeavy 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Wayku_ArmorLight_01": {
+      "name": "Armor Swatch — Wayku ArmorLight 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Wayku_Stillsuit_01": {
+      "name": "Armor Swatch — Wayku Stillsuit 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Wydras_ArmorHeavy_01": {
+      "name": "Armor Swatch — Wydras ArmorHeavy 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Wydras_ArmorLight_01": {
+      "name": "Armor Swatch — Wydras ArmorLight 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Cloth_Wydras_Stillsuit_01": {
+      "name": "Armor Swatch — Wydras Stillsuit 01",
+      "category": "Armor Swatches"
+    },
+    "Swatch_Clothing_01": {
+      "name": "Swatch Clothing 01",
+      "category": "Swatches"
+    },
+    "Swatch_Clothing_02": {
+      "name": "Swatch Clothing 02",
+      "category": "Swatches"
+    },
+    "Swatch_Clothing_03": {
+      "name": "Swatch Clothing 03",
+      "category": "Swatches"
+    },
+    "Swatch_Clothing_04": {
+      "name": "Swatch Clothing 04",
+      "category": "Swatches"
+    },
+    "Swatch_Default": {
+      "name": "Swatch Default",
+      "category": "Swatches"
+    },
+    "Swatch_Deluxe_Sandbike_01": {
+      "name": "Swatch Deluxe Sandbike 01",
+      "category": "Swatches"
+    },
+    "Swatch_Dyvetz_01": {
+      "name": "Swatch Dyvetz 01",
+      "category": "Swatches"
+    },
+    "Swatch_Ecaz_01": {
+      "name": "Swatch Ecaz 01",
+      "category": "Swatches"
+    },
+    "Swatch_Frem_01": {
+      "name": "Swatch Fremen 01",
+      "category": "Swatches"
+    },
+    "Swatch_Fremen_01": {
+      "name": "Swatch Fremen 01",
+      "category": "Swatches"
+    },
+    "Swatch_Graben_01": {
+      "name": "Swatch Graben 01",
+      "category": "Swatches"
+    },
+    "Swatch_Hagal_01": {
+      "name": "Swatch Hagal 01",
+      "category": "Swatches"
+    },
+    "Swatch_Hark_01": {
+      "name": "Swatch Harkonnen 01",
+      "category": "Swatches"
+    },
+    "Swatch_Hura_01": {
+      "name": "Swatch Hura 01",
+      "category": "Swatches"
+    },
+    "Swatch_Hurata_01": {
+      "name": "Swatch Hurata 01",
+      "category": "Swatches"
+    },
+    "Swatch_Imota_01": {
+      "name": "Swatch Imota 01",
+      "category": "Swatches"
+    },
+    "Swatch_Kenola_01": {
+      "name": "Swatch Kenola 01",
+      "category": "Swatches"
+    },
+    "Swatch_Kirab_01": {
+      "name": "Swatch Kirab 01",
+      "category": "Swatches"
+    },
+    "Swatch_Lindaren_01": {
+      "name": "Swatch Lindaren 01",
+      "category": "Swatches"
+    },
+    "Swatch_MaasK_01": {
+      "name": "Swatch Maas K 01",
+      "category": "Swatches"
+    },
+    "Swatch_Maros_01": {
+      "name": "Swatch Maros 01",
+      "category": "Swatches"
+    },
+    "Swatch_MaulaFree_01": {
+      "name": "Swatch Maula Free 01",
+      "category": "Swatches"
+    },
+    "Swatch_Merc_01": {
+      "name": "Swatch Merc 01",
+      "category": "Swatches"
+    },
+    "Swatch_Mikarrol_01": {
+      "name": "Swatch Mikarrol 01",
+      "category": "Swatches"
+    },
+    "Swatch_Moritani_01": {
+      "name": "Swatch Moritani 01",
+      "category": "Swatches"
+    },
+    "Swatch_MTX_Cloth_Graben_Social_01": {
+      "name": "Swatch MTX Cloth Graben Social 01",
+      "category": "Swatches"
+    },
+    "Swatch_MTX_Graben_Sandcrawler_01": {
+      "name": "Swatch MTX Graben Sandcrawler 01",
+      "category": "Swatches"
+    },
+    "Swatch_MTX_WaterFat_Ornithopter_01": {
+      "name": "Swatch MTX Water Fat Ornithopter 01",
+      "category": "Swatches"
+    },
+    "Swatch_MTX_Wpn_Graben_Flamethrower_01": {
+      "name": "Swatch MTX Wpn Graben Flamethrower 01",
+      "category": "Swatches"
+    },
+    "Swatch_MTX_Wpn_Graben_Melee_01": {
+      "name": "Swatch MTX Wpn Graben Melee 01",
+      "category": "Swatches"
+    },
+    "Swatch_MTX_Wpn_Graben_Pistol_01": {
+      "name": "Swatch MTX Wpn Graben Pistol 01",
+      "category": "Swatches"
+    },
+    "Swatch_MTX_Wpn_Graben_Rifle_01": {
+      "name": "Swatch MTX Wpn Graben Rifle 01",
+      "category": "Swatches"
+    },
+    "Swatch_Mutelli_01": {
+      "name": "Swatch Mutelli 01",
+      "category": "Swatches"
+    },
+    "Swatch_Novebruns_01": {
+      "name": "Swatch Novebruns 01",
+      "category": "Swatches"
+    },
+    "Swatch_Ordos_01": {
+      "name": "Swatch Ordos 01",
+      "category": "Swatches"
+    },
+    "Swatch_RedD_01": {
+      "name": "Swatch Red Duke 01",
+      "category": "Swatches"
+    },
+    "Swatch_RedD_Global": {
+      "name": "Swatch Red Duke Global",
+      "category": "Dye Packs"
+    },
+    "Swatch_RedDbal": {
+      "name": "Swatch Red Dbal",
+      "category": "Swatches"
+    },
+    "Swatch_Richese_01": {
+      "name": "Swatch Richese 01",
+      "category": "Swatches"
+    },
+    "Swatch_SandF_01": {
+      "name": "Swatch Sand Fisher 01",
+      "category": "Swatches"
+    },
+    "Swatch_Scav_01": {
+      "name": "Swatch Scavenger 01",
+      "category": "Swatches"
+    },
+    "Swatch_Slav_01": {
+      "name": "Swatch Slav 01",
+      "category": "Swatches"
+    },
+    "Swatch_Smug_01": {
+      "name": "Swatch Smuggler 01",
+      "category": "Swatches"
+    },
+    "Swatch_Smug_Global": {
+      "name": "Swatch Smuggler Global",
+      "category": "Dye Packs"
+    },
+    "Swatch_SmugTech_Global": {
+      "name": "Swatch Smuggler Tech Global",
+      "category": "Dye Packs"
+    },
+    "Swatch_SmugTeGlobal": {
+      "name": "Swatch Smug Te Global",
+      "category": "Dye Packs"
+    },
+    "Swatch_Sor_01": {
+      "name": "Swatch Sor 01",
+      "category": "Swatches"
+    },
+    "Swatch_Spinette_01": {
+      "name": "Swatch Spinette 01",
+      "category": "Swatches"
+    },
+    "Swatch_Talgari_01": {
+      "name": "Swatch Taligari 01",
+      "category": "Swatches"
+    },
+    "Swatch_Thorvald_01": {
+      "name": "Swatch Thorvald 01",
+      "category": "Swatches"
+    },
+    "Swatch_Tseida_01": {
+      "name": "Swatch Tseida 01",
+      "category": "Swatches"
+    },
+    "Swatch_Ultimate_Ornithopter_01": {
+      "name": "Swatch Ultimate Ornithopter 01",
+      "category": "Swatches"
+    },
+    "Swatch_Varota_01": {
+      "name": "Swatch Varota 01",
+      "category": "Swatches"
+    },
+    "Swatch_Vehicle_Agrosaz_Flying": {
+      "name": "Vehicle Swatch — Agrosaz Flying",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Agrosaz_Ground": {
+      "name": "Vehicle Swatch — Agrosaz Ground",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Alexin_Flying": {
+      "name": "Vehicle Swatch — Alexin Flying",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Alexin_Ground": {
+      "name": "Vehicle Swatch — Alexin Ground",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Atre_Flying": {
+      "name": "Vehicle Swatch — Atre Flying",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Atre_Ground": {
+      "name": "Vehicle Swatch — Atre Ground",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_CargoContainer_Atreides": {
+      "name": "Vehicle Swatch — CargoContainer Atreides",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_CargoContainer_CHOAM": {
+      "name": "Vehicle Swatch — CargoContainer CHOAM",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_CargoContainer_Harkonnen": {
+      "name": "Vehicle Swatch — CargoContainer Harkonnen",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_CargoContainer_Maula": {
+      "name": "Vehicle Swatch — CargoContainer Maula",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_CargoContainer_RedD": {
+      "name": "Vehicle Swatch — CargoContainer RedD",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_CargoContainer_UltimateOrnithopter": {
+      "name": "Vehicle Swatch — CargoContainer UltimateOrnithopter",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_CargoContainer_Universal": {
+      "name": "Vehicle Swatch — CargoContainer Universal",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Choam_Flying": {
+      "name": "Vehicle Swatch — Choam Flying",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Choam_Ground": {
+      "name": "Vehicle Swatch — Choam Ground",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Dyvetz_Flying": {
+      "name": "Vehicle Swatch — Dyvetz Flying",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Dyvetz_Ground": {
+      "name": "Vehicle Swatch — Dyvetz Ground",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Ecaz_Flying": {
+      "name": "Vehicle Swatch — Ecaz Flying",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Ecaz_Ground": {
+      "name": "Vehicle Swatch — Ecaz Ground",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Frem_Flying": {
+      "name": "Vehicle Swatch — Frem Flying",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Frem_Ground": {
+      "name": "Vehicle Swatch — Frem Ground",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Hagal_Flying": {
+      "name": "Vehicle Swatch — Hagal Flying",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Hagal_Ground": {
+      "name": "Vehicle Swatch — Hagal Ground",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Hark_Flying": {
+      "name": "Vehicle Swatch — Hark Flying",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Hark_Ground": {
+      "name": "Vehicle Swatch — Hark Ground",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Hurata_Flying": {
+      "name": "Vehicle Swatch — Hurata Flying",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Hurata_Ground": {
+      "name": "Vehicle Swatch — Hurata Ground",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Imota_Flying": {
+      "name": "Vehicle Swatch — Imota Flying",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Imota_Ground": {
+      "name": "Vehicle Swatch — Imota Ground",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Kenola_Flying": {
+      "name": "Vehicle Swatch — Kenola Flying",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Kenola_Ground": {
+      "name": "Vehicle Swatch — Kenola Ground",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Kirab_Flying": {
+      "name": "Vehicle Swatch — Kirab Flying",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Kirab_Ground": {
+      "name": "Vehicle Swatch — Kirab Ground",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Lindaren_Flying": {
+      "name": "Vehicle Swatch — Lindaren Flying",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Lindaren_Ground": {
+      "name": "Vehicle Swatch — Lindaren Ground",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_MaasK_Flying": {
+      "name": "Vehicle Swatch — MaasK Flying",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_MaasK_Ground": {
+      "name": "Vehicle Swatch — MaasK Ground",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Maros_Flying": {
+      "name": "Vehicle Swatch — Maros Flying",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Maros_Ground": {
+      "name": "Vehicle Swatch — Maros Ground",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Merc_Flying": {
+      "name": "Vehicle Swatch — Merc Flying",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Merc_Ground": {
+      "name": "Vehicle Swatch — Merc Ground",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Mikarrol_Flying": {
+      "name": "Vehicle Swatch — Mikarrol Flying",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Mikarrol_Ground": {
+      "name": "Vehicle Swatch — Mikarrol Ground",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Moritani_Flying": {
+      "name": "Vehicle Swatch — Moritani Flying",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Moritani_Ground": {
+      "name": "Vehicle Swatch — Moritani Ground",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Mutelli_Flying": {
+      "name": "Vehicle Swatch — Mutelli Flying",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Mutelli_Ground": {
+      "name": "Vehicle Swatch — Mutelli Ground",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Novebruns_Flying": {
+      "name": "Vehicle Swatch — Novebruns Flying",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Novebruns_Ground": {
+      "name": "Vehicle Swatch — Novebruns Ground",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Ordos_Flying": {
+      "name": "Vehicle Swatch — Ordos Flying",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Ordos_Ground": {
+      "name": "Vehicle Swatch — Ordos Ground",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Richese_Flying": {
+      "name": "Vehicle Swatch — Richese Flying",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Richese_Ground": {
+      "name": "Vehicle Swatch — Richese Ground",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_SandF_Flying": {
+      "name": "Vehicle Swatch — SandF Flying",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_SandF_Ground": {
+      "name": "Vehicle Swatch — SandF Ground",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Scav_Flying": {
+      "name": "Vehicle Swatch — Scav Flying",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Scav_Ground": {
+      "name": "Vehicle Swatch — Scav Ground",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Slav_Flying": {
+      "name": "Vehicle Swatch — Slav Flying",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Slav_Ground": {
+      "name": "Vehicle Swatch — Slav Ground",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Sor_Flying": {
+      "name": "Vehicle Swatch — Sor Flying",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Sor_Ground": {
+      "name": "Vehicle Swatch — Sor Ground",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Spinette_Flying": {
+      "name": "Vehicle Swatch — Spinette Flying",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Spinette_Ground": {
+      "name": "Vehicle Swatch — Spinette Ground",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Talgari_Flying": {
+      "name": "Vehicle Swatch — Talgari Flying",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Talgari_Ground": {
+      "name": "Vehicle Swatch — Talgari Ground",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Thorvald_Flying": {
+      "name": "Vehicle Swatch — Thorvald Flying",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Thorvald_Ground": {
+      "name": "Vehicle Swatch — Thorvald Ground",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Tseida_Flying": {
+      "name": "Vehicle Swatch — Tseida Flying",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Tseida_Ground": {
+      "name": "Vehicle Swatch — Tseida Ground",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Varota_Flying": {
+      "name": "Vehicle Swatch — Varota Flying",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Varota_Ground": {
+      "name": "Vehicle Swatch — Varota Ground",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Vernius_Flying": {
+      "name": "Vehicle Swatch — Vernius Flying",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Vernius_Ground": {
+      "name": "Vehicle Swatch — Vernius Ground",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Wallach_Flying": {
+      "name": "Vehicle Swatch — Wallach Flying",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Wallach_Ground": {
+      "name": "Vehicle Swatch — Wallach Ground",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Wayku_Flying": {
+      "name": "Vehicle Swatch — Wayku Flying",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Wayku_Ground": {
+      "name": "Vehicle Swatch — Wayku Ground",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Wydras_Flying": {
+      "name": "Vehicle Swatch — Wydras Flying",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vehicle_Wydras_Ground": {
+      "name": "Vehicle Swatch — Wydras Ground",
+      "category": "Vehicle Swatches"
+    },
+    "Swatch_Vernius_01": {
+      "name": "Swatch Vernius 01",
+      "category": "Swatches"
+    },
+    "Swatch_Walla01": {
+      "name": "Swatch Walla01",
+      "category": "Swatches"
+    },
+    "Swatch_Wallach_01": {
+      "name": "Swatch Wallach 01",
+      "category": "Swatches"
+    },
+    "Swatch_WaterFat": {
+      "name": "Swatch Water Fat",
+      "category": "Swatches"
+    },
+    "Swatch_Watershippers": {
+      "name": "Swatch Watershippers",
+      "category": "Swatches"
+    },
+    "Swatch_Watershippers_Global": {
+      "name": "Swatch Watershippers Global",
+      "category": "Dye Packs"
+    },
+    "Swatch_Wayku_01": {
+      "name": "Swatch Wayku 01",
+      "category": "Swatches"
+    },
+    "Swatch_Weapon_01": {
+      "name": "Swatch Weapon 01",
+      "category": "Swatches"
+    },
+    "Swatch_Weapon_02": {
+      "name": "Swatch Weapon 02",
+      "category": "Swatches"
+    },
+    "Swatch_Weapon_03": {
+      "name": "Swatch Weapon 03",
+      "category": "Swatches"
+    },
+    "Swatch_Weapon_04": {
+      "name": "Swatch Weapon 04",
+      "category": "Swatches"
+    },
+    "Swatch_Wpn_Agrosaz_Melee_01": {
+      "name": "Weapon Swatch — Agrosaz Melee 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Agrosaz_Ranged_01": {
+      "name": "Weapon Swatch — Agrosaz Ranged 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Alexin_Melee_01": {
+      "name": "Weapon Swatch — Alexin Melee 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Alexin_Ranged_01": {
+      "name": "Weapon Swatch — Alexin Ranged 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Atre_Melee_01": {
+      "name": "Weapon Swatch — Atre Melee 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Atre_Ranged_01": {
+      "name": "Weapon Swatch — Atre Ranged 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Choam_Melee_01": {
+      "name": "Weapon Swatch — Choam Melee 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Choam_Ranged_01": {
+      "name": "Weapon Swatch — Choam Ranged 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Dyvetz_Melee_01": {
+      "name": "Weapon Swatch — Dyvetz Melee 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Dyvetz_Ranged_01": {
+      "name": "Weapon Swatch — Dyvetz Ranged 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Ecaz_Melee_01": {
+      "name": "Weapon Swatch — Ecaz Melee 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Ecaz_Ranged_01": {
+      "name": "Weapon Swatch — Ecaz Ranged 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Frem_Melee_01": {
+      "name": "Weapon Swatch — Frem Melee 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Frem_Ranged_01": {
+      "name": "Weapon Swatch — Frem Ranged 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Hagal_Melee_01": {
+      "name": "Weapon Swatch — Hagal Melee 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Hagal_Ranged_01": {
+      "name": "Weapon Swatch — Hagal Ranged 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Hark_Melee_01": {
+      "name": "Weapon Swatch — Hark Melee 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Hark_Ranged_01": {
+      "name": "Weapon Swatch — Hark Ranged 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Hurata_Melee_01": {
+      "name": "Weapon Swatch — Hurata Melee 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Hurata_Ranged_01": {
+      "name": "Weapon Swatch — Hurata Ranged 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Imota_Melee_01": {
+      "name": "Weapon Swatch — Imota Melee 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Imota_Ranged_01": {
+      "name": "Weapon Swatch — Imota Ranged 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Kenola_Melee_01": {
+      "name": "Weapon Swatch — Kenola Melee 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Kenola_Ranged_01": {
+      "name": "Weapon Swatch — Kenola Ranged 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Kirab_Melee_01": {
+      "name": "Weapon Swatch — Kirab Melee 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Kirab_Ranged_01": {
+      "name": "Weapon Swatch — Kirab Ranged 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Lindaren_Melee_01": {
+      "name": "Weapon Swatch — Lindaren Melee 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Lindaren_Ranged_01": {
+      "name": "Weapon Swatch — Lindaren Ranged 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_MaasK_Melee_01": {
+      "name": "Weapon Swatch — MaasK Melee 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_MaasK_Ranged_01": {
+      "name": "Weapon Swatch — MaasK Ranged 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Maros_Melee_01": {
+      "name": "Weapon Swatch — Maros Melee 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Maros_Ranged_01": {
+      "name": "Weapon Swatch — Maros Ranged 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Merc_Melee_01": {
+      "name": "Weapon Swatch — Merc Melee 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Merc_Ranged_01": {
+      "name": "Weapon Swatch — Merc Ranged 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Mikarrol_Melee_01": {
+      "name": "Weapon Swatch — Mikarrol Melee 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Mikarrol_Ranged_01": {
+      "name": "Weapon Swatch — Mikarrol Ranged 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Moritani_Melee_01": {
+      "name": "Weapon Swatch — Moritani Melee 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Moritani_Ranged_01": {
+      "name": "Weapon Swatch — Moritani Ranged 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Mutelli_Melee_01": {
+      "name": "Weapon Swatch — Mutelli Melee 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Mutelli_Ranged_01": {
+      "name": "Weapon Swatch — Mutelli Ranged 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Novebruns_Melee_01": {
+      "name": "Weapon Swatch — Novebruns Melee 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Novebruns_Ranged_01": {
+      "name": "Weapon Swatch — Novebruns Ranged 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Ordos_Melee_01": {
+      "name": "Weapon Swatch — Ordos Melee 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Ordos_Ranged_01": {
+      "name": "Weapon Swatch — Ordos Ranged 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Richese_Melee_01": {
+      "name": "Weapon Swatch — Richese Melee 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Richese_Ranged_01": {
+      "name": "Weapon Swatch — Richese Ranged 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_SandF_Melee_01": {
+      "name": "Weapon Swatch — SandF Melee 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_SandF_Ranged_01": {
+      "name": "Weapon Swatch — SandF Ranged 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Scav_Melee_01": {
+      "name": "Weapon Swatch — Scav Melee 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Scav_Ranged_01": {
+      "name": "Weapon Swatch — Scav Ranged 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Slav_Melee_01": {
+      "name": "Weapon Swatch — Slav Melee 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Slav_Ranged_01": {
+      "name": "Weapon Swatch — Slav Ranged 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Sor_Melee_01": {
+      "name": "Weapon Swatch — Sor Melee 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Sor_Ranged_01": {
+      "name": "Weapon Swatch — Sor Ranged 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Spinette_Melee_01": {
+      "name": "Weapon Swatch — Spinette Melee 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Spinette_Ranged_01": {
+      "name": "Weapon Swatch — Spinette Ranged 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Talgari_Melee_01": {
+      "name": "Weapon Swatch — Talgari Melee 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Talgari_Ranged_01": {
+      "name": "Weapon Swatch — Talgari Ranged 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Thorvald_Melee_01": {
+      "name": "Weapon Swatch — Thorvald Melee 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Thorvald_Ranged_01": {
+      "name": "Weapon Swatch — Thorvald Ranged 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Tseida_Melee_01": {
+      "name": "Weapon Swatch — Tseida Melee 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Tseida_Ranged_01": {
+      "name": "Weapon Swatch — Tseida Ranged 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Varota_Melee_01": {
+      "name": "Weapon Swatch — Varota Melee 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Varota_Ranged_01": {
+      "name": "Weapon Swatch — Varota Ranged 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Vernius_Melee_01": {
+      "name": "Weapon Swatch — Vernius Melee 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Vernius_Ranged_01": {
+      "name": "Weapon Swatch — Vernius Ranged 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Wallach_Melee_01": {
+      "name": "Weapon Swatch — Wallach Melee 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Wallach_Ranged_01": {
+      "name": "Weapon Swatch — Wallach Ranged 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Wayku_Melee_01": {
+      "name": "Weapon Swatch — Wayku Melee 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Wayku_Ranged_01": {
+      "name": "Weapon Swatch — Wayku Ranged 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Wydras_Melee_01": {
+      "name": "Weapon Swatch — Wydras Melee 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wpn_Wydras_Ranged_01": {
+      "name": "Weapon Swatch — Wydras Ranged 01",
+      "category": "Weapon Swatches"
+    },
+    "Swatch_Wydras_01": {
+      "name": "Swatch Wydras 01",
+      "category": "Swatches"
+    },
+    "WaterS_01": {
+      "name": "Water Shipper 01",
+      "category": "Armor Skins"
+    },
+    "WaterS__Boots": {
+      "name": "Water Shipper Boots",
+      "category": "Armor Skins"
+    },
+    "WaterS__Bots": {
+      "name": "Water Shipper Bots",
+      "category": "Armor Skins"
+    },
+    "WaterS__Gloves": {
+      "name": "Water Shipper Gloves",
+      "category": "Armor Skins"
+    },
+    "WaterS__Helmet": {
+      "name": "Water Shipper Helmet",
+      "category": "Armor Skins"
+    },
+    "WaterS__Top": {
+      "name": "Water Shipper Chest",
+      "category": "Armor Skins"
+    },
+    "WaterS_AssaultArmor_Boots": {
+      "name": "Water Shipper Assault Armor Boots",
+      "category": "Armor Skins"
+    },
+    "WaterS_AssaultArmor_Bottoms": {
+      "name": "Water Shipper Assault Armor Pants",
+      "category": "Armor Skins"
+    },
+    "WaterS_AssaultArmor_Gloves": {
+      "name": "Water Shipper Assault Armor Gloves",
+      "category": "Armor Skins"
+    },
+    "WaterS_AssaultArmor_Helmet": {
+      "name": "Water Shipper Assault Armor Helmet",
+      "category": "Armor Skins"
+    },
+    "WaterS_AssaultArmor_Top": {
+      "name": "Water Shipper Assault Armor Chest",
+      "category": "Armor Skins"
+    },
+    "WaterS_Drillshot": {
+      "name": "Water Shipper Drillshot Skin",
+      "category": "Weapon Skins"
+    },
+    "WaterS_Drillshot_Variant": {
+      "name": "Water Shipper Drillshot Variant Skin",
+      "category": "Weapon Skins"
+    },
+    "WaterS_Heavy": {
+      "name": "Water Shipper Heavy",
+      "category": "Armor Skins"
+    },
+    "WaterS_Heavy_Boots": {
+      "name": "Water Shipper Heavy Boots",
+      "category": "Armor Skins"
+    },
+    "WaterS_Heavy_Bottoms": {
+      "name": "Water Shipper Heavy Pants",
+      "category": "Armor Skins"
+    },
+    "WaterS_Heavy_Gloves": {
+      "name": "Water Shipper Heavy Gloves",
+      "category": "Armor Skins"
+    },
+    "WaterS_Heavy_Helmet": {
+      "name": "Water Shipper Heavy Helmet",
+      "category": "Armor Skins"
+    },
+    "WaterS_Heavy_Top": {
+      "name": "Water Shipper Heavy Chest",
+      "category": "Armor Skins"
+    },
+    "WaterS_HeavyArmor_Boots": {
+      "name": "Water Shipper Heavy Armor Boots",
+      "category": "Armor Skins"
+    },
+    "WaterS_HeavyArmor_Bottoms": {
+      "name": "Water Shipper Heavy Armor Pants",
+      "category": "Armor Skins"
+    },
+    "WaterS_HeavyArmor_Gloves": {
+      "name": "Water Shipper Heavy Armor Gloves",
+      "category": "Armor Skins"
+    },
+    "WaterS_HeavyArmor_Helmet": {
+      "name": "Water Shipper Heavy Armor Helmet",
+      "category": "Armor Skins"
+    },
+    "WaterS_HeavyArmor_Top": {
+      "name": "Water Shipper Heavy Armor Chest",
+      "category": "Armor Skins"
+    },
+    "WaterS_Legendarfn": {
+      "name": "Water Shipper Legendarfn",
+      "category": "Armor Skins"
+    },
+    "WaterS_Legendary_01_Bottom": {
+      "name": "Water Shipper Legendary 01 Pants",
+      "category": "Armor Skins"
+    },
+    "WaterS_Legendary_01_Footwear": {
+      "name": "Water Shipper Legendary 01 Boots",
+      "category": "Armor Skins"
+    },
+    "WaterS_Legendary_01_Gloves": {
+      "name": "Water Shipper Legendary 01 Gloves",
+      "category": "Armor Skins"
+    },
+    "WaterS_Legendary_01_Headwear": {
+      "name": "Water Shipper Legendary 01 Helmet",
+      "category": "Armor Skins"
+    },
+    "WaterS_Legendary_01_Heavy_01_Top": {
+      "name": "Water Shipper Legendary 01 Heavy 01 Chest",
+      "category": "Armor Skins"
+    },
+    "WaterS_Legendary_MaleHeadR_D": {
+      "name": "Water Shipper Legendary Male Head R D",
+      "category": "Armor Skins"
+    },
+    "WaterS_Legendary_MaleR_D": {
+      "name": "Water Shipper Legendary Male R D",
+      "category": "Armor Skins"
+    },
+    "WaterS_Legendary_MaleShoesR_D": {
+      "name": "Water Shipper Legendary Male Shoes R D",
+      "category": "Armor Skins"
+    },
+    "WaterS_Legendary_MaleTopR_D": {
+      "name": "Water Shipper Legendary Male Top R D",
+      "category": "Armor Skins"
+    },
+    "WaterS_LighData": {
+      "name": "Water Shipper Ligh Data",
+      "category": "Armor Skins"
+    },
+    "WaterS_Light": {
+      "name": "Water Shipper Light",
+      "category": "Armor Skins"
+    },
+    "WaterS_Light_Boots": {
+      "name": "Water Shipper Light Boots",
+      "category": "Armor Skins"
+    },
+    "WaterS_Light_Bottoms": {
+      "name": "Water Shipper Light Pants",
+      "category": "Armor Skins"
+    },
+    "WaterS_Light_Gloves": {
+      "name": "Water Shipper Light Gloves",
+      "category": "Armor Skins"
+    },
+    "WaterS_Light_Helmet": {
+      "name": "Water Shipper Light Helmet",
+      "category": "Armor Skins"
+    },
+    "WaterS_Light_Top": {
+      "name": "Water Shipper Light Chest",
+      "category": "Armor Skins"
+    },
+    "WaterS_Rapi": {
+      "name": "Water Shipper Rapi",
+      "category": "Armor Skins"
+    },
+    "WaterS_Rapier": {
+      "name": "Water Shipper Rapier Skin",
+      "category": "Weapon Skins"
+    },
+    "WaterS_Rapier_Variant": {
+      "name": "Water Shipper Rapier Variant Skin",
+      "category": "Weapon Skins"
+    },
+    "WaterS_Rusher": {
+      "name": "Water Shipper Rusher",
+      "category": "Armor Skins"
+    },
+    "WaterS_Stillsuit_Boots_MeshVariant": {
+      "name": "Water Shipper Stillsuit Boots",
+      "category": "Armor Skins"
+    },
+    "WaterS_Stillsuit_Gloves_MeshVariant": {
+      "name": "Water Shipper Stillsuit Gloves",
+      "category": "Armor Skins"
+    },
+    "WaterS_Stillsuit_Helmet_MeshVariant": {
+      "name": "Water Shipper Stillsuit Helmet",
+      "category": "Armor Skins"
+    },
+    "WaterS_Stillsuit_Top_MeshVariant": {
+      "name": "Water Shipper Stillsuit Chest",
+      "category": "Armor Skins"
+    },
+    "Watershippers Global": {
+      "name": "Watershippers Global Dye",
+      "category": "Dye Packs"
+    }
+  }
+}
