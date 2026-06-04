@@ -1,8 +1,9 @@
 {
   "_meta": {
-    "total": 979,
-    "source": "awakening.wiki",
-    "scraped": "2026-05-20"
+    "total": 997,
+    "source": "awakening.wiki + CUE4Parse game files",
+    "scraped": "2026-05-20",
+    "patched": "2026-06-04"
   },
   "items": {
     "SMG_Unique_LargeMag_06": {
@@ -3760,6 +3761,78 @@
     "MTX_Neut_DesertMechanicSet_Toolbox_Patent": {
       "name": "Toolbox",
       "category": "Building"
+    },
+    "TreadwheelBoost_4": {
+      "name": "Treadwheel Booster Mk4",
+      "category": "Vehicle Modules"
+    },
+    "TreadwheelBoost_5": {
+      "name": "Treadwheel Booster Mk5",
+      "category": "Vehicle Modules"
+    },
+    "TreadwheelBoost_6": {
+      "name": "Treadwheel Booster Mk6",
+      "category": "Vehicle Modules"
+    },
+    "TreadwheelChassis_4": {
+      "name": "Treadwheel Chassis Mk4",
+      "category": "Vehicle Modules"
+    },
+    "TreadwheelChassis_5": {
+      "name": "Treadwheel Chassis Mk5",
+      "category": "Vehicle Modules"
+    },
+    "TreadwheelChassis_6": {
+      "name": "Treadwheel Chassis Mk6",
+      "category": "Vehicle Modules"
+    },
+    "TreadwheelEngine_4": {
+      "name": "Treadwheel Engine Mk4",
+      "category": "Vehicle Modules"
+    },
+    "TreadwheelEngine_5": {
+      "name": "Treadwheel Engine Mk5",
+      "category": "Vehicle Modules"
+    },
+    "TreadwheelEngine_6": {
+      "name": "Treadwheel Engine Mk6",
+      "category": "Vehicle Modules"
+    },
+    "TreadwheelGenerator_4": {
+      "name": "Treadwheel PSU Mk4",
+      "category": "Vehicle Modules"
+    },
+    "TreadwheelGenerator_5": {
+      "name": "Treadwheel PSU Mk5",
+      "category": "Vehicle Modules"
+    },
+    "TreadwheelGenerator_6": {
+      "name": "Treadwheel PSU Mk6",
+      "category": "Vehicle Modules"
+    },
+    "TreadwheelHull_4": {
+      "name": "Treadwheel Hull Mk4",
+      "category": "Vehicle Modules"
+    },
+    "TreadwheelHull_5": {
+      "name": "Treadwheel Hull Mk5",
+      "category": "Vehicle Modules"
+    },
+    "TreadwheelHull_6": {
+      "name": "Treadwheel Hull Mk6",
+      "category": "Vehicle Modules"
+    },
+    "TreadwheelLocomotion_4": {
+      "name": "Treadwheel Tread Mk4",
+      "category": "Vehicle Modules"
+    },
+    "TreadwheelLocomotion_5": {
+      "name": "Treadwheel Tread Mk5",
+      "category": "Vehicle Modules"
+    },
+    "TreadwheelLocomotion_6": {
+      "name": "Treadwheel Tread Mk6",
+      "category": "Vehicle Modules"
     },
     "T6HydraulicPiston": {
       "name": "Tri-Forged Hydraulic Piston",

@@ -1,3 +1,3 @@
-node_modules/
-.env
-*.log
+tools/**/bin/
+tools/**/obj/
+tools/Cue4ParsePatents/*.txt

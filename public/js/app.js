@@ -1188,7 +1188,8 @@
 
     let results = catalogArr;
     if (query.length >= 2) {
-      results = results.filter(i => i.name.toLowerCase().includes(query));
+      results = results.filter(i =>
+        i.name.toLowerCase().includes(query) || i.tid.toLowerCase().includes(query));
     }
     if (catFilter) {
       if (catFilter === 'Garments') {
