@@ -2,6 +2,7 @@
 using CUE4Parse.UE4.Assets.Exports.Engine;
 using CUE4Parse.UE4.Versions;
 using CUE4Parse.Utils;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 
 const string defaultPaksDir =
@@ -224,5 +225,59 @@ foreach (var tablePath in baseItemTables)
         Console.WriteLine($"  {tablePath}: uexp read failed: {ex.Message}");
     }
 }
+
+static string TechCategory(string id)
+{
+    if (id.StartsWith("DA_GRP_", StringComparison.OrdinalIgnoreCase)) return "Group";
+    if (id.StartsWith("DA_REC_", StringComparison.OrdinalIgnoreCase)) return "Recipe";
+    if (id.StartsWith("RCP_", StringComparison.OrdinalIgnoreCase)) return "Recipe";
+    if (id.StartsWith("BLD_", StringComparison.OrdinalIgnoreCase)) return "Building";
+    return "Other";
+}
+
+static bool IsTechTreeNodeId(string name) =>
+    name.StartsWith("DA_GRP_", StringComparison.OrdinalIgnoreCase) ||
+    name.StartsWith("DA_REC_", StringComparison.OrdinalIgnoreCase) ||
+    name.StartsWith("RCP_", StringComparison.OrdinalIgnoreCase) ||
+    name.StartsWith("BLD_", StringComparison.OrdinalIgnoreCase);
+
+var techNodeIds = allPaths
+    .Where(p => p.Contains("/TechKnowledge/", StringComparison.OrdinalIgnoreCase) &&
+                p.EndsWith(".uasset", StringComparison.OrdinalIgnoreCase))
+    .Select(p => Path.GetFileNameWithoutExtension(p)!)
+    .Where(IsTechTreeNodeId)
+    .Concat(allPaths
+        .Where(p => p.EndsWith(".uasset", StringComparison.OrdinalIgnoreCase))
+        .Select(p => Path.GetFileNameWithoutExtension(p)!)
+        .Where(n => n.StartsWith("RCP_", StringComparison.OrdinalIgnoreCase) ||
+                    n.StartsWith("BLD_", StringComparison.OrdinalIgnoreCase)))
+    .Distinct(StringComparer.OrdinalIgnoreCase)
+    .OrderBy(x => x, StringComparer.OrdinalIgnoreCase)
+    .ToList();
+
+var techOut = Path.Combine(outDir, "tech-tree-node-ids.txt");
+File.WriteAllLines(techOut, techNodeIds);
+
+var techCatalogPath = Path.GetFullPath(Path.Combine(outDir, "..", "..", "public", "data", "tech-recipe-catalog.json"));
+var recipes = new Dictionary<string, object>();
+foreach (var id in techNodeIds)
+    recipes[id] = new { category = TechCategory(id) };
+
+Directory.CreateDirectory(Path.GetDirectoryName(techCatalogPath)!);
+File.WriteAllText(
+    techCatalogPath,
+    JsonSerializer.Serialize(
+        new { total = techNodeIds.Count, recipes },
+        new JsonSerializerOptions { WriteIndented = true }));
+
+Console.WriteLine();
+Console.WriteLine($"=== Tech tree node IDs: {techNodeIds.Count} ===");
+foreach (var prefix in new[] { "DA_GRP_", "DA_REC_", "RCP_", "BLD_" })
+{
+    var n = techNodeIds.Count(id => id.StartsWith(prefix, StringComparison.OrdinalIgnoreCase));
+    if (n > 0) Console.WriteLine($"  {prefix}: {n}");
+}
+Console.WriteLine($"Wrote {techOut}");
+Console.WriteLine($"Wrote {techCatalogPath}");
 
 return 0;

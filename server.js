@@ -1328,16 +1328,59 @@ app.post('/api/characters/:id/tech/unlock-all', async (req, res) => {
   const id = parseInt(req.params.id);
 
   try {
+    const catalogIds = loadTechRecipeCatalogIds();
+    const raw = await runPsql(ip,
+      `SELECT COALESCE(properties->'TechKnowledgePlayerComponent'->'m_TechKnowledge'->'m_TechKnowledgeData', '[]'::jsonb) ` +
+      `FROM actors WHERE id = ${id}`
+    );
+    const current = JSON.parse(raw.trim()) || [];
+    const byKey = new Map();
+
+    for (const entry of current) {
+      const key = entry?.ItemKey;
+      if (!key) continue;
+      byKey.set(key, {
+        ...entry,
+        ItemKey: key,
+        bIsNewEntry: false,
+        UnlockedState: 'Purchased',
+      });
+    }
+
+    for (const itemKey of catalogIds) {
+      if (byKey.has(itemKey)) {
+        const entry = byKey.get(itemKey);
+        entry.UnlockedState = 'Purchased';
+        entry.bIsNewEntry = false;
+      } else {
+        byKey.set(itemKey, {
+          ItemKey: itemKey,
+          bIsNewEntry: false,
+          UnlockedState: 'Purchased',
+        });
+      }
+    }
+
+    const merged = [...byKey.values()].sort((a, b) =>
+      String(a.ItemKey).localeCompare(String(b.ItemKey))
+    );
+    const payload = JSON.stringify(merged).replace(/'/g, "''");
+
     await runPsql(ip,
       `UPDATE actors SET properties = jsonb_set(` +
-      `properties, '{TechKnowledgePlayerComponent,m_TechKnowledge,m_TechKnowledgeData}', ` +
-      `(SELECT jsonb_agg(CASE WHEN elem->>'UnlockedState' = 'NotPurchased' ` +
-      `THEN jsonb_set(elem, '{UnlockedState}', '"Purchased"') ELSE elem END) ` +
-      `FROM jsonb_array_elements(properties->'TechKnowledgePlayerComponent'->'m_TechKnowledge'->'m_TechKnowledgeData') as elem)` +
-      `) WHERE id = ${id}`
+      `jsonb_set(properties, '{TechKnowledgePlayerComponent,m_TechKnowledgePoints}', '99999'), ` +
+      `'{TechKnowledgePlayerComponent,m_TechKnowledge,m_TechKnowledgeData}', '${payload}'::jsonb` +
+      `) WHERE id = ${id}`,
+      { timeout: 120000 }
     );
-    log(`All tech tree recipes unlocked for character ${id}.\n`);
-    res.json({ success: true });
+    log(`All ${merged.length} tech tree recipes unlocked for character ${id} (+${merged.length - current.length} added).\n`);
+    res.json({
+      success: true,
+      total: merged.length,
+      added: merged.length - current.length,
+      previous: current.length,
+      catalogTotal: catalogIds.length,
+    });
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
@@ -1439,6 +1482,18 @@ function loadCosmeticCatalogIds() {
     .filter(([id, info]) => info.unlock !== 'inventory' && !id.startsWith('Swatch_'))
     .map(([id]) => id)
     .sort();
+}
+
+function loadTechRecipeCatalogIds() {
+  const catalogPath = path.join(__dirname, 'public', 'data', 'tech-recipe-catalog.json');
+  const data = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
+  return Object.keys(data.recipes || {}).sort();
+}
+
+function loadTechRecipeCatalogMeta() {
+  const catalogPath = path.join(__dirname, 'public', 'data', 'tech-recipe-catalog.json');
+  const data = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
+  return { total: data.total || Object.keys(data.recipes || {}).length };
 }
 
 // Unlock all cosmetics from catalog (merge with existing)

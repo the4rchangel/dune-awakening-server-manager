@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0.4 — 2026-06-02
+
+### Tech tree — Unlock All Recipes fix
+
+- **Root cause** — The old endpoint only flipped `UnlockedState` on recipes already present in the character save (~128 entries). The in-game tech tree has **356** nodes (`DA_GRP_*` groups + `DA_REC_*` recipes) that were never added to the save, so they stayed locked even after “Unlock All.”
+- **`public/data/tech-recipe-catalog.json`** — Full tech node list extracted from game pak files via `tools/Cue4ParsePatents` (regenerate with `dotnet run` in that folder).
+- **`POST /api/characters/:id/tech/unlock-all`** — Merges every catalog node into `m_TechKnowledgeData` as `Purchased`, preserves existing `RCP_*` / `BLD_*` save entries, and sets `m_TechKnowledgePoints` to 99999.
+- **UI** — Tech Tree badge shows `purchased / in save / in game`; unlock result reports how many nodes were added. Reminder to stop battlegroup and relog after changes.
+
 ## 1.0.3 — 2026-06-03
 
 ### Incomplete bootstrap repair

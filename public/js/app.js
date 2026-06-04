@@ -1501,13 +1501,32 @@
   // -----------------------------------------------------------------------
   // Tech Tree
   // -----------------------------------------------------------------------
+  let techCatalogTotal = null;
+
+  async function loadTechCatalogTotal() {
+    if (techCatalogTotal != null) return techCatalogTotal;
+    try {
+      const res = await fetch('/data/tech-recipe-catalog.json');
+      const data = await res.json();
+      techCatalogTotal = data.total || Object.keys(data.recipes || {}).length;
+    } catch {
+      techCatalogTotal = null;
+    }
+    return techCatalogTotal;
+  }
+
   async function refreshTechCount() {
     if (!charData) return;
     try {
       const d = await api('GET', `characters/${charData.actorId}`);
       const tree = d.properties?.TechKnowledgePlayerComponent?.m_TechKnowledge?.m_TechKnowledgeData || [];
       const purchased = tree.filter(i => i.UnlockedState === 'Purchased').length;
-      $('#tech-count').textContent = `${purchased} / ${tree.length} unlocked`;
+      const catalogTotal = await loadTechCatalogTotal();
+      if (catalogTotal != null) {
+        $('#tech-count').textContent = `${purchased} purchased / ${tree.length} in save / ${catalogTotal} in game`;
+      } else {
+        $('#tech-count').textContent = `${purchased} / ${tree.length} unlocked`;
+      }
     } catch { /* silent */ }
   }
 
@@ -1516,11 +1535,12 @@
     if (status && status.battlegroup && status.battlegroup.running) {
       alert('Stop the battlegroup first.'); return;
     }
-    if (!confirm('Unlock ALL tech tree recipes?')) return;
+    if (!confirm('Unlock ALL tech tree recipes? This adds every game recipe node to your save.')) return;
     showOverlay('Unlocking all recipes...');
     try {
-      await api('POST', `characters/${charData.actorId}/tech/unlock-all`);
-      appendConsole('All tech tree recipes unlocked.\n');
+      const res = await api('POST', `characters/${charData.actorId}/tech/unlock-all`);
+      appendConsole(`Tech tree: ${res.total} recipes unlocked (+${res.added} added to save, was ${res.previous}).\n`);
+      techCatalogTotal = res.catalogTotal ?? techCatalogTotal;
       await refreshTechCount();
     } catch (e) { alert('Failed: ' + e.message); }
     hideOverlay();

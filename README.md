@@ -162,7 +162,7 @@ Search for any item by display name **or template ID** (e.g. `TreadwheelChassis_
 | **Stats** | Max Health, Tech Knowledge Points, Hydration, Heat Exhaustion, Spice, Addiction Level, Tolerance, Eyes of Ibad |
 | **Inventory** | View all items, remove items, add items by name or template ID from a 1,000-item catalog with category filter |
 | **Stack limits** | Equipment (weapons/armor/tools) enforced at 1, resources at 100, consumables at 20 — warns before exceeding |
-| **Tech Tree** | Unlock or lock all fabrication recipes and blueprints with one click |
+| **Tech Tree** | Unlock or lock all fabrication recipes and blueprints — **Unlock All** merges all **356** game tech nodes into your save (not just ones already discovered) |
 | **Specializations** | Set level and XP for Combat, Crafting, Exploration, Gathering, Sabotage — unlock all 205 keystones (perks) per tree |
 | **Economy** | Set Solari and House Scrip balances |
 | **Faction Reputation** | Set reputation with Atreides, Harkonnen, and Smuggler factions |

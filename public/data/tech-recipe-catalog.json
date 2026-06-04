@@ -1,0 +1,1073 @@
+{
+  "total": 356,
+  "recipes": {
+    "DA_GRP_AdvancedWeaponFabricator\u002BAmmo": {
+      "category": "Group"
+    },
+    "DA_GRP_AdvSubFief\u002BChoam2": {
+      "category": "Group"
+    },
+    "DA_GRP_ArrakeenStillsuit": {
+      "category": "Group"
+    },
+    "DA_GRP_BasicPistolAndAmmo": {
+      "category": "Group"
+    },
+    "DA_GRP_BeneGeserit": {
+      "category": "Group"
+    },
+    "DA_GRP_Buggy4": {
+      "category": "Group"
+    },
+    "DA_GRP_Buggy5": {
+      "category": "Group"
+    },
+    "DA_GRP_Buggy6": {
+      "category": "Group"
+    },
+    "DA_GRP_BuggyPack": {
+      "category": "Group"
+    },
+    "DA_GRP_ChoamHeavyArmor": {
+      "category": "Group"
+    },
+    "DA_GRP_ChoamScoutArmor": {
+      "category": "Group"
+    },
+    "DA_GRP_ChoamStillsuit": {
+      "category": "Group"
+    },
+    "DA_GRP_ConstructionStarterPack": {
+      "category": "Group"
+    },
+    "DA_GRP_CrudeStillsuit": {
+      "category": "Group"
+    },
+    "DA_GRP_DuraluminumWelding": {
+      "category": "Group"
+    },
+    "DA_GRP_FremenExileStillsuit": {
+      "category": "Group"
+    },
+    "DA_GRP_HeavyArmorT2": {
+      "category": "Group"
+    },
+    "DA_GRP_HeavyArmorT3": {
+      "category": "Group"
+    },
+    "DA_GRP_HeavyArmorT4": {
+      "category": "Group"
+    },
+    "DA_GRP_LightArmorT2": {
+      "category": "Group"
+    },
+    "DA_GRP_LightArmorT3": {
+      "category": "Group"
+    },
+    "DA_GRP_LightArmorT5": {
+      "category": "Group"
+    },
+    "DA_GRP_LightOrniPack": {
+      "category": "Group"
+    },
+    "DA_GRP_MediumOrniPack": {
+      "category": "Group"
+    },
+    "DA_GRP_Mentat": {
+      "category": "Group"
+    },
+    "DA_GRP_PentashieldSurfacePack": {
+      "category": "Group"
+    },
+    "DA_GRP_Planetologist": {
+      "category": "Group"
+    },
+    "DA_GRP_Sandbike2": {
+      "category": "Group"
+    },
+    "DA_GRP_Sandbike3": {
+      "category": "Group"
+    },
+    "DA_GRP_Sandbike4": {
+      "category": "Group"
+    },
+    "DA_GRP_Sandbike5": {
+      "category": "Group"
+    },
+    "DA_GRP_Sandbike6": {
+      "category": "Group"
+    },
+    "DA_GRP_SandbikePack": {
+      "category": "Group"
+    },
+    "DA_GRP_Sandcrawler": {
+      "category": "Group"
+    },
+    "DA_GRP_SandtroutLeathersArmor": {
+      "category": "Group"
+    },
+    "DA_GRP_ScavengerRagsArmor": {
+      "category": "Group"
+    },
+    "DA_GRP_SimpleStillsuit": {
+      "category": "Group"
+    },
+    "DA_GRP_StakingUnits": {
+      "category": "Group"
+    },
+    "DA_GRP_SteelWelding": {
+      "category": "Group"
+    },
+    "DA_GRP_SurveyProbePack": {
+      "category": "Group"
+    },
+    "DA_GRP_Swordmaster": {
+      "category": "Group"
+    },
+    "DA_GRP_T5LightOrnithopter": {
+      "category": "Group"
+    },
+    "DA_GRP_T5RocketLauncher": {
+      "category": "Group"
+    },
+    "DA_GRP_T6HeavyArmor": {
+      "category": "Group"
+    },
+    "DA_GRP_T6LightArmor": {
+      "category": "Group"
+    },
+    "DA_GRP_T6LightOrnithopter": {
+      "category": "Group"
+    },
+    "DA_GRP_T6MediumOrnithopter": {
+      "category": "Group"
+    },
+    "DA_GRP_T6Stillsuit": {
+      "category": "Group"
+    },
+    "DA_GRP_Tank": {
+      "category": "Group"
+    },
+    "DA_GRP_TransportOrnithopter": {
+      "category": "Group"
+    },
+    "DA_GRP_Treadwheel4": {
+      "category": "Group"
+    },
+    "DA_GRP_Treadwheel5": {
+      "category": "Group"
+    },
+    "DA_GRP_Treadwheel6": {
+      "category": "Group"
+    },
+    "DA_GRP_Trooper": {
+      "category": "Group"
+    },
+    "DA_GRP_WaterStarterPack": {
+      "category": "Group"
+    },
+    "DA_GRP_WeaponFabricator\u002BAmmo": {
+      "category": "Group"
+    },
+    "DA_REC_2HExsangunationTool": {
+      "category": "Recipe"
+    },
+    "DA_REC_AluminiumBattleRifle": {
+      "category": "Recipe"
+    },
+    "DA_REC_AluminiumDirk": {
+      "category": "Recipe"
+    },
+    "DA_REC_AluminiumDMR": {
+      "category": "Recipe"
+    },
+    "DA_REC_AluminiumHeavyPistol": {
+      "category": "Recipe"
+    },
+    "DA_REC_AluminiumKindjal": {
+      "category": "Recipe"
+    },
+    "DA_REC_AluminiumMaulaPistol": {
+      "category": "Recipe"
+    },
+    "DA_REC_AluminiumScattergun": {
+      "category": "Recipe"
+    },
+    "DA_REC_AluminiumSMG": {
+      "category": "Recipe"
+    },
+    "DA_REC_AluminiumSword": {
+      "category": "Recipe"
+    },
+    "DA_REC_AntiRadiationPill": {
+      "category": "Recipe"
+    },
+    "DA_REC_AtreLMG1": {
+      "category": "Recipe"
+    },
+    "DA_REC_AtreSmg2": {
+      "category": "Recipe"
+    },
+    "DA_REC_BaseBackupTool": {
+      "category": "Recipe"
+    },
+    "DA_REC_BasicBuildingTool": {
+      "category": "Recipe"
+    },
+    "DA_REC_Binoculars_1": {
+      "category": "Recipe"
+    },
+    "DA_REC_BloodSack2": {
+      "category": "Recipe"
+    },
+    "DA_REC_BloodSack3": {
+      "category": "Recipe"
+    },
+    "DA_REC_Bloodsack_01": {
+      "category": "Recipe"
+    },
+    "DA_REC_BodyFluidExtractor": {
+      "category": "Recipe"
+    },
+    "DA_REC_BuggyBoost_4": {
+      "category": "Recipe"
+    },
+    "DA_REC_BuggyBoost_5": {
+      "category": "Recipe"
+    },
+    "DA_REC_BuggyChassis_4": {
+      "category": "Recipe"
+    },
+    "DA_REC_BuggyChassis_5": {
+      "category": "Recipe"
+    },
+    "DA_REC_BuggyChoamBody": {
+      "category": "Recipe"
+    },
+    "DA_REC_BuggyChoamBoost": {
+      "category": "Recipe"
+    },
+    "DA_REC_BuggyChoamChassis": {
+      "category": "Recipe"
+    },
+    "DA_REC_BuggyChoamCockpit": {
+      "category": "Recipe"
+    },
+    "DA_REC_BuggyChoamEngine": {
+      "category": "Recipe"
+    },
+    "DA_REC_BuggyChoamInventory": {
+      "category": "Recipe"
+    },
+    "DA_REC_BuggyChoamMiningLaserT3": {
+      "category": "Recipe"
+    },
+    "DA_REC_BuggyChoamPSU": {
+      "category": "Recipe"
+    },
+    "DA_REC_BuggyChoamRocket": {
+      "category": "Recipe"
+    },
+    "DA_REC_BuggyChoamTreads": {
+      "category": "Recipe"
+    },
+    "DA_REC_BuggyChoamTurretHull": {
+      "category": "Recipe"
+    },
+    "DA_REC_BuggyEngine_4": {
+      "category": "Recipe"
+    },
+    "DA_REC_BuggyEngine_5": {
+      "category": "Recipe"
+    },
+    "DA_REC_BuggyGenerator_4": {
+      "category": "Recipe"
+    },
+    "DA_REC_BuggyGenerator_5": {
+      "category": "Recipe"
+    },
+    "DA_REC_BuggyHullBackExtra_4": {
+      "category": "Recipe"
+    },
+    "DA_REC_BuggyHullBackExtra_5": {
+      "category": "Recipe"
+    },
+    "DA_REC_BuggyHullBack_4": {
+      "category": "Recipe"
+    },
+    "DA_REC_BuggyHullBack_5": {
+      "category": "Recipe"
+    },
+    "DA_REC_BuggyHullFront_4": {
+      "category": "Recipe"
+    },
+    "DA_REC_BuggyHullFront_5": {
+      "category": "Recipe"
+    },
+    "DA_REC_BuggyInventory_4": {
+      "category": "Recipe"
+    },
+    "DA_REC_BuggyInventory_5": {
+      "category": "Recipe"
+    },
+    "DA_REC_BuggyLocomotion_4": {
+      "category": "Recipe"
+    },
+    "DA_REC_BuggyLocomotion_5": {
+      "category": "Recipe"
+    },
+    "DA_REC_BuggyMining_4": {
+      "category": "Recipe"
+    },
+    "DA_REC_BuggyMining_5": {
+      "category": "Recipe"
+    },
+    "DA_REC_BuildingBlueprint_CopyDevice": {
+      "category": "Recipe"
+    },
+    "DA_REC_ChoamCom1": {
+      "category": "Recipe"
+    },
+    "DA_REC_ChoamLg1": {
+      "category": "Recipe"
+    },
+    "DA_REC_ChoamSda1": {
+      "category": "Recipe"
+    },
+    "DA_REC_CHOAMSword": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_ChoamHeavy_Boots": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_ChoamHeavy_Bottom": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_ChoamHeavy_Gloves": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_ChoamHeavy_Helmet": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_ChoamHeavy_Top": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_Choam_Scout03_Boots": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_Choam_Scout03_Bottom": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_Choam_Scout03_Gloves": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_Choam_Scout03_Helmet": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_Choam_Scout03_Top": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_Heavy_T3_Boots": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_Heavy_T3_Bottom": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_Heavy_T3_Gloves": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_Heavy_T3_Helmet": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_Heavy_T3_Top": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_Heavy_T4_Boots": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_Heavy_T4_Bottom": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_Heavy_T4_Gloves": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_Heavy_T4_Helmet": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_Heavy_T4_Top": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_Light_T3_Boots": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_Light_T3_Bottom": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_Light_T3_Gloves": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_Light_T3_Helmet": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_Light_T3_Top": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_Light_T5_Boots": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_Light_T5_Bottom": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_Light_T5_Gloves": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_Light_T5_Helmet": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_Light_T5_Top": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_Nati_SandTroutLeathers_Bottom": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_Nati_SandTroutLeathers_Gloves": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_Nati_SandTroutLeathers_Helmet": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_Nati_SandTroutLeathers_Shoes": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_Nati_SandTroutLeathers_Top": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_Neut_ScavengerRags_Boots": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_Neut_ScavengerRags_Bottom": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_Neut_ScavengerRags_Gloves": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_Neut_ScavengerRags_Helmet": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_Neut_ScavengerRags_Top": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_SpiceMask": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_T2HeavyArmor_Boots": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_T2HeavyArmor_Bottom": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_T2HeavyArmor_Gloves": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_T2HeavyArmor_Helmet": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_T2HeavyArmor_Top": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_T2LightArmor_Boots": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_T2LightArmor_Bottom": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_T2LightArmor_Gloves": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_T2LightArmor_Helmet": {
+      "category": "Recipe"
+    },
+    "DA_REC_Combat_T2LightArmor_Top": {
+      "category": "Recipe"
+    },
+    "DA_REC_CopperMaulaPistol": {
+      "category": "Recipe"
+    },
+    "DA_REC_CrysKnife_T2": {
+      "category": "Recipe"
+    },
+    "DA_REC_Decaliterjon": {
+      "category": "Recipe"
+    },
+    "DA_REC_DewReaper2": {
+      "category": "Recipe"
+    },
+    "DA_REC_DewReaper_Prototype": {
+      "category": "Recipe"
+    },
+    "DA_REC_DewScythe": {
+      "category": "Recipe"
+    },
+    "DA_REC_Dirk": {
+      "category": "Recipe"
+    },
+    "DA_REC_DuraluminumBattleRifle": {
+      "category": "Recipe"
+    },
+    "DA_REC_DuraluminumDirk": {
+      "category": "Recipe"
+    },
+    "DA_REC_DuraluminumDMR": {
+      "category": "Recipe"
+    },
+    "DA_REC_DuraluminumDualDaggers": {
+      "category": "Recipe"
+    },
+    "DA_REC_DuraluminumHeavyPistol": {
+      "category": "Recipe"
+    },
+    "DA_REC_DuraluminumKindjal": {
+      "category": "Recipe"
+    },
+    "DA_REC_DuraluminumLMG": {
+      "category": "Recipe"
+    },
+    "DA_REC_DuraluminumMaulaPistol": {
+      "category": "Recipe"
+    },
+    "DA_REC_DuraluminumRapier": {
+      "category": "Recipe"
+    },
+    "DA_REC_DuraluminumScattergun": {
+      "category": "Recipe"
+    },
+    "DA_REC_DuraluminumShotgun": {
+      "category": "Recipe"
+    },
+    "DA_REC_DuraluminumSMG": {
+      "category": "Recipe"
+    },
+    "DA_REC_DuraluminumSword": {
+      "category": "Recipe"
+    },
+    "DA_REC_DuraluminumWeldingMaterial": {
+      "category": "Recipe"
+    },
+    "DA_REC_DuraluminumWeldingTool": {
+      "category": "Recipe"
+    },
+    "DA_REC_ExsangunationTool2": {
+      "category": "Recipe"
+    },
+    "DA_REC_Flamethrower_Prototype": {
+      "category": "Recipe"
+    },
+    "DA_REC_FullStabilizationBelt": {
+      "category": "Recipe"
+    },
+    "DA_REC_FullSuspensorBelt": {
+      "category": "Recipe"
+    },
+    "DA_REC_HandHeldTorch": {
+      "category": "Recipe"
+    },
+    "DA_REC_HarkAr2": {
+      "category": "Recipe"
+    },
+    "DA_REC_HarkHeavyPistol1": {
+      "category": "Recipe"
+    },
+    "DA_REC_HealthPack2": {
+      "category": "Recipe"
+    },
+    "DA_REC_HealthPack3": {
+      "category": "Recipe"
+    },
+    "DA_REC_HealthPack_Channeled": {
+      "category": "Recipe"
+    },
+    "DA_REC_HeavyDarts": {
+      "category": "Recipe"
+    },
+    "DA_REC_HoltzmanShieldInfinite": {
+      "category": "Recipe"
+    },
+    "DA_REC_IndustrialStaticCompactor": {
+      "category": "Recipe"
+    },
+    "DA_REC_IronBattleRifle": {
+      "category": "Recipe"
+    },
+    "DA_REC_IronKindjal": {
+      "category": "Recipe"
+    },
+    "DA_REC_IronMaulaPistol": {
+      "category": "Recipe"
+    },
+    "DA_REC_Kindjal": {
+      "category": "Recipe"
+    },
+    "DA_REC_LightDarts": {
+      "category": "Recipe"
+    },
+    "DA_REC_LightOrniChoamRocket": {
+      "category": "Recipe"
+    },
+    "DA_REC_LightOrnithopterChoamBody": {
+      "category": "Recipe"
+    },
+    "DA_REC_LightOrnithopterChoamBoost2": {
+      "category": "Recipe"
+    },
+    "DA_REC_LightOrnithopterChoamChassis": {
+      "category": "Recipe"
+    },
+    "DA_REC_LightOrnithopterChoamCockpit": {
+      "category": "Recipe"
+    },
+    "DA_REC_LightOrnithopterChoamEngine": {
+      "category": "Recipe"
+    },
+    "DA_REC_LightOrnithopterChoamInventory": {
+      "category": "Recipe"
+    },
+    "DA_REC_LightOrnithopterChoamPSU": {
+      "category": "Recipe"
+    },
+    "DA_REC_LightOrnithopterChoamWings": {
+      "category": "Recipe"
+    },
+    "DA_REC_LightOrnithopterScanner": {
+      "category": "Recipe"
+    },
+    "DA_REC_Literjon": {
+      "category": "Recipe"
+    },
+    "DA_REC_MediumOrniChoamRocket": {
+      "category": "Recipe"
+    },
+    "DA_REC_MediumOrnithopterChoamBody": {
+      "category": "Recipe"
+    },
+    "DA_REC_MediumOrnithopterChoamBoost1": {
+      "category": "Recipe"
+    },
+    "DA_REC_MediumOrnithopterChoamChassis": {
+      "category": "Recipe"
+    },
+    "DA_REC_MediumOrnithopterChoamCockpit": {
+      "category": "Recipe"
+    },
+    "DA_REC_MediumOrnithopterChoamEngine": {
+      "category": "Recipe"
+    },
+    "DA_REC_MediumOrnithopterChoamInventory": {
+      "category": "Recipe"
+    },
+    "DA_REC_MediumOrnithopterChoamPSU": {
+      "category": "Recipe"
+    },
+    "DA_REC_MediumOrnithopterChoamTail": {
+      "category": "Recipe"
+    },
+    "DA_REC_MediumOrnithopterChoamWings": {
+      "category": "Recipe"
+    },
+    "DA_REC_MiningTool_1h_Heavy": {
+      "category": "Recipe"
+    },
+    "DA_REC_MiningTool_1h_Light": {
+      "category": "Recipe"
+    },
+    "DA_REC_MiningTool_1h_Standard": {
+      "category": "Recipe"
+    },
+    "DA_REC_MiningTool_2h_Heavy": {
+      "category": "Recipe"
+    },
+    "DA_REC_MiningTool_2h_Light": {
+      "category": "Recipe"
+    },
+    "DA_REC_MiningTool_2h_Standard": {
+      "category": "Recipe"
+    },
+    "DA_REC_MissileAmmo": {
+      "category": "Recipe"
+    },
+    "DA_REC_MissileAmmo2": {
+      "category": "Recipe"
+    },
+    "DA_REC_NapalmAmmo": {
+      "category": "Recipe"
+    },
+    "DA_REC_OrnithopterLightBoost_5": {
+      "category": "Recipe"
+    },
+    "DA_REC_OrnithopterLightChassis_5": {
+      "category": "Recipe"
+    },
+    "DA_REC_OrnithopterLightEngine_5": {
+      "category": "Recipe"
+    },
+    "DA_REC_OrnithopterLightGenerator_5": {
+      "category": "Recipe"
+    },
+    "DA_REC_OrnithopterLightHullBack_5": {
+      "category": "Recipe"
+    },
+    "DA_REC_OrnithopterLightHullFront_5": {
+      "category": "Recipe"
+    },
+    "DA_REC_OrnithopterLightLocomotion_5": {
+      "category": "Recipe"
+    },
+    "DA_REC_PartialStabilizationBelt": {
+      "category": "Recipe"
+    },
+    "DA_REC_PortableLight": {
+      "category": "Recipe"
+    },
+    "DA_REC_PowerPack": {
+      "category": "Recipe"
+    },
+    "DA_REC_PowerPack2": {
+      "category": "Recipe"
+    },
+    "DA_REC_PowerPack3": {
+      "category": "Recipe"
+    },
+    "DA_REC_PowerPack5": {
+      "category": "Recipe"
+    },
+    "DA_REC_PowerPack6": {
+      "category": "Recipe"
+    },
+    "DA_REC_PowerPack7": {
+      "category": "Recipe"
+    },
+    "DA_REC_RadiationSuitT5": {
+      "category": "Recipe"
+    },
+    "DA_REC_Radiation_Suit": {
+      "category": "Recipe"
+    },
+    "DA_REC_Rapier": {
+      "category": "Recipe"
+    },
+    "DA_REC_RepairTool": {
+      "category": "Recipe"
+    },
+    "DA_REC_RespawnBeacon": {
+      "category": "Recipe"
+    },
+    "DA_REC_RocketAmmo": {
+      "category": "Recipe"
+    },
+    "DA_REC_SandbikeBoost_3": {
+      "category": "Recipe"
+    },
+    "DA_REC_SandbikeBoost_4": {
+      "category": "Recipe"
+    },
+    "DA_REC_SandbikeBoost_5": {
+      "category": "Recipe"
+    },
+    "DA_REC_SandbikeChassis_2": {
+      "category": "Recipe"
+    },
+    "DA_REC_SandbikeChassis_3": {
+      "category": "Recipe"
+    },
+    "DA_REC_SandbikeChassis_4": {
+      "category": "Recipe"
+    },
+    "DA_REC_SandbikeChassis_5": {
+      "category": "Recipe"
+    },
+    "DA_REC_SandbikeChoamBackInventory2": {
+      "category": "Recipe"
+    },
+    "DA_REC_SandbikeChoamBodyStarter1": {
+      "category": "Recipe"
+    },
+    "DA_REC_SandbikeChoamBoost": {
+      "category": "Recipe"
+    },
+    "DA_REC_SandbikeChoamChassisStarter1": {
+      "category": "Recipe"
+    },
+    "DA_REC_SandbikeChoamEngineFuelEfficient1": {
+      "category": "Recipe"
+    },
+    "DA_REC_SandbikeChoamInventory": {
+      "category": "Recipe"
+    },
+    "DA_REC_SandbikeChoamPassengerSeat": {
+      "category": "Recipe"
+    },
+    "DA_REC_SandbikeChoamPSUFuelEfficient1": {
+      "category": "Recipe"
+    },
+    "DA_REC_SandbikeChoamScanner": {
+      "category": "Recipe"
+    },
+    "DA_REC_SandbikeChoamTreadsExploration1": {
+      "category": "Recipe"
+    },
+    "DA_REC_SandbikeEngine_2": {
+      "category": "Recipe"
+    },
+    "DA_REC_SandbikeEngine_3": {
+      "category": "Recipe"
+    },
+    "DA_REC_SandbikeEngine_4": {
+      "category": "Recipe"
+    },
+    "DA_REC_SandbikeEngine_5": {
+      "category": "Recipe"
+    },
+    "DA_REC_SandbikeGenerator_2": {
+      "category": "Recipe"
+    },
+    "DA_REC_SandbikeGenerator_3": {
+      "category": "Recipe"
+    },
+    "DA_REC_SandbikeGenerator_4": {
+      "category": "Recipe"
+    },
+    "DA_REC_SandbikeGenerator_5": {
+      "category": "Recipe"
+    },
+    "DA_REC_SandbikeHull_2": {
+      "category": "Recipe"
+    },
+    "DA_REC_SandbikeHull_3": {
+      "category": "Recipe"
+    },
+    "DA_REC_SandbikeHull_4": {
+      "category": "Recipe"
+    },
+    "DA_REC_SandbikeHull_5": {
+      "category": "Recipe"
+    },
+    "DA_REC_SandbikeLocomotion_2": {
+      "category": "Recipe"
+    },
+    "DA_REC_SandbikeLocomotion_3": {
+      "category": "Recipe"
+    },
+    "DA_REC_SandbikeLocomotion_4": {
+      "category": "Recipe"
+    },
+    "DA_REC_SandbikeLocomotion_5": {
+      "category": "Recipe"
+    },
+    "DA_REC_Scanner_Base_1": {
+      "category": "Recipe"
+    },
+    "DA_REC_Scattergun_Prototype": {
+      "category": "Recipe"
+    },
+    "DA_REC_ScrapMetalKnife": {
+      "category": "Recipe"
+    },
+    "DA_REC_SmugDmr2": {
+      "category": "Recipe"
+    },
+    "DA_REC_SmugShot1": {
+      "category": "Recipe"
+    },
+    "DA_REC_StakingUnit": {
+      "category": "Recipe"
+    },
+    "DA_REC_SteelBattleRifle": {
+      "category": "Recipe"
+    },
+    "DA_REC_SteelKindjal": {
+      "category": "Recipe"
+    },
+    "DA_REC_SteelMaulaPistol": {
+      "category": "Recipe"
+    },
+    "DA_REC_SteelScattergun": {
+      "category": "Recipe"
+    },
+    "DA_REC_SteelSMG": {
+      "category": "Recipe"
+    },
+    "DA_REC_SteelSword": {
+      "category": "Recipe"
+    },
+    "DA_REC_SteelWeldingMaterial": {
+      "category": "Recipe"
+    },
+    "DA_REC_SteelWeldingTool": {
+      "category": "Recipe"
+    },
+    "DA_REC_Stillsuit_Choam_01_Boots": {
+      "category": "Recipe"
+    },
+    "DA_REC_Stillsuit_Choam_01_Gloves": {
+      "category": "Recipe"
+    },
+    "DA_REC_Stillsuit_Choam_01_Mask": {
+      "category": "Recipe"
+    },
+    "DA_REC_Stillsuit_Choam_01_Top": {
+      "category": "Recipe"
+    },
+    "DA_REC_Stillsuit_Neut_Leaking01_Boots": {
+      "category": "Recipe"
+    },
+    "DA_REC_Stillsuit_Neut_Leaking01_Gloves": {
+      "category": "Recipe"
+    },
+    "DA_REC_Stillsuit_Neut_Leaking01_Mask": {
+      "category": "Recipe"
+    },
+    "DA_REC_Stillsuit_Neut_Leaking01_Top": {
+      "category": "Recipe"
+    },
+    "DA_REC_Stillsuit_T2_Boots": {
+      "category": "Recipe"
+    },
+    "DA_REC_Stillsuit_T2_Gloves": {
+      "category": "Recipe"
+    },
+    "DA_REC_Stillsuit_T2_Mask": {
+      "category": "Recipe"
+    },
+    "DA_REC_Stillsuit_T2_Top": {
+      "category": "Recipe"
+    },
+    "DA_REC_Stillsuit_T4_Body": {
+      "category": "Recipe"
+    },
+    "DA_REC_Stillsuit_T4_Gloves": {
+      "category": "Recipe"
+    },
+    "DA_REC_Stillsuit_T4_Mask": {
+      "category": "Recipe"
+    },
+    "DA_REC_Stillsuit_T4_Shoes": {
+      "category": "Recipe"
+    },
+    "DA_REC_Stillsuit_T5_Body": {
+      "category": "Recipe"
+    },
+    "DA_REC_Stillsuit_T5_Boots": {
+      "category": "Recipe"
+    },
+    "DA_REC_Stillsuit_T5_Gloves": {
+      "category": "Recipe"
+    },
+    "DA_REC_Stillsuit_T5_Mask": {
+      "category": "Recipe"
+    },
+    "DA_REC_Stilltent": {
+      "category": "Recipe"
+    },
+    "DA_REC_SurveyProbeLauncher": {
+      "category": "Recipe"
+    },
+    "DA_REC_SurveyProbe_1": {
+      "category": "Recipe"
+    },
+    "DA_REC_SuspensorBelt": {
+      "category": "Recipe"
+    },
+    "DA_REC_T2SpiceConsumable": {
+      "category": "Recipe"
+    },
+    "DA_REC_t2tsp": {
+      "category": "Recipe"
+    },
+    "DA_REC_T3SpiceConsumable": {
+      "category": "Recipe"
+    },
+    "DA_REC_T4SpiceConsumable": {
+      "category": "Recipe"
+    },
+    "DA_REC_T5RocketLauncher": {
+      "category": "Recipe"
+    },
+    "DA_REC_T5SpiceConsumable": {
+      "category": "Recipe"
+    },
+    "DA_REC_Thumper": {
+      "category": "Recipe"
+    },
+    "DA_REC_TreadwheelBackInventory2": {
+      "category": "Recipe"
+    },
+    "DA_REC_TreadwheelBoost_4": {
+      "category": "Recipe"
+    },
+    "DA_REC_TreadwheelBoost_5": {
+      "category": "Recipe"
+    },
+    "DA_REC_TreadwheelBoost_6": {
+      "category": "Recipe"
+    },
+    "DA_REC_TreadwheelChassis_4": {
+      "category": "Recipe"
+    },
+    "DA_REC_TreadwheelChassis_5": {
+      "category": "Recipe"
+    },
+    "DA_REC_TreadwheelChassis_6": {
+      "category": "Recipe"
+    },
+    "DA_REC_TreadwheelEngine_4": {
+      "category": "Recipe"
+    },
+    "DA_REC_TreadwheelEngine_5": {
+      "category": "Recipe"
+    },
+    "DA_REC_TreadwheelEngine_6": {
+      "category": "Recipe"
+    },
+    "DA_REC_TreadwheelGenerator_4": {
+      "category": "Recipe"
+    },
+    "DA_REC_TreadwheelGenerator_5": {
+      "category": "Recipe"
+    },
+    "DA_REC_TreadwheelGenerator_6": {
+      "category": "Recipe"
+    },
+    "DA_REC_TreadwheelHull_4": {
+      "category": "Recipe"
+    },
+    "DA_REC_TreadwheelHull_5": {
+      "category": "Recipe"
+    },
+    "DA_REC_TreadwheelHull_6": {
+      "category": "Recipe"
+    },
+    "DA_REC_TreadwheelLocomotion_4": {
+      "category": "Recipe"
+    },
+    "DA_REC_TreadwheelLocomotion_5": {
+      "category": "Recipe"
+    },
+    "DA_REC_TreadwheelLocomotion_6": {
+      "category": "Recipe"
+    },
+    "DA_REC_TreadwheelPassengerSeat": {
+      "category": "Recipe"
+    },
+    "DA_REC_TreadwheelScanner": {
+      "category": "Recipe"
+    },
+    "DA_REC_VehicleBackupTool": {
+      "category": "Recipe"
+    },
+    "DA_REC_VerticalStakingUnit": {
+      "category": "Recipe"
+    },
+    "DA_REC_WeldingMaterial": {
+      "category": "Recipe"
+    }
+  }
+}
