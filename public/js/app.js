@@ -61,6 +61,11 @@
     }
   }
 
+  function expandConsole() {
+    consoleWrap.classList.remove('collapsed');
+    consoleBadge.hidden = true;
+  }
+
   // -----------------------------------------------------------------------
   // Setup log pipe (defined early so WS handler can call it)
   // -----------------------------------------------------------------------
@@ -115,7 +120,12 @@
       );
     }
     if (!res.ok) {
-      throw new Error(data.error || data.message || `Request failed (${res.status})`);
+      const err = new Error(data.error || data.message || `Request failed (${res.status})`);
+      err.status = res.status;
+      err.code = data.code;
+      err.startFailed = data.startFailed;
+      err.attemptedGB = data.attemptedGB;
+      throw err;
     }
     return data;
   }
@@ -131,15 +141,45 @@
     busy = false;
   }
 
-  async function runAction(path, label) {
+  async function runAction(path, label, body) {
     if (busy) return;
     showOverlay(label + '...');
     appendConsole(`\n> ${label}\n`);
     try {
-      await api('POST', path);
+      await api('POST', path, body);
     } catch (e) {
       appendConsole(`Error: ${e.message}\n`);
+      expandConsole();
+      alert(`${label} failed: ${e.message}`);
     }
+    hideOverlay();
+    refreshStatus();
+  }
+
+  async function startVmAction(memoryGB) {
+    if (busy) return;
+    const vmRetryPanel = $('#vm-start-retry');
+    if (vmRetryPanel) vmRetryPanel.hidden = true;
+
+    showOverlay('Starting VM...');
+    appendConsole('\n> Starting VM\n');
+    expandConsole();
+
+    try {
+      const body = memoryGB ? { memoryGB } : undefined;
+      const result = await api('POST', 'vm/start', body);
+      if (result.memoryGB) {
+        appendConsole(`VM started with ${result.memoryGB} GB RAM.\n`);
+      }
+    } catch (e) {
+      appendConsole(`Error: ${e.message}\n`);
+      expandConsole();
+      alert('Failed to start VM: ' + e.message);
+      if (e.startFailed || e.status === 507) {
+        if (vmRetryPanel) vmRetryPanel.hidden = false;
+      }
+    }
+
     hideOverlay();
     refreshStatus();
   }
@@ -160,7 +200,13 @@
 
     vmState.textContent  = vm.exists ? vm.state : 'Not Found';
     vmIp.textContent     = vm.ip || '—';
-    vmMemory.textContent = vm.memoryMB ? `${Math.round(vm.memoryMB)} MB` : '—';
+    if (running && vm.memoryMB) {
+      vmMemory.textContent = `${Math.round(vm.memoryMB)} MB`;
+    } else if (vm.startupMemoryMB) {
+      vmMemory.textContent = `${Math.round(vm.startupMemoryMB / 1024)} GB configured`;
+    } else {
+      vmMemory.textContent = '—';
+    }
     vmUptime.textContent = vm.uptime || '—';
 
     vmBadge.textContent = running ? 'Running' : stopped ? vm.state : 'Not Found';
@@ -224,6 +270,9 @@
       repairPanel.hidden = !needsRepair;
       $('#btn-repair-bootstrap').disabled = busy || !needsRepair;
     }
+
+    const vmRetryPanel = $('#vm-start-retry');
+    if (vmRetryPanel && running) vmRetryPanel.hidden = true;
   }
 
   async function refreshStatus() {
@@ -606,7 +655,11 @@
   // -----------------------------------------------------------------------
   // Button bindings — Dashboard
   // -----------------------------------------------------------------------
-  $('#btn-vm-start').addEventListener('click', () => runAction('vm/start', 'Starting VM'));
+  $('#btn-vm-start').addEventListener('click', () => startVmAction());
+  $('#btn-dashboard-retry-start').addEventListener('click', () => {
+    const memGB = parseInt($('#dashboard-retry-memory').value, 10);
+    startVmAction(memGB);
+  });
   $('#btn-vm-stop').addEventListener('click', () => {
     if (!confirm('Stop the VM? All running servers will go down.')) return;
     runAction('vm/stop', 'Stopping VM');

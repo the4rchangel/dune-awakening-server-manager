@@ -65,6 +65,26 @@
             <button class="btn btn-green" id="btn-vm-start" disabled>Start VM</button>
             <button class="btn btn-red" id="btn-vm-stop" disabled>Stop VM</button>
           </div>
+          <div id="vm-start-retry" class="retry-panel" hidden>
+            <p class="card-desc retry-msg">VM failed to start — usually not enough free RAM on this PC. Lower memory and retry.</p>
+            <div class="setup-row" style="align-items:end">
+              <div class="field">
+                <label for="dashboard-retry-memory">Startup memory</label>
+                <select id="dashboard-retry-memory" class="select-input">
+                  <option value="12">12 GB</option>
+                  <option value="14">14 GB</option>
+                  <option value="16">16 GB</option>
+                  <option value="18">18 GB</option>
+                  <option value="20" selected>20 GB</option>
+                  <option value="24">24 GB</option>
+                  <option value="30">30 GB</option>
+                </select>
+              </div>
+              <div class="field">
+                <button class="btn btn-green btn-lg" id="btn-dashboard-retry-start" style="margin-bottom:1px">Retry Start</button>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="card status-card" id="card-bg">

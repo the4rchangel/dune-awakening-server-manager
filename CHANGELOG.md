@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.0.5 — 2026-06-02
+
+### Start VM — fix silent failure on low host RAM
+
+- **Root cause** — Dashboard **Start VM** called Hyper-V with the VM's configured startup RAM (often 30 GB). When the Windows host couldn't allocate that much, Hyper-V returned `OutOfMemory` / `0x8007000E`. The error only appeared in the collapsed console, so it looked like nothing happened.
+- **`lib/vm.js`** — Shared `startVm()` helper with automatic memory step-down (40→32→30→24→20→18→16→14→12 GB) when the host is low on RAM, plus clearer error messages.
+- **`POST /api/vm/start`** — Uses `startVm()`; accepts optional `{ memoryGB }` for manual retry; returns HTTP 507 with `startFailed: true` on OOM.
+- **Dashboard UI** — Shows an alert on failure, auto-expands the console, and displays a **Retry Start** panel with a memory selector when start fails.
+- **Status** — VM card shows configured startup memory when the VM is off.
+- **Setup import** — Also uses auto step-down on first start.
+
 ## 1.0.4 — 2026-06-02
 
 ### Tech tree — Unlock All Recipes fix

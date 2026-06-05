@@ -5,13 +5,14 @@ const { WebSocketServer } = require('ws');
 const path = require('path');
 const ps = require('./lib/powershell');
 const ssh = require('./lib/ssh');
+const vmCtl = require('./lib/vm');
 
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 
 const PORT = process.env.PORT || 3000;
-const VM_NAME = 'dune-awakening';
+const VM_NAME = vmCtl.VM_NAME;
 
 const DEFAULT_SERVER_PATH = path.join(
   'C:', 'Program Files (x86)', 'Steam', 'steamapps', 'common',
@@ -51,6 +52,7 @@ if ($vm) {
     state    = $vm.State.ToString()
     ip       = $ip
     memoryMB = [math]::Round($vm.MemoryAssigned / 1MB)
+    startupMemoryMB = [math]::Round($vm.MemoryStartup / 1MB)
     uptime   = $vm.Uptime.ToString()
   } | ConvertTo-Json -Compress
 } else {
@@ -254,36 +256,33 @@ app.get('/api/status', async (_req, res) => {
 });
 
 // --- VM controls ---
-app.post('/api/vm/start', async (_req, res) => {
+app.post('/api/vm/start', async (req, res) => {
+  const memoryGB = req.body && req.body.memoryGB ? parseInt(req.body.memoryGB, 10) : null;
   try {
-    log('Starting VM...\n');
-    await ps.run(`Start-VM -Name '${VM_NAME}'`, log);
+    const result = await vmCtl.startVm({
+      memoryGB: Number.isFinite(memoryGB) ? memoryGB : null,
+      log,
+      autoStepDown: !memoryGB,
+    });
 
-    log('Waiting for IP address...\n');
-    let ip = null;
-    for (let i = 0; i < 60 && !ip; i++) {
-      await new Promise((r) => setTimeout(r, 2000));
-      try {
-        const raw = await ps.run(
-          `(Get-VMNetworkAdapter -VMName '${VM_NAME}').IPAddresses | ` +
-          `Where-Object { $_ -match '^\\d+\\.\\d+\\.\\d+\\.\\d+$' } | ` +
-          `Select-Object -First 1`
-        );
-        if (raw && /^\d+\.\d+\.\d+\.\d+$/.test(raw)) ip = raw;
-      } catch { /* keep waiting */ }
-    }
-
-    if (ip) {
-      log(`VM ready at ${ip}\n`);
-      await syncSettingsConfIp(ip);
-    } else {
-      log('VM started but could not detect IP within 2 minutes.\n');
-    }
+    if (result.ip) await syncSettingsConfIp(result.ip);
     cachedVmStatus = null;
-    res.json({ success: true, ip });
+    res.json({
+      success: true,
+      ip: result.ip,
+      memoryGB: result.memoryGB,
+    });
   } catch (e) {
-    log(`Error: ${e.message}\n`);
-    res.status(500).json({ success: false, error: e.message });
+    const message = vmCtl.shortVmError(e.message);
+    log(`Error: ${message}\n`);
+    cachedVmStatus = null;
+    res.status(e.code === 'OUT_OF_MEMORY' ? 507 : 500).json({
+      success: false,
+      error: message,
+      code: e.code || 'START_FAILED',
+      startFailed: true,
+      attemptedGB: e.attemptedGB || null,
+    });
   }
 });
 
@@ -704,30 +703,18 @@ app.post('/api/setup/import', async (req, res) => {
       Write-Output 'Memory configured.'
     `, log);
 
-    // Start VM
+    // Start VM (auto step-down if host is low on RAM)
     log('\nStarting VM...\n');
+    let ip;
     try {
-      await ps.run(`Start-VM -Name '${VM_NAME}' -ErrorAction Stop`, log);
+      const result = await vmCtl.startVm({ log, autoStepDown: true });
+      ip = result.ip;
     } catch (startErr) {
-      log(`\nVM imported successfully but failed to start: ${startErr.message}\n`);
+      const message = vmCtl.shortVmError(startErr.message);
+      log(`\nVM imported successfully but failed to start: ${message}\n`);
       log('You can adjust memory below and retry.\n');
       cachedVmStatus = null;
-      return res.json({ success: false, imported: true, startFailed: true, error: startErr.message });
-    }
-
-    // Wait for IP
-    log('Waiting for VM to acquire IP...\n');
-    let ip = null;
-    for (let i = 0; i < 60 && !ip; i++) {
-      await new Promise((r) => setTimeout(r, 2000));
-      try {
-        const raw = await ps.run(
-          `(Get-VMNetworkAdapter -VMName '${VM_NAME}').IPAddresses | ` +
-          `Where-Object { $_ -match '^\\d+\\.\\d+\\.\\d+\\.\\d+$' } | ` +
-          `Select-Object -First 1`
-        );
-        if (raw && /^\d+\.\d+\.\d+\.\d+$/.test(raw.trim())) ip = raw.trim();
-      } catch { /* keep waiting */ }
+      return res.json({ success: false, imported: true, startFailed: true, error: message });
     }
 
     if (!ip) {
@@ -746,43 +733,26 @@ app.post('/api/setup/import', async (req, res) => {
 
 // Retry start with different memory (VM already imported)
 app.post('/api/setup/retry-start', async (req, res) => {
-  const { memoryGB } = req.body;
-  if (!memoryGB) return res.status(400).json({ error: 'memoryGB required' });
-
-  const memBytes = memoryGB * 1073741824;
+  const memoryGB = parseInt(req.body && req.body.memoryGB, 10);
+  if (!Number.isFinite(memoryGB) || memoryGB < 1) {
+    return res.status(400).json({ error: 'memoryGB required' });
+  }
 
   try {
-    log(`\nSetting memory to ${memoryGB}GB...\n`);
-    await ps.run(`Set-VMMemory -VMName '${VM_NAME}' -StartupBytes ${memBytes}`, log);
-
-    log('Starting VM...\n');
-    await ps.run(`Start-VM -Name '${VM_NAME}' -ErrorAction Stop`, log);
-
-    log('Waiting for VM to acquire IP...\n');
-    let ip = null;
-    for (let i = 0; i < 60 && !ip; i++) {
-      await new Promise((r) => setTimeout(r, 2000));
-      try {
-        const raw = await ps.run(
-          `(Get-VMNetworkAdapter -VMName '${VM_NAME}').IPAddresses | ` +
-          `Where-Object { $_ -match '^\\d+\\.\\d+\\.\\d+\\.\\d+$' } | ` +
-          `Select-Object -First 1`
-        );
-        if (raw && /^\d+\.\d+\.\d+\.\d+$/.test(raw.trim())) ip = raw.trim();
-      } catch { /* keep waiting */ }
-    }
-
-    if (!ip) {
-      log('Could not detect VM IP after 2 minutes.\n');
-      return res.status(500).json({ success: false, error: 'VM started but no IP detected' });
-    }
-
-    log(`VM ready at ${ip}\n`);
+    const result = await vmCtl.startVm({ memoryGB, log, autoStepDown: false });
     cachedVmStatus = null;
-    res.json({ success: true, ip });
+    res.json({ success: true, ip: result.ip, memoryGB: result.memoryGB });
   } catch (e) {
-    log(`\nError: ${e.message}\n`);
-    res.status(500).json({ success: false, error: e.message });
+    const message = vmCtl.shortVmError(e.message);
+    log(`\nError: ${message}\n`);
+    cachedVmStatus = null;
+    res.status(e.code === 'OUT_OF_MEMORY' ? 507 : 500).json({
+      success: false,
+      error: message,
+      code: e.code || 'START_FAILED',
+      startFailed: true,
+      attemptedGB: e.attemptedGB || memoryGB,
+    });
   }
 });
 
