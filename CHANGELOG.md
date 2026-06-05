@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.7 — 2026-06-02
+
+### SSH — fix false "SSH exited with code 1" on battlegroup commands
+
+- **Root cause** — Interactive SSH (`-tt`) was spawned with stdin closed. OpenSSH exits code 1 with no output in that case, so status/start/stop looked broken even when the VM was fine.
+- **`lib/ssh.js`** — Pipe stdin when a pseudo-TTY is requested; treat PTY sessions with stdout as success when stderr is only "Connection closed".
+
 ## 1.0.6 — 2026-06-02
 
 ### SSH key path — fix battlegroup failure after reboot (WSL)

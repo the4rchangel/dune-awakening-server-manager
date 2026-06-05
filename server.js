@@ -194,7 +194,7 @@ echo UPLOAD_OK
       ip,
       'echo yes | /home/dune/.dune/bin/battlegroup enable-experimental-swap 2>&1',
       log,
-      { timeout: 600000, tty: true }
+      { timeout: 600000 }
     );
     log('Swap memory enabled.\n');
   }
@@ -219,7 +219,7 @@ app.get('/api/status', async (_req, res) => {
 
     if (vm.exists && vm.state === 'Running' && vm.ip) {
       try {
-        const raw = await ssh.run(vm.ip, '/home/dune/.dune/bin/battlegroup status 2>&1', null, { timeout: 10000, tty: true });
+        const raw = await ssh.run(vm.ip, '/home/dune/.dune/bin/battlegroup status 2>&1', null, { timeout: 10000 });
         const gameServersSection = raw.split(/Game Servers/i)[1] || '';
         const hasRunningServers = /\bRunning\b/i.test(gameServersSection);
         bg = {
@@ -454,7 +454,7 @@ function bgRoute(action, label, timeoutMs) {
         ip,
         `/home/dune/.dune/bin/battlegroup ${action} 2>&1`,
         log,
-        { timeout: timeoutMs || 300000, tty: true }
+        { timeout: timeoutMs || 300000 }
       );
       log(`\n${label} complete.\n`);
       res.json({ success: true, output: out });
@@ -488,7 +488,7 @@ app.post('/api/logs/export', async (_req, res) => {
 
   try {
     log('Exporting battlegroup logs...\n');
-    const out = await ssh.run(ip, '/home/dune/.dune/bin/battlegroup logs-export 2>&1', log, { timeout: 300000, tty: true });
+    const out = await ssh.run(ip, '/home/dune/.dune/bin/battlegroup logs-export 2>&1', log, { timeout: 300000 });
     log('\nLog export complete.\n');
     res.json({ success: true, output: out });
   } catch (e) {
@@ -503,7 +503,7 @@ app.post('/api/logs/operators', async (_req, res) => {
 
   try {
     log('Exporting operator logs...\n');
-    const out = await ssh.run(ip, '/home/dune/.dune/bin/battlegroup operator-logs-export 2>&1', log, { timeout: 300000, tty: true });
+    const out = await ssh.run(ip, '/home/dune/.dune/bin/battlegroup operator-logs-export 2>&1', log, { timeout: 300000 });
     log('\nOperator log export complete.\n');
     res.json({ success: true, output: out });
   } catch (e) {
@@ -564,7 +564,7 @@ app.post('/api/setup/reset', async (_req, res) => {
     if (vm.exists && vm.state === 'Running' && vm.ip) {
       log('Stopping battlegroup (if running)...\n');
       try {
-        await ssh.run(vm.ip, '/home/dune/.dune/bin/battlegroup stop 2>&1', log, { timeout: 180000, tty: true });
+        await ssh.run(vm.ip, '/home/dune/.dune/bin/battlegroup stop 2>&1', log, { timeout: 180000 });
         log('Battlegroup stop sent.\n');
       } catch (e) {
         log(`Battlegroup stop skipped: ${e.message}\n`);
