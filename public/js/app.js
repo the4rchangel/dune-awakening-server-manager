@@ -271,6 +271,22 @@
       $('#btn-repair-bootstrap').disabled = busy || !needsRepair;
     }
 
+    const sshPanel = $('#ssh-key-warning');
+    if (sshPanel) {
+      const sshMissing = running && s.ssh && !s.ssh.keyPresent;
+      const sshAuthFailed = running && bg && bg.output &&
+        /Identity file .* not accessible|Permission denied \(publickey/i.test(bg.output);
+      sshPanel.hidden = !(sshMissing || sshAuthFailed);
+      if (sshMissing || sshAuthFailed) {
+        const hint = $('#ssh-key-hint');
+        if (hint) {
+          hint.textContent = sshMissing
+            ? `Expected key at ${s.ssh && s.ssh.keyPath ? s.ssh.keyPath : 'LOCALAPPDATA\\DuneAwakeningServer\\sshKey'}`
+            : 'SSH cannot read the key (common when running from WSL after reboot). Restart the manager or use Settings → Rotate SSH Key.';
+        }
+      }
+    }
+
     const vmRetryPanel = $('#vm-start-retry');
     if (vmRetryPanel && running) vmRetryPanel.hidden = true;
   }

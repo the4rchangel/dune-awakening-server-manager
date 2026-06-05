@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.6 — 2026-06-02
+
+### SSH key path — fix battlegroup failure after reboot (WSL)
+
+- **Root cause** — When the manager runs from WSL, `LOCALAPPDATA` is unset. SSH was given a relative path (`AppData/Local/DuneAwakeningServer/sshKey`) instead of the real key at `C:\Users\<you>\AppData\Local\DuneAwakeningServer\sshKey`.
+- **`lib/paths.js`** — Resolves Windows `LOCALAPPDATA` via PowerShell when env vars are missing; mirrors the key into `~/.dune-awakening-server-manager/sshKey` with `0600` permissions for WSL OpenSSH.
+- **Status / battlegroup** — `/api/status` reports `ssh.keyPresent`; battlegroup routes fail fast with a clear message; dashboard shows an SSH key warning banner.
+
 ## 1.0.5 — 2026-06-02
 
 ### Start VM — fix silent failure on low host RAM

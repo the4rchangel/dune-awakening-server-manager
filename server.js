@@ -6,6 +6,7 @@ const path = require('path');
 const ps = require('./lib/powershell');
 const ssh = require('./lib/ssh');
 const vmCtl = require('./lib/vm');
+const dunePaths = require('./lib/paths');
 
 const app = express();
 const server = http.createServer(app);
@@ -241,6 +242,11 @@ app.get('/api/status', async (_req, res) => {
     lastStatusResult = {
       vm,
       battlegroup: bg,
+      ssh: {
+        keyPresent: dunePaths.sshKeyExists(),
+        keyPath: dunePaths.sshKeyExists() ? dunePaths.getKeyPath() : null,
+        wsl: dunePaths.isWsl(),
+      },
       links: vm.ip ? {
         fileBrowser: `http://${vm.ip}:18888/`,
         director: directorPort ? `http://${vm.ip}:${directorPort}/` : null,
@@ -419,6 +425,12 @@ function bgRoute(action, label, timeoutMs) {
       return res.status(400).json({ error: 'VM not running' });
     }
 
+    if (!dunePaths.sshKeyExists()) {
+      const msg = `SSH key not found at ${dunePaths.getKeyPath()}. Use Settings → Rotate SSH Key.`;
+      log(`Cannot ${action}: ${msg}\n`);
+      return res.status(500).json({ success: false, error: msg, code: 'SSH_KEY_MISSING' });
+    }
+
     try {
       if (action === 'start' || action === 'restart') {
         // Fix placeholder image tags before starting
@@ -595,14 +607,12 @@ app.post('/api/setup/reset', async (_req, res) => {
     let resetMeta = {};
     try { resetMeta = JSON.parse(psOut.trim().split('\n').pop()); } catch { /* ignore */ }
 
-    const keyDir = path.join(
-      process.env.LOCALAPPDATA || path.join(os.homedir(), 'AppData', 'Local'),
-      'DuneAwakeningServer'
-    );
+    const keyDir = dunePaths.getDuneKeyDir();
     if (fs.existsSync(keyDir)) {
       fs.rmSync(keyDir, { recursive: true, force: true });
       log(`Removed SSH keys at ${keyDir}\n`);
     }
+    dunePaths.removeWslKeyMirror();
 
     visibilityManuallySet = false;
     lastKnownVmIp = null;
@@ -766,11 +776,8 @@ app.post('/api/setup/security', async (req, res) => {
   const os = require('os');
   const { spawn: spawnProc } = require('child_process');
 
-  const keyDir = path.join(
-    process.env.LOCALAPPDATA || path.join(os.homedir(), 'AppData', 'Local'),
-    'DuneAwakeningServer'
-  );
-  const keyPath = path.join(keyDir, 'sshKey');
+  const keyDir = dunePaths.getDuneKeyDir();
+  const keyPath = dunePaths.getKeyPath();
   const tmpDir = os.tmpdir();
   const tempKey = path.join(tmpDir, `dunekey-${Date.now()}`);
   const askpassFile = path.join(tmpDir, `dune_askpass_${Date.now()}.bat`);

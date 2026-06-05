@@ -104,6 +104,17 @@
         </div>
       </div>
 
+      <div class="card" id="ssh-key-warning" hidden>
+        <div class="card-header">
+          <h2>SSH Key Problem</h2>
+        </div>
+        <div class="card-body">
+          <p class="card-desc retry-msg">The manager cannot authenticate to the VM. Battlegroup commands will fail until this is fixed.</p>
+          <p class="card-desc" id="ssh-key-hint"></p>
+          <p class="card-desc">If you start the manager from WSL, prefer <strong>start_as_admin.bat</strong> on Windows after a reboot. You can also go to <strong>Settings → Rotate SSH Key</strong> while the VM is running.</p>
+        </div>
+      </div>
+
       <div class="card" id="repair-bootstrap-panel" hidden>
         <div class="card-header">
           <h2>Battlegroup setup incomplete</h2>
